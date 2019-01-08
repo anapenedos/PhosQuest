@@ -34,5 +34,5 @@
 (for stuff we have added)
 ## Specifications wish list
 (for stuff we think would be nice to add)
-plot showing changes in peptides' phosphorylation, where you hover over peptides and get info about substrate, potential kinases
+plot showing changes in peptide' phosphorylation, where you hover over peptides and get info about substrate, potential kinases (Carmen)
 
