@@ -30,7 +30,8 @@ def home():
 # route for browse page with browse template
 @app.route("/browse")
 def browse():
-    return render_template('browse.html', browse_data=browse_data)  # bring in list of browse data.
+    # render template with browse data and title for browse page
+    return render_template('browse.html', browse_data=browse_data, title="BROWSE")
 
 
 # if run from python directly run app in debug mode

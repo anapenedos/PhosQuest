@@ -1,25 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Browse Ph-kinase database</title>
-</head>
+{% extends "layout.html" %}
+{% block content %}
 
-<body>
 <h1>Browse our spangly new database</h1>
 
 <br>
 <!--This code loops through the test browse_data from kinase_db.py-->
 {% for item in browse_data %}
----
-   <p><b>Kinase name :</b> {{ item.name }}</p>
+
+   <H3><b>Kinase name :</b> {{ item.name }}</H3>
+
    <p><b>Accession :</b> {{ item.accession }}</p>
    <p><b>Cellular Component :</b> {{ item.Cellular_component }}</p>
    <p><b>Molecular Function:</b> {{ item.Molecular_Function }}</p>
    <p><b>Biological Process:</b> {{ item.Biological_Process }}</p>
-   <p><b>Link</b> {{ item.link }}</p>
+   <p><b>Link</b> <a href>{{ item.link }}</a></p>       <!--Link doesn't work currently!!-->
+
 {% endfor %}
 
+{% endblock content %}
 
-</body>
-</html>
