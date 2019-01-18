@@ -34,16 +34,16 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="/">Home</a>
-              <a class="nav-item nav-link" href="/browse">Browse<a/>
-              <a class="nav-item nav-link" href="/search">Search</a>
-              <a class="nav-item nav-link" href="/upload">Upload</a>
+              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+              <a class="nav-item nav-link" href= "{{ url_for('browse') }}">Browse<a/>
+              <a class="nav-item nav-link" href= "{{ url_for('search') }}" >Search</a>
+              <a class="nav-item nav-link" href="{{ url_for('upload') }}">Upload</a>
 
             </div>
             <!--Navbar Right Side-->
             <div class="navbar-nav">
-              <a class="nav-item nav-link" href="/login">Login</a>
-              <a class="nav-item nav-link" href="/register">Register</a>
+              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
             </div>
           </div>
         </div>
@@ -58,13 +58,13 @@
         </div>
         <div class="col-md-4">
           <div class="content-section">
-            <h3>Our Sidebar</h3>
-            <p class='text-muted'>This is the best bioinformatic website in the world
+            <h3>Extra Stuff</h3>
+            <p class='text-muted'>I don't know if a sidebar will be needed
               <ul class="list-group">
                 <li class="list-group-item list-group-item-light">Fancy data processing</li>
                 <li class="list-group-item list-group-item-light">Announcements</li>
                 <li class="list-group-item list-group-item-light">Another thing</li>
-                <li class="list-group-item list-group-item-light">test</li>
+                <li class="list-group-item list-group-item-light">About us</li>
               </ul>
             </p>
           </div>
