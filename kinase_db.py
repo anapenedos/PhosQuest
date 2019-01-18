@@ -26,7 +26,6 @@ browse_data = [
 def home():
     return render_template('home.html')
 
-
 # route for browse page with browse template
 @app.route("/browse")
 def browse():
