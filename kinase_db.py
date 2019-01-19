@@ -1,7 +1,8 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, redirect
 from test_data import browse_data
 from forms import RegistrationForm, LoginForm, UploadForm
 from werkzeug.utils import secure_filename
+import os
 
 # create instance of FLASK class. __name__ is name of module.
 app = Flask(__name__)
@@ -40,10 +41,14 @@ def search():
 def upload():
     """Create upload route"""
     form = UploadForm()
+    save_dir = "/temp_upload_directory"
     if form.validate_on_submit():
         f = form.data_file.data
-        filename = secure_filename(f.filename)
-        return redirect(url_for('results'))
+        filename = "uploaded_"+ secure_filename(f.filename)
+        f.save(os.path.join('temp_upload_directory',filename))
+
+        #This is where we could call the processing modules
+        return redirect(url_for('upload'))
 
     return render_template('upload.html', form=form)
 
