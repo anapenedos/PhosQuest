@@ -15,7 +15,7 @@
 
     <!--Set title if entered in to render function or add default-->
     {% if title %}
-       <title>Ph-Kinase-db -{{ title }}</title>
+       <title>Ph-Kinase-db_{{ title }}</title>
     {% else %}
         <title>Giardello Ph-Kinase db toolkit</title>
     {% endif %}
@@ -38,9 +38,10 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-              <a class="nav-item nav-link" href= "{{ url_for('browse') }}">Browse<a/>
+              <a class="nav-item nav-link" href= "{{ url_for('browse') }}">Browse</a>
               <a class="nav-item nav-link" href= "{{ url_for('search') }}" >Search</a>
               <a class="nav-item nav-link" href="{{ url_for('upload') }}">Upload</a>
+              <a class="nav-item nav-link" href="{{ url_for('results') }}">Results</a>
 
             </div>
             <!--Navbar Right Side-->

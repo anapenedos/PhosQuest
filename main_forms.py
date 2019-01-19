@@ -3,8 +3,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo
+from flask_wtf.file import FileField, FileRequired
 
-"""set up registration form class and required fields
+"""Set up forms classes and required fields
 we need to add email in here if we actually use this code."""
 
 
@@ -29,3 +30,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('password', validators = [DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField("Login")
+
+class UploadForm(FlaskForm):
+    """Upload data form class"""
+    data_file = FileField(validators=[FileRequired()])
+    submit = SubmitField("Upload")
