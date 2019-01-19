@@ -26,7 +26,7 @@ def home():
 def browse():
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
-                           title="Search")
+                           title="Browse")
 
 
 # route for browse page with browse template
