@@ -3,8 +3,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, Length, EqualTo
-from flask_wtf.file import FileField, FileRequired
-
+from flask_wtf.file import FileField, FileAllowed
 """Set up forms classes and required fields
 we need to add email in here if we actually use this code."""
 
@@ -31,7 +30,10 @@ class LoginForm(FlaskForm):
     remember = BooleanField('Remember Me')
     submit = SubmitField("Login")
 
+
+
 class UploadForm(FlaskForm):
-    """Upload data form class"""
-    data_file = FileField(validators=[FileRequired()])
+    """Upload data form class with file type validator"""
+    data_file = FileField('Upload data file for processing',
+                          validators=[FileAllowed(['csv','tsv'])])
     submit = SubmitField("Upload")

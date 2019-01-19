@@ -1,6 +1,7 @@
 from flask import Flask, render_template, url_for
 from test_data import browse_data
-from login_register_form import RegistrationForm, LoginForm
+from forms import RegistrationForm, LoginForm, UploadForm
+from werkzeug.utils import secure_filename
 
 # create instance of FLASK class. __name__ is name of module.
 app = Flask(__name__)
@@ -28,17 +29,23 @@ def browse():
 
 
 # route for browse page with browse template
-@app.route("/search")
+@app.route("/search",methods=['GET', 'POST'])
 def search():
     """render template with browse data and title for browse page"""
     return render_template('search.html', title="Search")
 
 
-# route for browse page with browse template
-@app.route("/upload")
+# route for upload page with file handling method
+@app.route('/upload', methods=['GET', 'POST'])
 def upload():
-    """render template with browse data and title for browse page"""
-    return render_template('upload.html', title='Upload')
+    """Create upload route"""
+    form = UploadForm()
+    if form.validate_on_submit():
+        f = form.data_file.data
+        filename = secure_filename(f.filename)
+        return redirect(url_for('results'))
+
+    return render_template('upload.html', form=form)
 
 
 # route for browse page with browse template
@@ -48,7 +55,7 @@ def results():
     return render_template('results.html', title='results')
 
 # Test route for now may or may not want in final site??
-@app.route("/register")
+@app.route("/register", methods=['GET', 'POST'])
 def register():
     """Create instance of register form"""
     form = RegistrationForm()
@@ -56,11 +63,13 @@ def register():
 
 
 # Test route for now may or may not want in final site??
-@app.route("/login")
+@app.route("/login",methods=['GET', 'POST'])
 def login():
-    # Create instance of register form
+    """ Create instance of register form """
     form = LoginForm()
     return render_template('login.html', title='Login', form=form)
+
+
 
 
 # if run from python directly run app in debug mode

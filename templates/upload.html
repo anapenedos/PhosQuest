@@ -1,23 +1,21 @@
 <!-- inherit template from layout.html-->
+<!-- format form for upload of data.-->
 {% extends "layout.html" %}
 {% block content %}
 <H1>Upload data</H1>
-<!-- div class used probably isn't right for this..-->
-    <div class="content-section">
-        <form action="http://localhost:5000/upload" method='POST'
-            enctype = "multipart/form-data">
-            {{ form.hidden_tag() }}
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Upload your proteomics data</legend>
-                    <div class="form-group">
-                        {{ form.data_file.label(class="form-control-label") }}
-                        {{ form.data_file(class="form-control form-control-lg") }}
-                    </div>
-                    </div>
-                <H4>This form does not work yet... </H4>
-                You uploaded {{ name }}
-            </fieldset>
-            <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
-            </div>
-  {% endblock content %}
+<form method='POST' action="" enctype="multipart/form-data">
+  {{ form.hidden_tag() }}
+  <div class="form-group">
+    {{ form.data_file.label() }}
+    {{ form.data_file(class='form-control-file') }}
+    {% if form.data_file.errors %}
+        {% for error in form.data_file.errors %}
+    <span class=""text-danger">{{ error }}</span></div></br>
+        {% endfor %}
+    {% endif %}
+  </div>
+  <div class="form-group">
+      {{ form.submit(class="btn btn-outline-info") }}
+  </div>
+</form>
+{% endblock content %}
