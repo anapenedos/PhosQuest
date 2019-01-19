@@ -41,12 +41,12 @@ def search():
 def upload():
     """Create upload route"""
     form = UploadForm()
-    save_dir = "/temp_upload_directory"
+    save_dir = "temp_upload_directory"
+    #if form validates (correct file types) save file in temp dir
     if form.validate_on_submit():
         f = form.data_file.data
         filename = "uploaded_"+ secure_filename(f.filename)
-        f.save(os.path.join('temp_upload_directory',filename))
-
+        f.save(os.path.join(save_dir,filename))
         #This is where we could call the processing modules
         return redirect(url_for('upload'))
 
