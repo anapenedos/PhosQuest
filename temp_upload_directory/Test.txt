@@ -1,0 +1,4 @@
+this is just a file so that I can add this folder to the repo - I can't add an
+empty folder.
+If you run the upload code you currently will need this folder as I haven't
+added any error checking yet.
