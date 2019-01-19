@@ -1,10 +1,10 @@
 <!-- inherit template from layout.html-->
+<!-- hidden tag is part of protection against attacks-->
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
         <!-- post back to same place -->
         <form method='POST' action="">
-            <!-- hidden tag part of protection against attacks-->
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Sign Up!</legend>
