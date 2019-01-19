@@ -41,6 +41,12 @@ def upload():
     return render_template('upload.html', title='Upload')
 
 
+# route for browse page with browse template
+@app.route("/results")
+def results():
+    """render template with analysis results page"""
+    return render_template('results.html', title='results')
+
 # Test route for now may or may not want in final site??
 @app.route("/register")
 def register():
