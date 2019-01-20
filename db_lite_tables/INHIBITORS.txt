@@ -1,0 +1,8 @@
+ID	inhibitor	molecular_formula	MW	Action	Reference	Reference 2	Commercial Vendor	SMILES
+177	(5Z)-7-Oxozeaenol	C19H22O7	362.37	TAK1	Ninomiya-Tsuji (2003)  J.Biol.Chem. 278 18485	Windheim et al (2007) Biochem.J. 404 179	Tocris	CC1CC=CC(=O)C(C(CC=CC2=CC(=CC(=C2C(=O)O1)O)OC)O)O
+277	NG-25	C29H30F3N5O2	537.58	TAK1	Dzamko N (2012) PLoS ONE 7(6) e39132 10 1371	Eduardo Pauls (2012) Journal of Biological Chemistry 287 23 19216-19228	MedChem Express	CCN1CCN(CC1)CC2=C(C=C(C=C2)NC(=O)C3=CC(=C(C=C3)C)OC4=C5C=CNC5=NC=C4)C(F)(F)F
+149	PP242	C16H16N6O	308.3	mTOR	Feldman ME (2009) PLoS Biol 7(2)		Sigma	CC(C)N1C2=C(C(=C3C=C4C=C(C=CC4=N3)O)N1)C(=NC=N2)N
+263	Torin1	C35H28F3N5O2	607.62	mTOR	Liu Q. (2012) J Biol Chem. 287 9742-52		Tocris	CCC(=O)N1CCN(CC1)C2=C(C=C(C=C2)N3C(=O)C=CC4=CN=C5C=CC(=CC5=C43)C6=CC7=CC=CC=C7N=C6)C(F)(F)F
+5	A-443654	C24H23ON5x2HCl	470.39	Akt1	Shi Y. (2005) Neoplasia 7 992-1000.		AdooQ Bioscience	CC1=C2C=C(C=CC2=NN1)C3=CC(=CN=C3)OCC(CC4=CNC5=CC=CC=C54)N
+9	Akti 1/2	C34H29N7O	551.6	"Akt1, Akt2"	Logie L. (2007) Diabetes 2218-27	Barnett S.F. (2005) Biochem. J. 385 399	Merck (Calbiochem)	C1CN(CCC1N2C3=CC=CC=C3NC2=O)CC4=CC=C(C=C4)C5=NC6=CC7=C(C=C6N=C5C8=CC=CC=C8)N=CN7
+133	IPA-3	C20H14O2S2	350.45	PAK1	Deacon S.W. (2008) Chemistry and Biology 15 322		Merck (Calbiochem)	C1=CC=C2C(=C1)C=CC(=C2SSC3=C(C=CC4=CC=CC=C43)O)O
