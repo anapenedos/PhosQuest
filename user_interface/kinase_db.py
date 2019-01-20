@@ -46,10 +46,13 @@ def upload():
     if form.validate_on_submit():
         f = form.data_file.data
         filename = "uploaded_"+ secure_filename(f.filename)
-        f.save(os.path.join(save_dir,filename))
-        #This is where we could call the processing modules
-        return redirect(url_for('upload'))
-
+        try:
+            f.save(os.path.join(save_dir,filename))
+            #This is where we could call the processing modules
+            return redirect(url_for('upload'))
+        except IOError:
+            print("file handling error")
+            return redirect(url_for('upload'))
     return render_template('upload.html', form=form)
 
 
