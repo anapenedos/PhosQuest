@@ -11,4 +11,10 @@ browse_data = [
         'Molecular_Function': 'carboxylic acid binding',
         'Cellular_component': 'cytosol',
         'Biological_Process': 'ketone body biosynthetic process',
+         'link': 'https://www.uniprot.org/uniprot/P35914'},
+    {'accession': 'P35914',
+        'name': 'Hydroxymethylglutaryl-CoA lyase',
+         'Molecular_Function': 'carboxylic acid binding',
+         'Cellular_component': 'cytosol',
+         'Biological_Process': 'ketone body biosynthetic process',
          'link': 'https://www.uniprot.org/uniprot/P35914'}]

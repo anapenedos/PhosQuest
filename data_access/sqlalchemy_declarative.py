@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, \
+pefrom sqlalchemy import create_engine, \
                        ForeignKey, Table, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
