@@ -6,7 +6,7 @@ from data_access.sqlalchemy_declarative import Base, Kinase, Substrate
 
 # Create engine that stores data in the local directory's
 # kinases_test.db file.
-engine = create_engine('sqlite:///database/kinases_test.db')
+engine = create_engine('sqlite:///database/kinases_test3_all.db')
 # Bind the engine to the metadata of the Base class so that the
 # declaratives can be accessed through a DBSession instance
 Base.metadata.bind = engine
