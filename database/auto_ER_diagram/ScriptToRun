@@ -1,0 +1,14 @@
+#!/bin/bash
+# The path of the unzipped SchemaCrawler directory
+SchemaCrawlerPATH=/home/ozan/Downloads/schemacrawler-15.03.04-distribution/_schemacrawler
+# The path of the SQLite database
+SQLiteDatabaseFILE=/home/ozan/Documents/giardello/database
+# The type of the database system.
+RDBMS=sqlite
+# Where to store the image
+OutputPATH=/home/ozan/Documents/giardello/database/auto_ER_diagram/test.png
+# Username and password need to be empty for SQLite
+USER=
+PASSWORD=
+
+java -classpath $(echo ${SchemaCrawlerPATH}/_schemacrawler/lib/*.jar | tr ' ' ':') schemacrawler.Main -server=${RDBMS} -database=${SQLiteDatabaseFILE} -outputformat=png -outputfile=${OutputPATH} -command=graph -infolevel=maximum -user=${USER} -password=${PASSWORD}
