@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo
+from wtforms.validators import DataRequired, Length, EqualTo, Email
 from flask_wtf.file import FileField, FileAllowed
 """Set up forms classes and required fields
 we need to add email in here if we actually use this code."""
@@ -10,23 +10,27 @@ we need to add email in here if we actually use this code."""
 
 class RegistrationForm(FlaskForm):
     """Registration form class"""
-    username = StringField('username',
+    username = StringField('Username',
                            validators = [DataRequired(),
                                        Length(min=2, max=30)])
-    password = PasswordField('password', validators = [DataRequired()])
-    password_confirm = PasswordField('confirm_password',
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
+
+    password = PasswordField('Password', validators = [DataRequired()])
+    password_confirm = PasswordField('Confirm password',
                                      validators=[DataRequired(),
                                                  EqualTo('password')])
+
 
     submit = SubmitField("Create login")
 
 
 class LoginForm(FlaskForm):
     """Login form Class"""
-    username = StringField('username',
+    username = StringField('Username',
                            validators = [DataRequired(),
                                        Length(min=2, max=30)])
-    password = PasswordField('password', validators = [DataRequired()])
+    password = PasswordField('Password', validators = [DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField("Login")
 

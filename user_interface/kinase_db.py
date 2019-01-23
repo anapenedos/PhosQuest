@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, flash, render_template, url_for, redirect
 from test_data import browse_data
 from forms import RegistrationForm, LoginForm, UploadForm
 from werkzeug.utils import secure_filename
@@ -67,6 +67,12 @@ def results():
 def register():
     """Create instance of register form"""
     form = RegistrationForm()
+    #if form validates show flash message
+    if form.validate_on_submit():
+        #note f method works only python 3.6+ (format in older)
+        flash(f'Account created for {form.username.data}!','success')
+        return redirect(url_for('home'))
+
     return render_template('register.html', title='Register', form=form)
 
 
