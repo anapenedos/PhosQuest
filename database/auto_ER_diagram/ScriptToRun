@@ -1,8 +1,8 @@
 #!/bin/bash
 # The path of the unzipped SchemaCrawler directory
-SchemaCrawlerPATH=/home/ozan/Downloads/schemacrawler-15.03.04-distribution/_schemacrawler
+SchemaCrawlerPATH=/home/ozan/Downloads/schemacrawler-15.03.04-distribution
 # The path of the SQLite database
-SQLiteDatabaseFILE=/home/ozan/Documents/giardello/database
+SQLiteDatabaseFILE=/home/ozan/Documents/giardello/database/kinases_test3_all.db
 # The type of the database system.
 RDBMS=sqlite
 # Where to store the image
