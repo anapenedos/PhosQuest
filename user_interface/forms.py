@@ -18,7 +18,6 @@ class RegistrationForm(FlaskForm):
                                      validators=[DataRequired(),
                                                  EqualTo('password')])
 
-
     submit = SubmitField("Create login")
 
 

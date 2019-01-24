@@ -79,8 +79,17 @@ def register():
 # Test route for now may or may not want in final site??
 @app.route("/login",methods=['GET', 'POST'])
 def login():
-    """ Create instance of register form """
+    """ Create instance of login form """
     form = LoginForm()
+    if form.validate_on_submit():
+        #fake login details to test page
+        if form.email.data == "test@test.com" and \
+            form.password.data == "password":
+            flash(' You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login unsuccessful please retry','danger')
+
     return render_template('login.html', title='Login', form=form)
 
 # if run from python directly run app in debug mode

@@ -21,21 +21,26 @@
                         {% else %}
                             {{ form.email(class="form-control form-control-lg") }}
                         {% endif %}
+
                     </div>
                     <div class="form-group">
                         {{ form.password.label(class="form-control-label") }}
-                        {% if form.password.errors%}
+                        {% if form.password.errors %}
                             {{ form.password(class="form-control form control-lg
                                 is-invalid") }}
                                 <div class="invalid-feedback">
                                     {% for error in form.password.errors %}
-                                        <span> {{ error}}</span>
+                                        <span> {{ error }}</span>
                                     {% endfor %}
                                 </div>
                         {% else %}
                             {{ form.password(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
+                <div class="form-check">
+                    {{ form.remember(class="form-check-input") }}
+                    {{ form.remember.label(class="form-check-label") }}
+                </div>
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
@@ -44,7 +49,7 @@
     </div>
     <div class="border-top pt-3">
         <small class="text-muted">
-        Already have an account?<a class="ml-2" href="{{ url_for('login') }}"> Log In</a>
+        Need an account?<a class="ml-2" href="{{ url_for('register') }}"> Create account</a>
         </small>
     </div>
 {% endblock content %}
