@@ -9,22 +9,64 @@
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Sign Up!</legend>
                     <div class="form-group">
+                        <!-- print out errors in form validation-->
                         {{ form.username.label(class="form-control-label") }}
-                        {{ form.username(class="form-control form-control-lg") }}
+                        {% if form.username.errors%}
+                            {{ form.username(class="form-control form control-lg
+                                is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.username.errors %}
+                                        <span> {{ error }}</span>
+                                    {% endfor %}
+                                </div>
+                        {% else %}
+                            {{ form.username(class="form-control form-control-lg") }}
+                        {% endif %}
+
                     </div>
                     <div class="form-group">
                         {{ form.email.label(class="form-control-label") }}
-                        {{ form.email(class="form-control form-control-lg") }}
+                        {% if form.email.errors%}
+                            {{ form.email(class="form-control form control-lg
+                                is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.email.errors %}
+                                        <span> {{ error}}</span>
+                                    {% endfor %}
+                                </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+
                     </div>
                     <div class="form-group">
                         {{ form.password.label(class="form-control-label") }}
-                        {{ form.password(class="form-control form-control-lg") }}
+                        {% if form.password.errors%}
+                            {{ form.password(class="form-control form control-lg
+                                is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password.errors %}
+                                        <span> {{ error}}</span>
+                                    {% endfor %}
+                                </div>
+                        {% else %}
+                            {{ form.password(class="form-control form-control-lg") }}
+                        {% endif %}
                     </div>
                 <div class="form-group">
                         {{ form.password_confirm.label(class="form-control-label") }}
-                        {{ form.password_confirm(class="form-control form-control-lg") }}
+                        {% if form.password_confirm.errors%}
+                            {{ form.password_confirm(class="form-control form control-lg
+                                is-invalid") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.password_confirm.errors %}
+                                        <span> {{ error}}</span>
+                                    {% endfor %}
+                                </div>
+                        {% else %}
+                            {{ form.password_confirm(class="form-control form-control-lg") }}
+                        {% endif %}
                     </div>
-                <H4>This form does not work yet... </H4>
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
@@ -32,7 +74,7 @@
         </form>
     </div>
     <div class="border-top pt-3">
-        <small class=""text-muted">
+        <small class="text-muted">
         Already have an account?<a class="ml-2" href="{{ url_for('login') }}"> Sign In</a>
         </small>
     </div>
