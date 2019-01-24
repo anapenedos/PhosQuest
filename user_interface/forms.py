@@ -10,9 +10,6 @@ we need to add email in here if we actually use this code."""
 
 class RegistrationForm(FlaskForm):
     """Registration form class"""
-    username = StringField('Username',
-                           validators = [DataRequired(),
-                                       Length(min=2, max=30)])
     email = StringField('Email',
                         validators=[DataRequired(), Email()])
 
@@ -27,9 +24,8 @@ class RegistrationForm(FlaskForm):
 
 class LoginForm(FlaskForm):
     """Login form Class"""
-    username = StringField('Username',
-                           validators = [DataRequired(),
-                                       Length(min=2, max=30)])
+    email = StringField('Email',
+                        validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators = [DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField("Login")

@@ -70,7 +70,7 @@ def register():
     #if form validates show flash message
     if form.validate_on_submit():
         #note f method works only python 3.6+ (format in older)
-        flash(f'Account created for {form.username.data}!','success')
+        flash(f'Account created for {form.email.data}!','success')
         return redirect(url_for('home'))
 
     return render_template('register.html', title='Register', form=form)
