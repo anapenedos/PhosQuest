@@ -32,37 +32,37 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 20px;
 }
 
-.article-title {
-  color: #444444;
+.result-title {
+  color: #ffffff ;
 }
 
-a.article-title:hover {
+a.result-title:hover {
   color: #428bca;
   text-decoration: none;
 }
 
-.article-content {
+.result-content {
   white-space: pre-line;
 }
 
-.article-img {
+.result-img {
   height: 65px;
   width: 65px;
   margin-right: 16px;
 }
 
-.article-metadata {
+.result-metadata {
   padding-bottom: 1px;
   margin-bottom: 4px;
   border-bottom: 1px solid #e3e3e3
 }
 
-.article-metadata a:hover {
+.result-metadata a:hover {
   color: #333;
   text-decoration: none;
 }
 
-.article-svg {
+.result-svg {
   width: 25px;
   height: 25px;
   vertical-align: middle;

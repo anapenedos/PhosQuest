@@ -49,9 +49,11 @@ def upload():
         try:
             f.save(os.path.join(save_dir,filename))
             #This is where we could call the processing modules
-            return redirect(url_for('upload'))
+            flash(f'File { f.filename } successfully uploaded',
+                    'success')
+            return redirect(url_for('results'))
         except IOError:
-            print("file handling error")
+            flash('File handling error','danger')
             return redirect(url_for('upload'))
     return render_template('upload.html', form=form)
 

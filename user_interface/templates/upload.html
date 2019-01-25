@@ -1,8 +1,13 @@
 <!-- inherit template from layout.html-->
 <!-- format form for upload of data.-->
-{% extends "layout.html" %}
+{% extends "layout_no_sidebar.html" %}
 {% block content %}
-<H1>Upload data</H1>
+<H2>Upload Phosphate Kinase Proteomics Result Data</H2>
+<br>
+<div class="content-section">
+    Online data analysis for your phosphate kinase experiments
+</div>
+<br>
 <form method='POST' action="" enctype="multipart/form-data">
   {{ form.hidden_tag() }}
     <fieldset class="form-group">
