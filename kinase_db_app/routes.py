@@ -1,5 +1,5 @@
 from flask import flash, render_template, url_for, redirect
-from kinase_db_app import app
+from kinase_db_app import app, db, bcrypt
 from test_data import browse_data
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
@@ -70,8 +70,14 @@ def register():
     #if form validates show flash message
     if form.validate_on_submit():
         #note f method works only python 3.6+ (format in older)
+        #hash password
+        hash_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        #create user and add to user_db
+        user = User(email= form.email.data, password=hash_pw)
+        db.session.add(user)
+        db.session.commit
         flash(f'Account created for {form.email.data}!','success')
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))#
 
     return render_template('register.html', title='Register', form=form)
 

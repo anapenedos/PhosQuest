@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
 
 # create instance of FLASK class. __name__ is name of module.
 app = Flask(__name__)
@@ -9,6 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = '7302b128c277227526063af5c73ec426'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
 
 #import routes from package
 from kinase_db_app import routes
