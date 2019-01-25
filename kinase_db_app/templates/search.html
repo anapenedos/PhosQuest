@@ -2,8 +2,26 @@
 {% extends "layout.html" %}
 {% block content %}
 <H1>Search database</H1>
-
-This obviously isn't ready yet....
-<p>#TODO - create search box.</p>
-
+<br>
+<form method='POST' action="">
+    <fieldset class="form-group">
+      <legend class="border-bottom mb-4">Search</legend>
+      <div class="form-group">
+        {{ form.search.label(class="form-control-label") }}
+        {% if form.search.errors%}
+            {{ form.search(class="form-control form control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                  {% for error in form.search.errors %}
+                      <span> {{ error }} </span>
+                  {% endfor %}
+            </div>
+        {% else %}
+        {{ form.search(class="form-control form-control-lg") }}
+        {% endif %}
+      </div>
+    </fieldset>
+    <div class="form-group">
+          {{ form.submit(class="btn btn-outline-info") }}
+      </div>
+</form>
   {% endblock content %}

@@ -30,6 +30,11 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+class SearchForm(FlaskForm):
+    """Basic single search box"""
+    search = StringField('Enter search criteria',
+                          validators=[])
+    submit = SubmitField("Search")
 
 class UploadForm(FlaskForm):
     """Upload data form class with file type validator"""

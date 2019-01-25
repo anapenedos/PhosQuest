@@ -2,6 +2,7 @@ from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app
 from test_data import browse_data
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
+from kinase_db_app.forms import SearchForm
 from werkzeug.utils import secure_filename
 import os
 from kinase_db_app.user_model import User
@@ -27,7 +28,8 @@ def browse():
 @app.route("/search",methods=['GET', 'POST'])
 def search():
     """render template with browse data and title for browse page"""
-    return render_template('search.html', title="Search")
+    form = SearchForm()
+    return render_template('search.html', title="Search", form=form)
 
 
 # route for upload page with file handling method
