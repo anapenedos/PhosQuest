@@ -29,6 +29,8 @@ def browse():
 def search():
     """render template with browse data and title for browse page"""
     form = SearchForm()
+    search_txt = form.search.data
+    flash(f'Search for " { search_txt }"', 'info')
     return render_template('search.html', title="Search", form=form)
 
 
