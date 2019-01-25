@@ -1,4 +1,5 @@
 from flask import Flask, flash, render_template, url_for, redirect
+from flask_sqlalchemy import SQLAlchemy
 from test_data import browse_data
 from forms import RegistrationForm, LoginForm, UploadForm
 from werkzeug.utils import secure_filename
@@ -10,6 +11,21 @@ app = Flask(__name__)
 # security for site secret key generated in python using secrets module
 # token hex method
 app.config['SECRET_KEY'] = '7302b128c277227526063af5c73ec426'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+
+
+class User(db.Model):
+    """ Class for db model for email and passwords"""
+
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+
+    def __repr__(self):
+        #string print method
+        return f"User('{self.email}')"
+
 
 
 # create route for home page works with / and /home page address

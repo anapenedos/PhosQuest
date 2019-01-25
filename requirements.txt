@@ -12,5 +12,4 @@ pytz==2018.9
 six==1.12.0
 SQLAlchemy==1.2.16
 Werkzeug==0.14.1
-pip==9.0.3
-flask-wtf==0.14.2
+WTForms==2.2.1
