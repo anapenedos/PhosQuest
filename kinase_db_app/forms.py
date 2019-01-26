@@ -2,8 +2,10 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, EqualTo, Email
+from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
 from flask_wtf.file import FileField, FileAllowed
+from kinase_db_app.model import User
+
 """Set up forms classes and required fields
 we need to add email in here if we actually use this code."""
 
@@ -19,6 +21,13 @@ class RegistrationForm(FlaskForm):
                                                  EqualTo('password')])
 
     submit = SubmitField("Create login")
+
+    def validate_email(self, email):
+        #custom validation for unique email (check not in db)
+        user = User.query.filter_by(email=email.data).first()
+
+        if user:
+            raise ValidationError('Email already in use!')
 
 
 class LoginForm(FlaskForm):

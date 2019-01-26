@@ -71,8 +71,9 @@ def register():
     if form.validate_on_submit():
         #note f method works only python 3.6+ (format in older)
         #hash password
-        hash_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        #create user and add to user_db
+        hash_pw = bcrypt.generate_password_hash(form.password.data).decode(\
+            'utf-8')
+        #create user and add to users_db
         user = User(email= form.email.data, password=hash_pw)
         db.session.add(user)
         db.session.commit()
