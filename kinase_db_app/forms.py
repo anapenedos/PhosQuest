@@ -45,6 +45,13 @@ class SearchForm(FlaskForm):
                           validators=[])
     submit = SubmitField("Search")
 
+    def validate_email(self, email):
+        #custom validation for unique email (check not in db)
+        user = User.query.filter_by(email=email.data).first()
+
+        if user:
+            raise ValidationError('Email already in use!')
+
 class UploadForm(FlaskForm):
     """Upload data form class with file type validator"""
     data_file = FileField('Upload data file for processing',

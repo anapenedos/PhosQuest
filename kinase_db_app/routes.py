@@ -83,7 +83,7 @@ def register():
     return render_template('register.html', title='Register', form=form)
 
 
-# Test route for now may or may not want in final site??
+# Test route for now
 @app.route("/login",methods=['GET', 'POST'])
 def login():
     """ Create instance of login form """
