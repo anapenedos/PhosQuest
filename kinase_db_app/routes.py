@@ -5,7 +5,7 @@ from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
 from werkzeug.utils import secure_filename
 import os
-from kinase_db_app.user_model import User
+from kinase_db_app.model import User
 
 # create route for home page works with / and /home page address
 # uses home html template
@@ -75,7 +75,7 @@ def register():
         #create user and add to user_db
         user = User(email= form.email.data, password=hash_pw)
         db.session.add(user)
-        db.session.commit
+        db.session.commit()
         flash(f'Account created for {form.email.data}!','success')
         return redirect(url_for('login'))#
 
