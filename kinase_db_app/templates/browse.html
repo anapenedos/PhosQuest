@@ -2,21 +2,26 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h1>Browse our spangly new database</h1>
+<h2>Display of first item in database tables</h2>
 
 <br>
 <!--This code loops through the test browse_data from run.py-->
-{% for item in browse_data %}
-
-<p><b>Kinase name :</b> {{ item.name }}</p>
-<p><b>Accession :</b> {{ item.accession }}</p>
-<p><b>Cellular Component :</b> {{ item.Cellular_component }}</p>
-<p><b>Molecular Function :</b> {{ item.Molecular_Function }}</p>
-<p><b>Biological Process :</b> {{ item.Biological_Process }}</p>
-<p><b>Link</b> <a href ={{ item.link }} target = _blank>{{ item.link }}</a></p>
-
+<H3><b>Kinase Entry 1:</b></H3>
+    <p><u>Kinase Accession Number</u> {{ browse_data[0].kin_acc_num }}</p>
+    <p><u>Kinase Name</u> {{ browse_data[0].kin_name }}</p>
+    <p><u>Gene Name</u> {{ browse_data[0].kin_gene}}</p>
+    <p><u>Protein</u> {{ browse_data[0].kin_prot}}<p>
+    <p><u>Organism</u> {{ browse_data[0].kin_org}}<p>
+    <p><u>Location</u> {{ browse_data[0].kin_loc}}<p>
+    <p><u>Family</u> {{ browse_data[0].kin_fam}}<p>
 <hr>
-{% endfor %}
+<H3><b>Substrate Entry 1:</b></H3>
+    <p><u>Substrate Accession Number</u> {{ browse_data[1].subs_acc_num }}</p>
+    <p><u>Substrate Name</u> {{ browse_data[1].subs_name }}</p>
+    <p><u>Gene ID</u> {{ browse_data[1].subs_gene_id}}</p>
+    <p><u>Gene name</u> {{ browse_data[1].subs_gene_name}}</p>
+    <p><u>Organism</u> {{ browse_data[1].subs_org}}</p>
+    <p><u>Domain</u> {{ browse_data[1].kin_domain}}</p>
 
 {% endblock content %}
 
