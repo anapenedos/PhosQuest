@@ -2,9 +2,10 @@ from sqlalchemy import create_engine, \
                        ForeignKey, Table, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+import os
 
 
-# initiates a Base sqlalchemy class that handles python<>SQLite "translation"
+# initiates a base sqlalchemy class that handles python<>SQLite "translation"
 Base = declarative_base()
 
 
@@ -152,6 +153,7 @@ class Location(Base):
 # The echo flag sets up SQLAlchemy logging
 # TODO rmv echo when functional
 # TODO replace by final db file for release
-engine = create_engine('sqlite:///database/kinases_test3_all.db', echo=True)
+db_path = os.path.join('database', 'kinases_test3_all.db')
+engine = create_engine(f'sqlite:///{ db_path }', echo=True)
 # Create all tables
 Base.metadata.create_all(engine)
