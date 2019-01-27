@@ -40,7 +40,7 @@ class Kinase(Base):
     kin_name = Column(String(50))  # TODO check max len of fields
     kin_gene = Column(String(20))
     kin_prot = Column(String(20))  # protein
-    kin_org = Column(String(150))  # organism
+    kin_org = Column(String(150))  # organism #TODO rmv
     kin_loc = Column(String(150), ForeignKey('locations.loc_id'))  # location
     kin_fam = Column(String(150))  # family
     # setting up relationships
