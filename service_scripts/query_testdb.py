@@ -1,9 +1,9 @@
 import sys
 import os
 #so we can access the scripts..
-sys.path.insert(0, 'data_access')
-from sqlalchemy_declarative import Base, Kinase, Substrate, Inhibitor,\
-            Phosphosite, Location
+#sys.path.insert(0, 'data_access')
+from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
+    Inhibitor, Phosphosite, Location
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, attributes
 
@@ -24,3 +24,4 @@ def querytest():
 
     result = [kinase, substrate, inhibitor, phosphosite, location]
     return result
+

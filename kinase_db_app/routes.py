@@ -1,8 +1,8 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
-import sys
-sys.path.insert(0, 'service_scripts')
-import query_testdb
+#import sys
+#sys.path.insert(0, 'service_scripts')
+import service_scripts.query_testdb
 
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
@@ -23,7 +23,7 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = query_testdb.querytest()
+    browse_data = service_scripts.query_testdb.querytest()
 
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
