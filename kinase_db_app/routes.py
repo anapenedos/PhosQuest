@@ -1,7 +1,5 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
-#import sys
-#sys.path.insert(0, 'service_scripts')
 import service_scripts.query_testdb
 
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
