@@ -28,7 +28,7 @@ substrates_phosphosites_table = Table(
     'substrates_phosphosites',
     Base.metadata,
     Column('subs_acc_num', String(20), ForeignKey('substrates.subs_acc_num')),
-    Column('phos_categ_id', Integer, ForeignKey('phosphosites.phos_categ_id'))
+    Column('phos_grp_id', Integer, ForeignKey('phosphosites.phos_grp_id'))
 )
 
 
@@ -39,8 +39,6 @@ class Kinase(Base):
     kin_acc_num = Column(String(20), primary_key=True)  # accession number
     kin_name = Column(String(50))  # TODO check max len of fields
     kin_gene = Column(String(20))
-    kin_prot = Column(String(20))  # protein
-    kin_org = Column(String(150))  # organism #TODO rmv
     kin_loc = Column(String(150), ForeignKey('locations.loc_id'))  # location
     kin_fam = Column(String(150))  # family
     # setting up relationships
@@ -56,10 +54,10 @@ class Kinase(Base):
                                   back_populates='phosphorylated_by')
 
     def __repr__(self):
-        return "<Kinase(accession='%s', name='%s', gene='%s', protein='%s'," \
-                       "organism='%s', location='%s', family='%s')>" \
+        return "<Kinase(accession='%s', name='%s', gene='%s', " \
+                       "location='%s', family='%s')>" \
                % (self.kin_acc_num, self.kin_name, self.kin_gene,
-                  self.kin_prot, self.kin_org, self.kin_loc, self.kin_fam)
+                  self.kin_loc, self.kin_fam)
 
 
 class Substrate(Base):
@@ -70,8 +68,8 @@ class Substrate(Base):
     subs_name = Column(String(20))
     subs_gene_id = Column(Integer)
     subs_gene = Column(String(20))
-    # TODO substrate protein?
-    subs_org = Column(String(150))  # organism
+    subs_prot = Column(String(20))  # protein
+    subs_genomic_loc = Column(String(150))  # genomic location
     subs_mod_res = Column(String(150))  # modified residue TODO integer?
     subs_domain = Column(String(150))  # modified domain
     subs_ab = Column(String(20))  # CST catalog number TODO integer?
@@ -87,20 +85,20 @@ class Substrate(Base):
 
     def __repr__(self):
         return "<Substrate(accession='%s', name='%s', gene ID='%s', " \
-                          "gene='%s', organism='%s', modified residue='%s'" \
-                          "domain='%s', antibody='%s')>" \
+                          "gene='%s', protein='%s', genomic location='%s', " \
+                          "modified residue='%s', domain='%s', " \
+                          "antibody='%s')>" \
                % (self.subs_acc_num, self.subs_name, self.subs_gene_id,
-                  self.subs_gene, self.subs_org, self.subs_mod_res,
-                  self.subs_domain, self.subs_ab)
+                  self.subs_gene, self.subs_prot, self.subs_genomic_loc,
+                  self.subs_mod_res, self.subs_domain, self.subs_ab)
 
 
 class Phosphosite(Base):
     """Defines a Phosphosite class mapping to 'phosphosites' table"""
     __tablename__ = 'phosphosites'
 
-    phos_categ_id = Column(Integer, primary_key=True)  # category ID TODO str?
+    phos_grp_id = Column(Integer, primary_key=True)  # category ID TODO str?
     phos_site = Column(String(20))  # site +/- 7
-    phos_genomic_loc = Column(String(150))  # genomic location
     # setting up relationships
     # many-to-many 'substrates' <> 'phosphosites' tables
     site_in_subs = relationship('Substrate',
@@ -108,9 +106,8 @@ class Phosphosite(Base):
                                 back_populates='subs_sites')
 
     def __repr__(self):
-        return "<Phosphosite(category ID='%s', site +/-7='%s', " \
-                            "genomic location='%s')>" \
-               % (self.phos_categ_id, self.phos_site, self.phos_genomic_loc)
+        return "<Phosphosite(phosphosite group ID='%s', site +/-7='%s')>" \
+               % (self.phos_grp_id, self.phos_site)
 
 
 class Inhibitor(Base):
@@ -119,7 +116,6 @@ class Inhibitor(Base):
 
     inhib_id = Column(Integer, primary_key=True)  # inhibitor ID
     inhib_chem_struct = Column(String(20))  # chemical structure
-
     # setting up relationships
     # many-to-many 'kinases' <> 'inhibitors' tables
     inhib_kinases = relationship('Kinase',
@@ -141,7 +137,6 @@ class Location(Base):
     # setting up relationships
     # many-to-one 'kinases' > 'locations' tables
     kin_in_loc = relationship('Kinase', back_populates='located')
-
 
     def __repr__(self):
         return "<Location(location ID='%s', name='%s', figure URL='%s')>" \
