@@ -2,17 +2,18 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2>Display of first item in database tables</h2>
 <br>
 <!--This code adds entries from test query -->
-<H3><b>Kinase Entry 1:</b></H3>
-    <p><u>Kinase Accession Number</u> {{ browse_data[0].kin_acc_num }}</p>
-    <p><u>Kinase Name</u> {{ browse_data[0].kin_name }}</p>
-    <p><u>Gene Name</u> {{ browse_data[0].kin_gene}}</p>
-    <p><u>Protein</u> {{ browse_data[0].kin_prot}}<p>
-    <p><u>Organism</u> {{ browse_data[0].kin_org}}<p>
-    <p><u>Location</u> {{ browse_data[0].kin_loc}}<p>
-    <p><u>Family</u> {{ browse_data[0].kin_fam}}<p>
+<H3><b>Browse Kinases</b></H3>
+  {% for kinase in browse_data %}
+    <p><u>Kinase Accession Number</u> {{ kinase.kin_acc_num }}</p>
+    <p><u>Kinase Name</u> {{ kinase.kin_name }}</p>
+    <p><u>Gene Name</u> {{ kinase.kin_gene}}</p>
+    <p><u>Protein</u> {{ kinase.kin_prot}}<p>
+    <p><u>Organism</u> {{ kinase.kin_org}}<p>
+    <p><u>Location</u> {{ kinase.kin_loc}}<p>
+    <p><u>Family</u> {{ kinase.kin_fam}}<p>
+{% endfor %}
 <hr>
 
 {% endblock content %}
