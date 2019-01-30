@@ -148,7 +148,7 @@ class Location(Base):
 # The echo flag sets up SQLAlchemy logging
 # TODO rmv echo when functional
 # TODO replace by final db file for release
-db_path = os.path.join('database', 'kinases_test3_all.db')
+db_path = os.path.join('database', 'test_db.db')
 engine = create_engine(f'sqlite:///{ db_path }', echo=True)
 # Create all tables
 Base.metadata.create_all(engine)
