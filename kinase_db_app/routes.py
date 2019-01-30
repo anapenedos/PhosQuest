@@ -1,8 +1,7 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
-import sys
-sys.path.insert(0, 'service_scripts')
-import query_testdb
+import service_scripts.query_testdb
+import service_scripts.test_userdata_display
 
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
@@ -23,7 +22,7 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = query_testdb.querytest()
+    browse_data = service_scripts.query_testdb.querytest()
 
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
@@ -65,7 +64,10 @@ def upload():
 @app.route("/results")
 def results():
     """render template with analysis results page"""
-    return render_template('results.html', title='results')
+    file = os.path.join('user_data', "subset_proc_data_TEST.xlsx")
+    return service_scripts.test_userdata_display.xl_to_html(file)
+    #return render_template('results.html', title='results',
+                          # html_table=html_table)
 
 # Test route for now may or may not want in final site??
 @app.route("/register", methods=['GET', 'POST'])

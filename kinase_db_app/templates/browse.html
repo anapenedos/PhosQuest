@@ -4,7 +4,7 @@
 
 <h2>Display of first item in database tables</h2>
 <br>
-<!--This code adds entries from test uery -->
+<!--This code adds entries from test query -->
 <H3><b>Kinase Entry 1:</b></H3>
     <p><u>Kinase Accession Number</u> {{ browse_data[0].kin_acc_num }}</p>
     <p><u>Kinase Name</u> {{ browse_data[0].kin_name }}</p>
@@ -14,13 +14,6 @@
     <p><u>Location</u> {{ browse_data[0].kin_loc}}<p>
     <p><u>Family</u> {{ browse_data[0].kin_fam}}<p>
 <hr>
-<H3><b>Substrate Entry 1:</b></H3>
-    <p><u>Substrate Accession Number</u> {{ browse_data[1].subs_acc_num }}</p>
-    <p><u>Substrate Name</u> {{ browse_data[1].subs_name }}</p>
-    <p><u>Gene ID</u> {{ browse_data[1].subs_gene_id}}</p>
-    <p><u>Gene name</u> {{ browse_data[1].subs_gene_name}}</p>
-    <p><u>Organism</u> {{ browse_data[1].subs_org}}</p>
-    <p><u>Domain</u> {{ browse_data[1].kin_domain}}</p>
 
 {% endblock content %}
 
