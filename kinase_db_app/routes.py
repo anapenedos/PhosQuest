@@ -64,10 +64,9 @@ def upload():
 @app.route("/results")
 def results():
     """render template with analysis results page"""
-    file = os.path.join('user_data', "subset_proc_data_TEST.xlsx")
-    return service_scripts.test_userdata_display.xl_to_html(file)
-    #return render_template('results.html', title='results',
-                          # html_table=html_table)
+    #file = os.path.join('user_data', "subset_proc_data_TEST.xlsx")
+   #return service_scripts.test_userdata_display.xl_to_html(file)
+    return render_template('results.html', title='results')
 
 # Test route for now may or may not want in final site??
 @app.route("/register", methods=['GET', 'POST'])
