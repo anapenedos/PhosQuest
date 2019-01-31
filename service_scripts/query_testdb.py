@@ -13,9 +13,6 @@ session = DBsession()
 def querytest():
     """ query test db and get first item from each table """
     kinase  = session.query(Kinase).all()
-    print(kinase)
-
-
     session.close()
     return kinase
 
