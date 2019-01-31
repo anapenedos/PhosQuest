@@ -20,7 +20,7 @@ from statsmodels.stats.multitest import fdrcorrection
 ##-------------------------------------------------------------------------------------------------------------------------##
 
 # Read user_data into enviornment and assign to dataframe variable.
-ud_df_a = pd.read_table("../user_data/user_data.txt")  
+ud_df_a = pd.read_table("../service_scripts/user_data.txt")
 
 # Parse data that contains at least 1 quantitation value in either condition and pass to variable.
 # Note: "df.iloc" function used to specify column indices instead of column names.
