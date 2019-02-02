@@ -1,12 +1,10 @@
-from flask import flash, render_template, url_for, redirect
+from flask import flash, render_template, url_for, redirect, session
 from kinase_db_app import app, db, bcrypt
-import service_scripts.query_testdb
-import service_scripts.test_userdata_display
-
+from service_scripts import query_testdb
+from service_scripts import userdata_display
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
 from werkzeug.utils import secure_filename
-import os
 from kinase_db_app.model import User
 
 # create route for home page works with / and /home page address
@@ -22,7 +20,7 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = service_scripts.query_testdb.querytest()
+    browse_data = query_testdb.querytest()
 
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
@@ -39,34 +37,27 @@ def search():
 
 
 # route for upload page with file handling method
-@app.route('/upload', methods=['GET', 'POST'])
-def upload():
-    """Create upload route"""
+@app.route('/analysis', methods=['GET', 'POST'])
+def analysis():
+    """Create upload and analysis route"""
     form = UploadForm()
-    save_dir = "temp_upload_directory"
-    #if form validates (correct file types) save file in temp dir
+     #if form validates (correct file types) save file in temp dir
     if form.validate_on_submit():
-        f = form.data_file.data
-        filename = "uploaded_"+ secure_filename(f.filename)
+
         try:
-            f.save(os.path.join(save_dir,filename))
-            #This is where we could call the processing modules
-            flash(f'File { f.filename } successfully uploaded',
-                    'success')
-            return redirect(url_for('results'))
-        except IOError:
-            flash('File handling error','danger')
-            return redirect(url_for('upload'))
+            f = form.data_file.data
+            filename =  secure_filename(f.filename)
+            basic_data = userdata_display.display_basic(f)
+            flash(f'File {filename} successfully analysed', 'success')
+            return render_template('results.html', title='Results',
+                           table=basic_data[0])
+
+        except:
+            flash('Error please try again ','danger')
+            return render_template('upload.html', form=form)
+
     return render_template('upload.html', form=form)
 
-
-# route for browse page with browse template
-@app.route("/results")
-def results():
-    """render template with analysis results page"""
-    file = os.path.join('user_data', "subset_proc_data_TEST.xlsx")
-    data = service_scripts.test_userdata_display.xl_display_subset(file)
-    return render_template('results.html', title='results', data=data)
 
 # Test route for now may or may not want in final site??
 @app.route("/register", methods=['GET', 'POST'])

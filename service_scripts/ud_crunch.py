@@ -9,11 +9,11 @@ import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
 
 
-def create_filtered_dfs(file):
+def create_filtered_dfs(datafile):
     """ Create data frame subsets of user data and expand
     with further analysis"""
     # Read user_data and assign to dataframe variable.
-    ud_df_orig = pd.read_table(file)
+    ud_df_orig = pd.read_table(datafile)
     # Parse data that contains at least 1 quant value in either condition and
     # pass to variable.Note: "df.iloc" function used to specify column indices
     # instead of column names. Allows for  different field names.
@@ -28,7 +28,7 @@ def create_filtered_dfs(file):
     ud_df1_quant.iloc[:, 0] = ud_df1_quant.iloc[:, 0].\
                             str.replace(r"\(.*\)", "")
 
-    # Parse data that contains only Ser, Thr, Tyr & non phospho-sites (STTN).
+    # Parse data that contains only Ser, Thr, Tyr & non phospho-sites (STYN).
     ud_df2_styn = ud_df1_quant[ud_df1_quant.iloc[:, 7].
                             str.contains("S|T|Y|None", case=False)]
     # Search not case sensitive.
@@ -73,7 +73,7 @@ def correct_pvalue(filtered_df):
     Benjamini/Hochberg: independent or positively correlated  tests.
     Benjamini/Yekutieli: general or negatively correlated tests.
     "rej_hyp" = rejected null hypotheses as array list of boolean values.
-    "corr_p_value" = array list of corrected p-values in original series order."""
+    "corr_p_value" = array  of corrected p-values in original series order."""
 
     rej_hyp, corr_p_val = fdrcorrection(filtered_df.iloc[:, 8],
                               alpha=0.05)  # alpha = permissable error rate.
@@ -98,10 +98,12 @@ def correct_pvalue(filtered_df):
     # Append -log10(p-values) to new column in data frame.
     # Note: "df.assign" function used for appending new column!
     # Standard column append method re-orders values and leads to mis-match of p-values.
-    filtered_df = filtered_df.assign(neg_log10_corr_p_values=neg_log10_corr_p_val.values)
+    filtered_df = filtered_df.assign(neg_log10_corr_p_values=
+                                     neg_log10_corr_p_val.values)
 
     return(filtered_df)
 
+#TODO work on "functionifying" the rest of te data crunch script
 ##-------------------------------------------------------------------------------------------------------------------------##
 
 ######################################################################
@@ -110,21 +112,14 @@ def correct_pvalue(filtered_df):
 
 ##-------------------------------------------------------------------------------------------------------------------------##
 
+# set up run if running this script only
+if __name__ == "__main__":
 
+    #set up runs for testing functions
+    file = 'user_data.txt'
 
+    styn, sty, filtered = create_filtered_dfs(file)
 
+    corrected_p = correct_pvalue(filtered)
 
-
-
-
-
-
-
-#set up runs for testing functions
-file = 'user_data.txt'
-
-styn, sty, filtered = create_filtered_dfs(file)
-
-corrected_p = correct_pvalue(filtered)
-
-print(corrected_p)
+    print(corrected_p)
