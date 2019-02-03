@@ -43,16 +43,16 @@ def analysis():
     form = UploadForm()
      #if form validates (correct file types) save file in temp dir
     if form.validate_on_submit():
-
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
+            flash(f'File {filename} uploaded, please wait', 'success')
             basic_data = userdata_display.display_basic(f)
             flash(f'File {filename} successfully analysed', 'success')
             return render_template('results.html', title='Results',
                            table=basic_data[0])
 
-        except:
+        except :
             flash('Error please try again ','danger')
             return render_template('upload.html', form=form)
 
