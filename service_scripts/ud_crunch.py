@@ -123,7 +123,7 @@ def correct_pvalue(filtered_df):
 if __name__ == "__main__":
 
     #set up runs for testing functions
-    file = 'user_data.txt'
+    file = 'AZ20.tsv'
 
     styn, sty, filtered = create_filtered_dfs(file)
 
