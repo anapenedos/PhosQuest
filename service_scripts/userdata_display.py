@@ -28,7 +28,8 @@ def display_basic(filename):
               'corrected_p_value': 'Corrected P-value',
               'neg_log10_corr_p_values': '-Log10 corrected P-value'}
 
-   basic_display_only = basic_display_only.rename(change_columns)
+   basic_display_only = basic_display_only.rename(columns = change_columns)
 
    basic_display_only = basic_display_only.to_html()
-   return [basic_display_only, p_correct]
+   #return formatted display data and original dataframes
+   return [basic_display_only, dataframes, p_correct,]
