@@ -19,8 +19,8 @@ def display_basic(filename):
 
    # remove underscores for display
    #
-   basic_display_only.iloc[0, :] = \
-      basic_display_only.iloc[0,:].str.replace("_", " ")
+   basic_display_only.columns = basic_display_only.columns.str.replace("_",
+                                                                       " ")
 
    basic_display_only = basic_display_only.to_html()
    #return formatted display data and original dataframes
