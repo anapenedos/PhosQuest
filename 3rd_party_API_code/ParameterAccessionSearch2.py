@@ -1,4 +1,7 @@
-### The following code allows obtaining text from an API website using specific parameters.
+### The following code has the following features:-
+### Uses the uniprot.org/uniprot website
+### Saves to output2.txt, but unstructured output
+### Only works with one Accession number
 
 ### Import modules (I am not sure you need this module as it works without also, but some guides included it)
 import urllib.request
@@ -11,12 +14,12 @@ try:
 
 # Example parameters
     params = {
-        #'from': 'ACC',
-        #'to': 'ID',
-        'format': 'tab',
-        'query': 'Q64303',
-        'columns': 'domain,domains,comment(DOMAIN),comment(SUBCELLULAR LOCATION),feature(INTRAMEMBRANE),feature(TOPOLOGICAL DOMAIN),feature(TRANSMEMBRANE)'
-}
+        #'from':'ACC',
+        #'to':'ID',
+        'format':'tab',
+        'columns':'accession name,database(PDB),comment(SUBCELLULAR LOCATION),feature(INTRAMEMBRANE),feature(TOPOLOGICAL DOMAIN),feature(TRANSMEMBRANE)',
+        'query':'G1FDY4'
+        }
 
 # This code takes the parameters and encodes it as it should be in the URL (e.g. %20 = 'a space')
     data = urllib.parse.urlencode(params)
@@ -44,7 +47,7 @@ try:
 # Print the data (we can also output this as a text file)
 #print(page)
 
-    saveFile = open('withHeaders.txt', 'w')
+    saveFile = open('output2.csv', 'w')
     saveFile.write(str(page))
     saveFile.close()
 

@@ -1,3 +1,9 @@
+### The following code has the following features:-
+### Uses the UniProt webservice
+### Prints to output3 file, tabulated
+### Only works with one Accession number
+
+
 #pip install bioservices
 #pip install seaborn
 
@@ -27,7 +33,7 @@ result = service.search(query, frmt="tab", columns=columnlist)
 #df
 
 df = pd.read_table(io.StringIO(result))
-df.to_csv('out.csv')
+df.to_csv('output3.csv')
 
 # Inspect the result
 #print(result)
