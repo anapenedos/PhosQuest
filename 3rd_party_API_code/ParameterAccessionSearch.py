@@ -1,4 +1,7 @@
-### The following code allows obtaining text from an API website using specific parameters.
+### The following code has the following features:-
+### Uses the uniprot.org/uploadlists API website
+### Prints to the screen
+### Can use multiple Accession numbers
 
 ### Import modules
 import urllib.request
@@ -14,11 +17,12 @@ url = 'https://www.uniprot.org/uploadlists/'
 
 # Example parameters
 params = {
-    'from': 'ACC',
-    'to': 'P_REFSEQ_AC',
-    'format': 'tab',
-    'query': 'P13368'
-}
+   'from':'ACC',
+   'to':'ACC',
+   'format':'tab',
+   'columns':'id,organism,database(PDB),comment(SUBCELLULAR LOCATION),feature(INTRAMEMBRANE),feature(TOPOLOGICAL DOMAIN),feature(TRANSMEMBRANE)',
+   'query':'G1FDY4 P13368'
+   }
 
 # This code takes the parameters and encodes it as it should be in the URL (e.g. %20 = 'a space')
 data = urllib.parse.urlencode(params)
