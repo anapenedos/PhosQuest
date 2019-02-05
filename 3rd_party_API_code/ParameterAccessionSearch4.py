@@ -22,7 +22,7 @@ params = {
         'from':'ACC',
         'to':'ACC',
         'format':'tab',
-        'columns':'id,organism,database(PDB),comment(SUBCELLULAR LOCATION),feature(INTRAMEMBRANE),feature(TOPOLOGICAL DOMAIN),feature(TRANSMEMBRANE)',
+        'columns':'id,organism,database(PDB),comment(SUBCELLULAR LOCATION),feature(INTRAMEMBRANE),feature(TOPOLOGICAL DOMAIN),feature(TRANSMEMBRANE),comment(DOMAIN),families',
         'query':'G1FDY4 P13368 Q9BQI6'
         }
 
