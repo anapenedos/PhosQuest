@@ -11,11 +11,11 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
           integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <!-- our main custom css in static-->
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='main.css')}}"
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/main.css')}}">
 
     <!--Set title if entered in to render function or add default-->
     {% if title %}
-       <title>Ph-K-db_{{ title }}</title>
+       <title>Ph-K-db -{{ title }}</title>
     {% else %}
         <title>Giardello Ph-K-db toolkit</title>
     {% endif %}
@@ -26,7 +26,7 @@
 </head>
 <body>
 <!--add header bar with bootstrap classes-->
-    <header class="site-header">
+<header class="site-header">
       <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
         <div class="container">
           <a class="navbar-brand mr-4" href="/">Ph kinase db </a>
@@ -40,9 +40,7 @@
               <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
               <a class="nav-item nav-link" href= "{{ url_for('browse') }}">Browse</a>
               <a class="nav-item nav-link" href= "{{ url_for('search') }}" >Search</a>
-              <a class="nav-item nav-link" href="{{ url_for('upload') }}">Upload</a>
-              <a class="nav-item nav-link" href="{{ url_for('results') }}">Results</a>
-
+              <a class="nav-item nav-link" href="{{ url_for('analysis') }}">User Data Analysis</a>
             </div>
             <!--Navbar Right Side-->
             <div class="navbar-nav">

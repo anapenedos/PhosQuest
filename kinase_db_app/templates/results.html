@@ -1,12 +1,10 @@
 <!-- inherit template from layout with no sidebar-->
 {% extends "layout_no_sidebar.html" %}
-
 {% block content %}
 <H2> Proteomics Data Analysis Results</H2>
 <br>
-<div class="result-title">
-    This is another test for style
+<div class=table.dataframe>
+    {{ table|safe}}
 </div>
-
 
 {% endblock content %}
