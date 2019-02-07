@@ -53,3 +53,4 @@ session.add_all([
 
 # commit all changes
 session.commit()
+session.close()
