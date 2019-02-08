@@ -12,6 +12,7 @@ python-dateutil==2.7.5
 pytz==2018.9
 six==1.12.0
 SQLAlchemy==1.2.16
+SQLAlchemy-ImageAttach==1.1.0
 Werkzeug==0.14.1
 WTForms==2.2.1
 xlrd==1.2.0
