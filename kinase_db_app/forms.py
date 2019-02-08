@@ -3,7 +3,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import FileField, FileAllowed, FileRequired
 from kinase_db_app.model import User
 
 """Set up forms classes and required fields
@@ -55,5 +55,6 @@ class SearchForm(FlaskForm):
 class UploadForm(FlaskForm):
     """Upload data form class with file type validator"""
     data_file = FileField('Upload data file for processing',
-                          validators=[FileAllowed(['csv', 'tsv', 'txt']),])
+                          validators=[FileAllowed(['csv', 'tsv', 'txt']),
+                                      FileRequired()])
     submit = SubmitField("Upload")

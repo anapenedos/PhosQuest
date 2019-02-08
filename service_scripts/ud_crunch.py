@@ -16,10 +16,9 @@ def create_filtered_dfs(datafile):
     ud_df_orig = pd.read_table(datafile)
     
     # Subset source df by the first 6 columns.
-    # Note: last index should be +1 bigger. Python thing!
     # tsv file has 86 total columns, 80 of which are empty cells.
     # Necessary step to maintain indexing references at a later stage!
-    ud_df_orig = ud_df_orig.iloc[:, 0:7]
+    ud_df_orig = ud_df_orig.iloc[:, :7]
     
     # Parse data that contains at least 1 quant value in either condition and
     # pass to variable.Note: "df.iloc" function used to specify column indices
