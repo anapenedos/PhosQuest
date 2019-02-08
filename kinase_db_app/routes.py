@@ -1,4 +1,4 @@
-from flask import flash, render_template, url_for, redirect, session
+from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
 from service_scripts import query_testdb
 from service_scripts import userdata_display
@@ -46,10 +46,14 @@ def analysis():
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
-            basic_data = userdata_display.display_basic(f)
+            all_data = userdata_display.run_all(f, filename)
+
+
+
+
             flash(f'File {filename} successfully analysed', 'success')
             return render_template('results.html', title='Results',
-                           table=basic_data[0])
+                           table=all_data[userdata][3])
 
         except Exception as e:
             print(e)

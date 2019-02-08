@@ -1,29 +1,42 @@
 """scripts to format subsets of crunched data for display"""
-from service_scripts import ud_crunch
+from service_scripts import user_data_crunch
 import pandas as pd
 
-def display_basic(filename):
-   """Run first two functions in ud_crunch and output
-                  final corrected dataframe"""
-   # run initial filtering script
-   dataframes = ud_crunch.create_filtered_dfs(filename)
+def run_all(file, filename):
+    """Function to run all analyses"""
+    styn, sty = user_data_crunch.create_filtered_dfs(file)
 
-    #run P-value correction on filtered df
-   p_correct = ud_crunch.correct_pvalue(dataframes[2])
+    corrected_p = user_data_crunch.correct_pvalue(sty)
 
-   #create subset of some columns for display
-   basic_display_only = p_correct.copy()
-   # delete un-needed columns for display
-   basic_display_only = basic_display_only.drop(basic_display_only.columns[[3,
-                                        4, 12]], axis=1)
+    full_sty_sort, parsed_sty_sort =\
+        user_data_crunch.table_sort_parse(corrected_p)
 
-   # remove underscores for display
-   #
-   basic_display_only.columns = basic_display_only.columns.str.replace("_",
-                                                                       " ")
+    datalist = [user_data_crunch.data_extract(full_sty_sort, styn)]
 
-   basic_display_only = basic_display_only.to_html()
-   #return formatted display data and original dataframes
-   return [basic_display_only, dataframes, p_correct]
+
+
+    all_data = {
+        'styn':styn, 'sty':sty, 'corrected_p':corrected_p,
+        ' full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
+        'datalist':datalist
+    }
+
+
+    #These files are currently just being saved to a directory
+    heat_map(full_sty_sort, f"{filename}_full")
+
+    heat_map(parsed_sty_sort, f"{filename}_parsed")
+    #return all outputs
+    return(all_data)
+
+
+#might come later if we decide to have downloadable csv from user area
+def export_to_csv(full_sty_sort,parsed_sty_sort):
+
+    full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
+
+    parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
+    create_filtered_dfs(datafile)
+
 
 

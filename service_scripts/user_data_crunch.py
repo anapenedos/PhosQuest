@@ -279,7 +279,7 @@ def data_extract(filtered_df, styn):
 # --------------------------------------------------------------------------- #    
 
 ### Function to plot heatmap of intensity data.
-def heat_map(phospho_df):
+def heat_map(phospho_df, filename):
     # Combine substrate, Phospho site ID with condition fold over max columns.
     phospho_df =  phospho_df[[phospho_df.columns[0],  # Substrate.
                               phospho_df.columns[1],  # Phospho_site_ID.
@@ -307,7 +307,7 @@ def heat_map(phospho_df):
     phospho_fig = mpl.pyplot.figure(figsize=(16,48))
     phospho_fig.subplots_adjust(right=0.4)
     sb.heatmap(phospho_df, cmap="YlGnBu", cbar_kws={"shrink":0.25})
-    phospho_heatmap = phospho_fig.savefig("rename_as_needed.png")
+    phospho_heatmap = phospho_fig.savefig(f"{filename}_heatmap.png")
     
     return(phospho_heatmap)
     

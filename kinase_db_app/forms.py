@@ -1,7 +1,8 @@
 """Test form for login with password"""
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
+    SelectField
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from kinase_db_app.model import User
@@ -57,4 +58,10 @@ class UploadForm(FlaskForm):
     data_file = FileField('Upload data file for processing',
                           validators=[FileAllowed(['csv', 'tsv', 'txt']),
                                       FileRequired()])
+    report_options = [('sig','Significant hits only'),
+                      ('full','Full Report Table')]
+
+    select = SelectField('Choose result format' ,choices = report_options,
+                default = ['sig'])
+
     submit = SubmitField("Upload")
