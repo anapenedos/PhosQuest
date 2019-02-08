@@ -6,7 +6,7 @@ from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
 from werkzeug.utils import secure_filename
 from kinase_db_app.model import User
-
+import traceback
 # create route for home page works with / and /home page address
 # uses home html template
 @app.route("/")
@@ -46,17 +46,28 @@ def analysis():
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
-            all_data = userdata_display.run_all(f, filename)
+            if form.select == 'all':
+
+                #runnign everything currently but probably don't need
+                #to run all functions just for significant hits
+                all_data = userdata_display.run_all(f, filename)
+
+                flash(f'File {filename} successfully analysed', 'success')
+                return render_template('results.html',
+                            title='Significant Results',
+                                       table = all_data['all_html'])
+            else:
+                all_data = userdata_display.run_all(f, filename)
+
+                flash(f'File {filename} successfully analysed', 'success')
+                return render_template('results.html', title='All Results',
+                                       table=all_data['sig_html'])
 
 
 
 
-            flash(f'File {filename} successfully analysed', 'success')
-            return render_template('results.html', title='Results',
-                           table=all_data[userdata][3])
-
-        except Exception as e:
-            print(e)
+        except Exception:
+            print(traceback.format_exc())
             flash(f'Error please try again ','danger')
             return render_template('upload.html', form=form)
 

@@ -11,22 +11,27 @@ def run_all(file, filename):
     full_sty_sort, parsed_sty_sort =\
         user_data_crunch.table_sort_parse(corrected_p)
 
-    datalist = [user_data_crunch.data_extract(full_sty_sort, styn)]
+    #collate extracted data as datalist
+    a,b,c,d = user_data_crunch.data_extract(full_sty_sort, styn)
+
+    datalist = [a,b,c,d]
+
+    all_html = full_sty_sort.to_html()
+    sig_html = parsed_sty_sort.to_html()
 
 
-
-    all_data = {
-        'styn':styn, 'sty':sty, 'corrected_p':corrected_p,
+    #This can change depending on what is needed for display in route
+    all_data = {'styn':styn, 'sty':sty, 'corrected_p':corrected_p,
         ' full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
-        'datalist':datalist
-    }
+        'datalist':datalist, 'all_html':all_html,'sig_html':sig_html}
 
 
     #These files are currently just being saved to a directory
-    heat_map(full_sty_sort, f"{filename}_full")
+    user_data_crunch.heat_map(full_sty_sort, f"{filename}_full")
 
-    heat_map(parsed_sty_sort, f"{filename}_parsed")
-    #return all outputs
+    user_data_crunch.heat_map(parsed_sty_sort, f"{filename}_parsed")
+
+    #return all outputs and datalist html tables
     return(all_data)
 
 
