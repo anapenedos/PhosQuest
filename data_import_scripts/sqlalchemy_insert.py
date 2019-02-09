@@ -26,3 +26,4 @@ session = DBSession()
 
 # commit all changes
 session.commit()
+session.close()
