@@ -2,7 +2,6 @@ from sqlalchemy import create_engine, \
                        ForeignKey, Table, Column, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-from sqlalchemy_imageattach.entity import Image, image_attachment
 import os
 
 
@@ -314,27 +313,14 @@ class Location(Base):
     loc_name = Column(String, primary_key=True)
     # URL/path to image location
     loc_image_path = Column(String)
-    # field to store location image
-    loc_image = image_attachment('LocationImage')
 
     # setting up relationships
     # many-to-one 'kinases' <> 'locations' tables
     kin_in_loc = relationship('Kinase', back_populates='located')
 
     def __repr__(self):
-        return "<Location(location ID='%s', name='%s', figure URL='%s')>" \
-               % (self.loc_id, self.loc_name, self.loc_fig_path)
-
-
-class LocationImage(Base, Image):
-    """
-    Source for Location images.
-    """
-    __tablename__ = 'location_images'
-    loc_name = Column(String,
-                      ForeignKey('locations.loc_name'),
-                      primary_key=True)
-    location = relationship('Location')
+        return "<Location(name='%s', figure URL='%s')>" \
+               % (self.loc_name, self.loc_image_path)
 
 
 # Create engine that stores data in the local directory's
