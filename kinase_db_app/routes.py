@@ -49,8 +49,7 @@ def analysis():
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
-            # for heatmap, get current path and make link to user data
-
+            #selector for type of report (test version)
             if form.select.data == 'all':
                 all_data = userdata_display.run_all(f, filename)
 
@@ -76,7 +75,6 @@ def analysis():
 
                 userdata_display.run_all(f, filename)
                 file = f"{filename}_full_heatmap.png"
-                print(file)
                 header = "Heatmap of all phophosites"
                 return render_template('heatmap.html', title='heatmap',
                                        image=file, header=header)

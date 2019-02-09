@@ -4,8 +4,10 @@
 <H2> Proteomics Data Analysis Results</H2>
 <br>
 <H4> {{header}}</H4>
-
-<img src="{{url_for('static',filename = image)}}">
-
-
+<hr>
+<div class="container">
+    <img src="{{url_for('static',filename = image)}}"
+        alt="Heatmap image of phosphosites"
+        width ="600"/>
+</div>
 {% endblock content %}

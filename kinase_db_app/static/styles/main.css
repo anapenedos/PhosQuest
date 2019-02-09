@@ -37,3 +37,4 @@ table.dataframe, .dataframe th, .dataframe td {
 tr:nth-child(odd)		{ background-color:#99b3ff; }
 tr:nth-child(even)	{ background-color:#fff; }
 tr:hover            { background-color: #b8ecfa;}
+
