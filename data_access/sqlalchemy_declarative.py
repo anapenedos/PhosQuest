@@ -99,6 +99,8 @@ class Substrate(Base):
     subs_gene = Column(String)
     # chromosomal location of the substrate-encoding gene
     subs_chrom_location = Column(String)
+    # substrate organism
+    subs_organism = Column(String)
 
     # setting up relationships
     # one-to-many 'substrates' > 'phosphosites' tables
@@ -263,8 +265,6 @@ class Inhibitor(Base):
     inhib_brutto = Column(String)
     # molecular weight of the inhibitor (g/mol)
     inhib_molec_weight = Column(Float)
-    # chemical structure of the inhibitor
-    inhib_chem_structure = Column(String)
     # inhibitor SMILE formula
     # Simplified Molecular-Input Line-Entry system: line notation for
     # describing the structure of chemical species using short ASCII strings
@@ -328,7 +328,7 @@ class Location(Base):
 # The echo flag sets up SQLAlchemy logging
 # TODO rmv echo when functional
 # TODO replace by final db file for release
-db_path = os.path.join('database', 'db_lite.db')
+db_path = os.path.join('database', 'kinases.db')
 engine = create_engine('sqlite:///' + db_path, echo=True)
 # Create all tables
 Base.metadata.create_all(engine)
