@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sb
 import matplotlib as mpl
+import os
 from statsmodels.stats.multitest import fdrcorrection
 
 # --------------------------------------------------------------------------- #
@@ -307,9 +308,15 @@ def heat_map(phospho_df, filename):
     phospho_fig = mpl.pyplot.figure(figsize=(16,48))
     phospho_fig.subplots_adjust(right=0.4)
     sb.heatmap(phospho_df, cmap="YlGnBu", cbar_kws={"shrink":0.25})
-    phospho_heatmap = phospho_fig.savefig(f"{filename}_heatmap.png")
+    #put image into static folder
+    try:
+        file = os.path.join("kinase_db_app/static",f"{filename}_heatmap.png")
+        phospho_heatmap = phospho_fig.savefig(file)
     
-    return(phospho_heatmap)
+        return(phospho_heatmap)
+
+    except:
+        print(Exception)
     
 # --------------------------------------------------------------------------- #
     
