@@ -8,7 +8,6 @@ import pandas as pd
 import numpy as np
 import seaborn as sb
 import matplotlib as mpl
-import os
 from statsmodels.stats.multitest import fdrcorrection
 
 # --------------------------------------------------------------------------- #
@@ -16,7 +15,7 @@ from statsmodels.stats.multitest import fdrcorrection
 ### Function to read user data and sequentially generate data frames.
 def create_filtered_dfs(datafile):
     """ Create data frame subsets of user data and expand
-    with further analysis"""
+    with further analysis. """
     # Read user_data and assign to dataframe variable.
     ud_df_orig = pd.read_table(datafile)
     
@@ -70,21 +69,24 @@ def create_filtered_dfs(datafile):
     ud_df4_sty_valid["Log10 condition intensity"] =\
                     np.log10(ud_df4_sty_valid.iloc[:, 2])
 
-    # Calc log2 fold change - condition/control append as new column to df.
+    # Calc log2 fold change - condition/control and append as new column to df.
     ud_df4_sty_valid["Log2 fold change - condition over control"] =\
                     np.log2(ud_df4_sty_valid.iloc[:, 3])
 
     # Phospho-sites detected in single conditions and append to new columns.
+    # Boolean true/false outputs returned.
     ud_df4_sty_valid["control only"] = ((ud_df4_sty_valid.iloc[:, 2]>0) &
                     (ud_df4_sty_valid.iloc[:, 3]==0)) # control only.
     ud_df4_sty_valid["condition only"] = ((ud_df4_sty_valid.iloc[:, 2]==0) &
                     (ud_df4_sty_valid.iloc[:, 3]>0)) # AZ20 only.
     
     # Phospho-sites detected in both conditions and append to new column.
+    # Boolean true/false outputs returned.
     ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 2]>0) &
                     (ud_df4_sty_valid.iloc[:, 3]>0))
     
     # Calculate if condtion CVs <=25% in both conditions.
+    # Boolean true/false outputs returned.
     ud_df4_sty_valid["CV<=25% (both)"] = ((ud_df4_sty_valid.iloc[:, 5]<=0.25) &
                     (ud_df4_sty_valid.iloc[:, 6]<=0.25))
     
@@ -135,7 +137,7 @@ def correct_pvalue(filtered_df):
 
 ### Function to sort and parse phospho only data frame.
 def table_sort_parse(filtered_df):
-    """ Sort table, parse most significant hits and export to csv """
+    """ Sort table, parse most significant hits and export to csv. """
     # Specify a new list of ordered column indices.
     # Note: not dependent on column names!
     new_col_order = [0, 7, 1, 2, 8, 9, 10, 11, 3, 12, 5, 6, 
@@ -144,7 +146,7 @@ def table_sort_parse(filtered_df):
     # List comprehension to re-order df columns by new index list.          
     filtered_df = filtered_df[[filtered_df.columns[i] for i in new_col_order]] 
     
-    # Sort level variable for sorting data frame.
+    # Sort level variables for sorting data frame.
     sort_level_1 = filtered_df.columns[15] # Rejected hypotheses.
     sort_level_2 = filtered_df.columns[19] # CV <= 0.25 in both.
     sort_level_3 = filtered_df.columns[16] # Sites in only control.
@@ -223,13 +225,13 @@ def data_extract(filtered_df, styn):
     
     # Parse hits unique to control & condition.
     cont_unique = df_subset.loc[(df_subset.iloc[:, 1]>0) & 
-                                 (df_subset.iloc[:, 2]==0)]  
+                                (df_subset.iloc[:, 2]==0)]  
     cond_unique = df_subset.loc[(df_subset.iloc[:, 2]>0) & 
                                 (df_subset.iloc[:, 1]==0)]  
     
     # Parse hits with all intensities reported in both conditions.
     complete = df_subset.loc[(df_subset.iloc[:, 1]>0) &
-                                  (df_subset.iloc[:, 2]>0)]
+                             (df_subset.iloc[:, 2]>0)]
       
     # "df.groupby" function used to return groups of a series. 
     # Note: function iterates through data frame indices (default = by rows).
@@ -248,7 +250,7 @@ def data_extract(filtered_df, styn):
                                       complete.iloc[:, 2]]).size()
                                                                                                   
     # Compute summary of AA phos residue frequencies for 
-    # both unique control/condition & complete gropus
+    # both unique control/condition & complete groups.
     cont_unique_res_freq = cont_unique_grps.value_counts()    
     cond_unique_res_freq = cond_unique_grps.value_counts()   
     complete_res_freq = complete_grps.value_counts()
@@ -280,20 +282,21 @@ def data_extract(filtered_df, styn):
 # --------------------------------------------------------------------------- #    
 
 ### Function to plot heatmap of intensity data.
-def heat_map(phospho_df, filename):
+def heat_map(phospho_df):
+    """ Apply heatmap to subset of phospho hits dataframe and export as png. """
     # Combine substrate, Phospho site ID with condition fold over max columns.
-    phospho_df =  phospho_df[[phospho_df.columns[0],  # Substrate.
-                              phospho_df.columns[1],  # Phospho_site_ID.
-                              phospho_df.columns[4],  # Fold_cont_over_max.
-                              phospho_df.columns[5]]] # Fold_cond_over_max.    
+    phospho_df = phospho_df[[phospho_df.columns[0],  # Substrate.
+                             phospho_df.columns[1],  # Phospho_site_ID.
+                             phospho_df.columns[4],  # Fold_cont_over_max.
+                             phospho_df.columns[5]]] # Fold_cond_over_max.    
     
-    # Concatenate "Substrate" & "Phospho site ID" into one column, 
+    # Concatenate "Substrate" & "Phospho site ID" into one string, 
     # and append to new column.
     phospho_df["Phospho_site_ID"] = phospho_df.iloc[:, 0].astype(str)+"_"+\
                                     phospho_df.iloc[:, 1]
     
     # Parse concatenated id and fold over max columns.
-    phospho_df = phospho_df[[phospho_df.columns[1],
+    phospho_df = phospho_df[[phospho_df.columns[4],
                              phospho_df.columns[2],   
                              phospho_df.columns[3]]]
     
@@ -308,18 +311,71 @@ def heat_map(phospho_df, filename):
     phospho_fig = mpl.pyplot.figure(figsize=(16,48))
     phospho_fig.subplots_adjust(right=0.4)
     sb.heatmap(phospho_df, cmap="YlGnBu", cbar_kws={"shrink":0.25})
-    #put image into static folder
-    try:
-        file = os.path.join("kinase_db_app/static",f"{filename}_heatmap.png")
-        phospho_heatmap = phospho_fig.savefig(file)
+    phospho_heatmap = phospho_fig.savefig("rename_as_needed.png")
     
-        return(phospho_heatmap)
-
-    except:
-        print(Exception)
+    return(phospho_heatmap)
     
 # --------------------------------------------------------------------------- #
+
+### Function to style table of significant phospho sites and render to html.
+def style_df(phospho_df):
+    """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
+    and render/export as html. """
+    phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
+                             phospho_df.columns[1],   # Phospho_site_ID.
+                             phospho_df.columns[21],  # Kinases
+                             phospho_df.columns[4],   # Fold_cont_over_max.
+                             phospho_df.columns[5],   # Fold_cond_over_max.
+                             phospho_df.columns[9],   # Log2 fold change.
+                             phospho_df.columns[13]]] # Corrected p-value.
     
+    # Set CSS properties for table header/index in dataframe. 
+    th_props = [
+      ('font-size', '13px'),
+      ('text-align', 'center'),
+      ('font-weight', 'bold'),
+      ('color', '#0000cc'),
+      ('background-color', '#e0e0eb')
+      ]
+    
+    # Set CSS properties for table data in dataframe.
+    td_props = [
+      ('font-size', '11px',)
+      ]
+    
+    # Set table styles.
+    styles = [
+      dict(selector="th", props=th_props),
+      dict(selector="td", props=td_props)
+      ]
+    
+    # Pass data frame fields to multiple style methods.
+    styled_phospho_df = (phospho_df.style
+      # Use "background_gradient" method to apply heatmap to table
+      # fold control & condition intensity over max values.                    
+      .background_gradient(subset=["Fold control over max", 
+                                  "Fold condition over max"], 
+                           cmap="YlGnBu",   # Choose colour-map.
+                           low=0, high=0.5) # Set color range .
+                                            # Set "high" arg to low value. 
+                                            # Accentuates differences between
+                                            # low and high intensity values.
+      
+      # Use "bar" method to apply bar-chart styling to log2 fold change field.
+      .bar(subset=["Log2 fold change - condition over control"], 
+           align='mid',                  # Align bars with cells
+           color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
+                  
+      # Pass CSS styling to styled table.
+      .set_table_styles(styles))
+      
+    # Render table as html and export to wkdir.     
+    html = styled_phospho_df.hide_index().render()
+    with open("style_df_rename.html","w") as fp:
+       fp.write(html)
+   
+# --------------------------------------------------------------------------- #
+   
 # set up run if running this script only
 if __name__ == "__main__":
 
@@ -337,7 +393,11 @@ if __name__ == "__main__":
     heat_map(full_sty_sort)
     
     heat_map(parsed_sty_sort)
-
+    
+    style_df(parsed_sty_sort)
+    
+    style_df(full_sty_sort)
+    
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
     
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
