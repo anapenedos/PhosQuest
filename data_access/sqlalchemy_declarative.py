@@ -165,9 +165,9 @@ class Phosphosite(Base):
     # one-to-many 'substrates' <> 'phosphosites' tables
     site_in_subs = relationship('Substrate',
                                 back_populates='subs_sites')
-    # many-to-one relationship 'disease_alterations' <> 'phosphosites' tables
-    altered_in_diseases = relationship('DiseaseAlteration',
-                                       back_populates='altered_in_disease')
+    # one-to-many relationship 'phosphosites' <> 'disease_alterations' tables
+    disease_alterations = relationship('DiseaseAlteration',
+                                       back_populates='altered_phosphosite')
 
     def __repr__(self):
         return "<Phosphosite(group ID='%s', modified residue='%s', " \
@@ -198,8 +198,8 @@ class Disease(Base):
 
     # setting up relationships
     # one-to-many relationship 'diseases' <> 'disease_alterations' tables
-    phosphosites_altered = relationship('DiseaseAlteration',
-                                        back_populates='altered_phosphosite')
+    caused_by_alterations = relationship('DiseaseAlteration',
+                                         back_populates='altered_in_disease')
 
     def __repr__(self):
         return "<Disease(name='%s', notes='%s')>" \
@@ -232,10 +232,10 @@ class DiseaseAlteration(Base):
     # setting up relationships
     # one-to-many relationship 'diseases' <> 'disease_alterations' tables
     altered_in_disease = relationship('Disease',
-                                      back_populates='phosphosites_altered')
+                                      back_populates='caused_by_alterations')
     # many-to-one relationship 'disease_alterations' <> 'phosphosites' tables
     altered_phosphosite = relationship('Phosphosite',
-                                       back_populates='altered_in_diseases')
+                                       back_populates='disease_alterations')
 
     def __repr__(self):
         return "<DiseaseAlteration(disease='%s', phosphosite id='%s', " \
@@ -244,8 +244,6 @@ class DiseaseAlteration(Base):
               % (self.disalt_disease_name, self.disalt_phosphosite_id,
                  self.disalt_phos_alteration, self.disalt_bibl_references,
                  self.disalt_notes)
-
-
 
 
 class Inhibitor(Base):
@@ -316,19 +314,20 @@ class Location(Base):
 
     # setting up relationships
     # many-to-one 'kinases' <> 'locations' tables
-    kin_in_loc = relationship('Kinase', back_populates='located')
+    kin_in_loc = relationship('Kinase', back_populates='kin_located')
 
     def __repr__(self):
         return "<Location(name='%s', figure URL='%s')>" \
                % (self.loc_name, self.loc_image_path)
 
 
-# Create engine that stores data in the local directory's
-# kinases_test.db file.
-# The echo flag sets up SQLAlchemy logging
-# TODO rmv echo when functional
-# TODO replace by final db file for release
-db_path = os.path.join('database', 'kinases.db')
-engine = create_engine('sqlite:///' + db_path, echo=True)
-# Create all tables
-Base.metadata.create_all(engine)
+# # Create database tables/schema
+# # Create engine that stores data in the local directory's
+# # kinases_test.db file.
+# # The echo flag sets up SQLAlchemy logging
+# # TODO rmv echo when functional
+# # TODO replace by final db file for release
+# db_path = os.path.join('database', 'test_kinases.db')
+# engine = create_engine('sqlite:///' + db_path, echo=True)
+# # Create all tables
+# Base.metadata.create_all(engine)
