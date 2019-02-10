@@ -57,6 +57,7 @@ def analysis():
                 return render_template('results.html',
                             title='Significant Results',
                                        table = all_data['all_html'])
+
             elif form.select.data == 'sig':
                 #Running everything currently but probably don't need all.
                 all_data = userdata_display.run_all(f, filename)

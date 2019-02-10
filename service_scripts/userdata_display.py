@@ -1,18 +1,18 @@
 """scripts to format subsets of crunched data for display"""
-from service_scripts import user_data_crunch
+from service_scripts import ud_crunch
 import pandas as pd
 
 def run_all(file, filename):
     """Function to run all analyses"""
-    styn, sty = user_data_crunch.create_filtered_dfs(file)
+    styn, sty = ud_crunch.create_filtered_dfs(file)
 
-    corrected_p = user_data_crunch.correct_pvalue(sty)
+    corrected_p = ud_crunch.correct_pvalue(sty)
 
     full_sty_sort, parsed_sty_sort =\
-        user_data_crunch.table_sort_parse(corrected_p)
+        ud_crunch.table_sort_parse(corrected_p)
 
     #collate extracted data as datalist
-    a,b,c,d = user_data_crunch.data_extract(full_sty_sort, styn)
+    a,b,c,d = ud_crunch.data_extract(full_sty_sort, styn)
 
     datalist = [a,b,c,d]
 
