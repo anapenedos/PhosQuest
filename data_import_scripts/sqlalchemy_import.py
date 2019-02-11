@@ -15,8 +15,6 @@ from data_import_scripts.db_parsing import kin_sub_human, \
 from data_import_scripts.dataframes_to_attributes import kin_sub_human_to_class
 
 
-
-
 # TODO loop over dataframe to instantiate mini / full DBs
 
 
