@@ -345,9 +345,9 @@ if __name__ == "__main__":
 
     data_1, data_2, data_3, data_4 = data_extract(full_sty_sort, styn)
 
-    heat_map(full_sty_sort)
+    heat_map(full_sty_sort,"test2")
 
-    heat_map(parsed_sty_sort)
+    heat_map(parsed_sty_sort, "test2")
 
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 

@@ -49,12 +49,9 @@ def analysis():
             f = form.data_file.data
             filename =  secure_filename(f.filename)
             #run all analyses.
-            all_data = userdata_display.run_all(f, filename)
-
+            all_data = userdata_display.run_all(f)
             #selector for type of report (test version)
-            if form.select.data == 'all':
-
-
+            if form.select.data == 'full':
                 table = user_data_crunch.style_df(all_data['full_sty_sort'])
                 # temporary test display bokeh df
                 #table = userdata_display.bokeh_df(all_data['full_sty_sort'])
@@ -76,7 +73,7 @@ def analysis():
                 flash(f'File {filename} successfully analysed', 'success')
 
                 return render_template('results.html',
-                    title='significant_hits', table=table)
+                    title='All data', table=table)
 
 
 

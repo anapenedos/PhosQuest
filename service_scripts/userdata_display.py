@@ -3,7 +3,7 @@ from service_scripts import user_data_crunch
 from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import DataTable, TableColumn
 
-def run_all(file, filename):
+def run_all(file):
     """Function to run all crunch analyses"""
     styn, sty = user_data_crunch.create_filtered_dfs(file)
 
