@@ -10,6 +10,7 @@ import seaborn as sb
 import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
 import os
+
 # --------------------------------------------------------------------------- #
 
 ### Function to read user data and sequentially generate data frames.
@@ -190,11 +191,18 @@ def data_extract(filtered_df, styn):
     phos_perc_enrich = round((phos_site_num/(non_phos_num+phos_site_num)\
                               *100),1)
 
-    # Concatenate into data frame.
-    data_group_1 = pd.DataFrame({"number of phospho sites": phos_site_num,
-                                 "number of non-phospho sites": non_phos_num,
-                                 "%_enrichment": phos_perc_enrich},
-                                 index=[0])
+    # Create dictionary of variables.
+    enrich_data_dict = {"Number of phospho sites": phos_site_num,
+                        "Number of non-phospho sites": non_phos_num,
+                        "% Enrichment": phos_perc_enrich}
+    
+    
+    # Pass dictionary to dataframe object.
+    data_group_1 = pd.DataFrame.from_dict(enrich_data_dict, 
+                                          orient='index') # Keys as rows.
+    
+     # Name column for numerical data.
+    data_group_1.columns = ["Total"]
 
     # ----------------------------------------------------------------------- #
 
@@ -204,12 +212,18 @@ def data_extract(filtered_df, styn):
     phos_thr = sum(filtered_df.iloc[:, 1].str.contains("T", case=False)) # Thr.
     phos_tyr = sum(filtered_df.iloc[:, 1].str.contains("Y", case=False)) # Tyr.
 
-    # Concatenate into data frame.
-    data_group_2 = pd.DataFrame({"serine": phos_ser,
-                                 "threonine": phos_thr,
-                                 "tyrosine": phos_tyr},
-                                 index=[0])
-
+    # Create dictionary of variables.
+    AA_data_dict = {"Serine": phos_ser,
+                    "Threonine": phos_thr,
+                    "Tyrosine": phos_tyr}
+    
+    # Pass dictionary to dataframe object.
+    data_group_2 = pd.DataFrame.from_dict(AA_data_dict, 
+                                          orient='index') # Keys as rows.
+    
+    # Name column for numerical data.
+    data_group_2.columns = ["Total number with phospho"]
+    
     # ----------------------------------------------------------------------- #
 
     ### Data group - 3.
@@ -267,7 +281,7 @@ def data_extract(filtered_df, styn):
     # Add categories to table.
     data_group_3 = pd.DataFrame({"Number of phosphos": range(1, 6),
                                  "Frequency": total_res_freq_summary.loc[1:6]})
-
+    
     # ----------------------------------------------------------------------- #
 
     ### Data group - 4.
@@ -283,7 +297,7 @@ def data_extract(filtered_df, styn):
 
 ### Function to plot heatmap of intensity data.
 def heat_map(phospho_df,prefix):
-    """ Apply heatmap to subset of phospho hits dataframe and export as png. """
+    """ Apply heatmap to subset of phospho hits dataframe & export as png. """
     # Combine substrate, Phospho site ID with condition fold over max columns.
     phospho_df = phospho_df[[phospho_df.columns[0],  # Substrate.
                              phospho_df.columns[1],  # Phospho_site_ID.
@@ -317,7 +331,6 @@ def heat_map(phospho_df,prefix):
     phospho_heatmap = phospho_fig.savefig(file)
 
     return (phospho_heatmap)
-
 
 # --------------------------------------------------------------------------- #
 
@@ -357,7 +370,7 @@ def style_df(phospho_df):
       # Use "background_gradient" method to apply heatmap to table
       # fold control & condition intensity over max values.
       .background_gradient(subset=["Fold control over max",
-                                  "Fold condition over max"],
+                                   "Fold condition over max"],
                            cmap="YlGnBu",   # Choose colour-map.
                            low=0, high=0.5) # Set color range .
                                             # Set "high" arg to low value.
@@ -379,7 +392,6 @@ def style_df(phospho_df):
 
     return html
 
-
 # --------------------------------------------------------------------------- #
 
 # set up run if running this script only
@@ -394,7 +406,8 @@ if __name__ == "__main__":
 
     full_sty_sort, parsed_sty_sort = table_sort_parse(corrected_p)
 
-    data_1, data_2, data_3, data_4 = data_extract(full_sty_sort, styn)
+    phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
+    data_extract(full_sty_sort, styn)
 
     heat_map(full_sty_sort,"full")
 
