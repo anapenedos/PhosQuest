@@ -22,7 +22,7 @@ params = {
         'from':'ACC',
         'to':'ACC',
         'format':'tab',
-        'columns':'id,organism,database(PDB),comment(SUBCELLULAR LOCATION),feature(INTRAMEMBRANE),feature(TOPOLOGICAL DOMAIN),feature(TRANSMEMBRANE),comment(DOMAIN),families',
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families',
         'query':'G1FDY4 P13368 Q9BQI6'
         }
 
@@ -54,3 +54,4 @@ response = urllib.request.urlopen(request)
 
 df = pd.read_table(response)
 df.to_csv('output4.csv')
+
