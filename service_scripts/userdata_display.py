@@ -1,6 +1,7 @@
 """scripts to format subsets of crunched data for display"""
 from service_scripts import user_data_crunch
-
+from bokeh.models import ColumnDataSource
+from bokeh.models.widgets import DataTable, TableColumn
 
 def run_all(file, filename):
     """Function to run all crunch analyses"""
@@ -18,16 +19,18 @@ def run_all(file, filename):
 
         #This can change depending on what is needed for display in route
     all_data = {'styn':styn, 'sty':sty, 'corrected_p':corrected_p,
-        ' full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
+        'full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
         'datalist':datalist}
 
 
     #return all outputs and datalist html tables
     return(all_data)
 
-
-
-
+def bokeh_df(df):
+    """ create bokeh interactive table from pandas dataframe"""
+    Columns = [TableColumn(field=Ci, title=Ci) for Ci in df.columns]
+    data_table = DataTable(columns=Columns, source=ColumnDataSource(df))
+    return data_table
 
 #might come later if we decide to have downloadable csv from user area
 def export_to_csv(full_sty_sort,parsed_sty_sort):

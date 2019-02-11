@@ -39,7 +39,6 @@ def search():
 
 
 # route for upload page with file handling method
-@app.route('/analysis/<report>', methods=['GET', 'POST'])
 @app.route('/analysis',methods=['GET', 'POST'])
 def analysis():
     """Create upload and analysis route"""
@@ -49,23 +48,35 @@ def analysis():
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
+            #run all analyses.
             all_data = userdata_display.run_all(f, filename)
+
             #selector for type of report (test version)
             if form.select.data == 'all':
+
+
                 table = user_data_crunch.style_df(all_data['full_sty_sort'])
+                # temporary test display bokeh df
+                #table = userdata_display.bokeh_df(all_data['full_sty_sort'])
+
 
                 flash(f'File {filename} successfully analysed', 'success')
                 return render_template('results.html',
                             title='All results',
-                                       table = table, report='All results')
+                                       table=table)
 
             else:
 
                 table = user_data_crunch.\
                          style_df(all_data['parsed_sty_sort'])
+
+                #temporary test display bokeh df
+                #table = userdata_display.bokeh_df(all_data['full_sty_sort'])
+
                 flash(f'File {filename} successfully analysed', 'success')
-                return render_template('results.html', title='significant_hits',
-                    table=table, report='significant hits')
+
+                return render_template('results.html',
+                    title='significant_hits', table=table)
 
 
 

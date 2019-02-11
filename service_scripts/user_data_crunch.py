@@ -328,13 +328,12 @@ def heat_map(phospho_df,filename):
 def style_df(phospho_df):
     """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
     and render/export as html. """
-    phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
-                             phospho_df.columns[1],   # Phospho_site_ID.
-                             phospho_df.columns[21],  # Kinases
-                             phospho_df.columns[4],   # Fold_cont_over_max.
-                             phospho_df.columns[5],   # Fold_cond_over_max.
-                             phospho_df.columns[9],   # Log2 fold change.
-                             phospho_df.columns[13]]] # Corrected p-value.
+    phospho_df = phospho_df[[phospho_df.columns[0],  # Substrate.
+                             phospho_df.columns[1],  # Phospho_site_ID.
+                             phospho_df.columns[4],  # Fold_cont_over_max.
+                             phospho_df.columns[5],  # Fold_cond_over_max.
+                             phospho_df.columns[9],  # Log2 fold change.
+                             phospho_df.columns[13]]]  # Corrected p-value.
     
     # Set CSS properties for table header/index in dataframe. 
     th_props = [
@@ -380,6 +379,9 @@ def style_df(phospho_df):
     html = styled_phospho_df.hide_index().render()
     with open("style_df_rename.html","w") as fp:
        fp.write(html)
+
+    return html
+
    
 # --------------------------------------------------------------------------- #
    

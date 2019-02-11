@@ -34,7 +34,7 @@ table.dataframe, .dataframe th, .dataframe td {
   font-size: 0.7em;
 }
 
-tr:nth-child(odd)		{ background-color:#99b3ff; }
+tr:nth-child(odd)		{ background-color:#B0C4DE; }
 tr:nth-child(even)	{ background-color:#fff; }
-tr:hover            { background-color: #b8ecfa;}
+tr:hover            { background-color: #EEE8AA;}
 
