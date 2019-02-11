@@ -59,8 +59,7 @@ class UploadForm(FlaskForm):
                           validators=[FileAllowed(['csv', 'tsv', 'txt']),
                                       FileRequired()])
     report_options = [('sig','Significant hits only'),
-                      ('full','Full Report Table'),('phm','Signif Heatmap'),
-                      ('fhm','Full Heatmap')]
+                      ('full','Full Report Table')]
 
     select = SelectField('Choose result format' ,choices = report_options,
                 default = ['sig'])

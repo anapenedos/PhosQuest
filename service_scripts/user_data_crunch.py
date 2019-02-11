@@ -282,7 +282,7 @@ def data_extract(filtered_df, styn):
 # --------------------------------------------------------------------------- #    
 
 ### Function to plot heatmap of intensity data.
-def heat_map(phospho_df):
+def heat_map(phospho_df,filename):
     """ Apply heatmap to subset of phospho hits dataframe and export as png. """
     # Combine substrate, Phospho site ID with condition fold over max columns.
     phospho_df = phospho_df[[phospho_df.columns[0],  # Substrate.
@@ -311,8 +311,15 @@ def heat_map(phospho_df):
     phospho_fig = mpl.pyplot.figure(figsize=(16,48))
     phospho_fig.subplots_adjust(right=0.4)
     sb.heatmap(phospho_df, cmap="YlGnBu", cbar_kws={"shrink":0.25})
-    phospho_heatmap = phospho_fig.savefig("rename_as_needed.png")
-    
+
+    try:
+        file = os.path.join("kinase_db_app/static", f"{filename}_heatmap.png")
+        phospho_heatmap = phospho_fig.savefig(file)
+
+        return (phospho_heatmap)
+
+    except:
+        print(Exception)
     return(phospho_heatmap)
     
 # --------------------------------------------------------------------------- #

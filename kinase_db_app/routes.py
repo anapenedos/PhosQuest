@@ -1,7 +1,7 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
 from service_scripts import query_testdb
-from service_scripts import userdata_display
+from service_scripts import userdata_display, user_data_crunch
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
 from werkzeug.utils import secure_filename
@@ -39,53 +39,43 @@ def search():
 
 
 # route for upload page with file handling method
-@app.route('/analysis', methods=['GET', 'POST'])
+@app.route('/analysis/<report>', methods=['GET', 'POST'])
+@app.route('/analysis',methods=['GET', 'POST'])
 def analysis():
     """Create upload and analysis route"""
     form = UploadForm()
-    import os
      #if form validates (correct file types) save file in temp dir
     if form.validate_on_submit():
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
+            all_data = userdata_display.run_all(f, filename)
             #selector for type of report (test version)
             if form.select.data == 'all':
-                all_data = userdata_display.run_all(f, filename)
+                table = user_data_crunch.style_df(all_data['full_sty_sort'])
 
                 flash(f'File {filename} successfully analysed', 'success')
                 return render_template('results.html',
-                            title='Significant Results',
-                                       table = all_data['all_html'])
+                            title='All results',
+                                       table = table, report='All results')
 
-            elif form.select.data == 'sig':
-                #Running everything currently but probably don't need all.
-                all_data = userdata_display.run_all(f, filename)
-
-                flash(f'File {filename} successfully analysed', 'success')
-                return render_template('results.html', title='All Results',
-                                       table=all_data['sig_html'])
-            elif form.select.data == 'phm':
-
-                userdata_display.run_all(f, filename)
-                file = f"{filename}_parsed_heatmap.png"
-                header = "Heatmap of significant phophosites"
-                return render_template('heatmap.html', title='heatmap',
-                                       image=file, header=header)
             else:
 
-                userdata_display.run_all(f, filename)
-                file = f"{filename}_full_heatmap.png"
-                header = "Heatmap of all phophosites"
-                return render_template('heatmap.html', title='heatmap',
-                                       image=file, header=header)
+                table = user_data_crunch.\
+                         style_df(all_data['parsed_sty_sort'])
+                flash(f'File {filename} successfully analysed', 'success')
+                return render_template('results.html', title='significant_hits',
+                    table=table, report='significant hits')
+
+
+
 
         except Exception:
             print(traceback.format_exc())
             flash(f'Error please try again ','danger')
-            return render_template('upload.html', form=form)
+            return render_template('upload.html', form=form, report='upload')
 
-    return render_template('upload.html', form=form)
+    return render_template('upload.html', form=form, report='upload')
 
 
 # Test route for now may or may not want in final site??
