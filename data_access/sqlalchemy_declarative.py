@@ -325,9 +325,7 @@ class Location(Base):
 # # Create engine that stores data in the local directory's
 # # kinases_test.db file.
 # # The echo flag sets up SQLAlchemy logging
-# # TODO rmv echo when functional
-# # TODO replace by final db file for release
-# db_path = os.path.join('database', 'test_kinases.db')
+# db_path = os.path.join('database', 'PhosphoQuest.db')
 # engine = create_engine('sqlite:///' + db_path, echo=True)
 # # Create all tables
 # Base.metadata.create_all(engine)

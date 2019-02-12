@@ -15,10 +15,16 @@ from data_import_scripts.db_parsing import kin_sub_human, \
 from data_import_scripts.dataframes_to_attributes import kin_sub_human_to_class
 
 
-# TODO loop over dataframe to instantiate mini / full DBs
+# def add_update_info
+#
+# def
+# def get_primary_key_values (df_row, key_list)
+#
+# def is_in_table
+#
+# def create_relationships
 
-
-def import_kinase_substrate_data(kin_sub_dataframe):
+def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosphosite]
     """
     Takes in dataframe storing kinase substrate info and populates relevant
     entries in SQLite database.
@@ -27,7 +33,7 @@ def import_kinase_substrate_data(kin_sub_dataframe):
     """
     # Create engine that stores data to database\<file_name>.db
     # TODO replace db file by the final db name
-    db_path = os.path.join('database', 'test_kinases.db')
+    db_path = os.path.join('database', 'PhosphoQuest.db')
     engine = create_engine('sqlite:///' + db_path)
     # Bind the engine to the metadata of the base class so that the
     # classes can be accessed through a DBSession instance
@@ -39,26 +45,31 @@ def import_kinase_substrate_data(kin_sub_dataframe):
     for index, row in kin_sub_dataframe.iterrows():
         # open a SQLite session
         session = DBSession()
+        # TODO get the primary keys in the row
         # get the kinase accession number in the df row
         new_kin_acc = row['KIN_ACC_ID']
         # print('new_kin_acc', new_kin_acc)
         # check if accession already in kinases table
-        query_res = session.query(Kinase.kin_accession) \
+        query_res = session.query(Kinase) \
             .filter(Kinase.kin_accession == new_kin_acc).first()
         # print('query_res', query_res)
         # kinase accession number not in table
         if query_res is None:
-            new_kin = Kinase(kin_accession=new_kin_acc)
-            for key, value in kin_sub_human_to_class.items():
-                class_name = value[0]
-                class_attr = value[1]
-                if class_name == 'Kinase' and class_attr != 'kin_accession':
-                    setattr(new_kin, class_attr, row[key])
-            session.add(new_kin)
+            kinase = Kinase(kin_accession=new_kin_acc)
+        else:
+            kinase = query_res
+        for df_heading, class_match in kin_sub_human_to_class.items():
+            class_name = class_match[0]
+            class_attr = class_match[1]
+            if class_name == Kinase and class_attr != 'kin_accession':
+                attr = getattr(kinase, class_attr, None)
+                if (attr in [None, '', ' ', 'nan', 'NaN']):
+                    setattr(kinase, class_attr, row[df_heading])
+        session.add(kinase)
         session.commit()
         session.close()
 
-
+# class.attr.primary_key boolean
 import_kinase_substrate_data(kin_sub_human)
 #
 #
