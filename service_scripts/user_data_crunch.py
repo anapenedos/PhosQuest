@@ -336,54 +336,63 @@ def heat_map(phospho_df,prefix):
 
 ### Function to style table of significant phospho sites and render to html.
 def style_df(phospho_df):
-    """ Apply pandas "df.style" methods to subset of phospho hits dataframe
+    """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
     and render/export as html. """
-    phospho_df = phospho_df[[phospho_df.columns[0],  # Substrate.
-                             phospho_df.columns[1],  # Phospho_site_ID.
-                             phospho_df.columns[4],  # Fold_cont_over_max.
-                             phospho_df.columns[5],  # Fold_cond_over_max.
-                             phospho_df.columns[9],  # Log2 fold change.
-                             phospho_df.columns[13]]]  # Corrected p-value.
-
-    # Set CSS properties for table header/index in dataframe.
+    phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
+                             phospho_df.columns[1],   # Phospho_site_ID.
+                             phospho_df.columns[4],   # Fold_cont_over_max.
+                             phospho_df.columns[5],   # Fold_cond_over_max.
+                             phospho_df.columns[9],   # Log2 fold change.
+                             phospho_df.columns[13]]] # Corrected p-value.
+    
+    # Set CSS properties for table header/index in dataframe. 
     th_props = [
-      ('font-size', '13px'),
+      ('font-size', '16px'),
+      ('font-family', 'Calibri'),
       ('text-align', 'center'),
       ('font-weight', 'bold'),
-      ('color', '#0000cc'),
-      ('background-color', '#e0e0eb')
+      ('color', '#000000'),
+      ('background-color', '#708090'),
+      ('border', '1px solid black'),
+      ('height', '50px')
       ]
-
+    
     # Set CSS properties for table data in dataframe.
     td_props = [
-      ('font-size', '11px',)
+      ('font-size', '12px'),
+      ('border', '1px solid black'),
+      ('text-align', 'center'),
+      ('font-weight', 'bold'),
       ]
-
+    
     # Set table styles.
     styles = [
       dict(selector="th", props=th_props),
       dict(selector="td", props=td_props)
       ]
-
+    
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
       # Use "background_gradient" method to apply heatmap to table
-      # fold control & condition intensity over max values.
-      .background_gradient(subset=["Fold control over max",
-                                   "Fold condition over max"],
+      # fold control & condition intensity over max values.                    
+      .background_gradient(subset=["Fold control over max", 
+                                  "Fold condition over max"], 
                            cmap="YlGnBu",   # Choose colour-map.
                            low=0, high=0.5) # Set color range .
-                                            # Set "high" arg to low value.
+                                            # Set "high" arg to low value. 
                                             # Accentuates differences between
                                             # low and high intensity values.
-
+      
       # Use "bar" method to apply bar-chart styling to log2 fold change field.
-      .bar(subset=["Log2 fold change - condition over control"],
+      .bar(subset=["Log2 fold change - condition over control"], 
            align='mid',                  # Align bars with cells
            color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
-
+                  
       # Pass CSS styling to styled table.
-      .set_table_styles(styles))
+      .set_table_styles(styles)
+      
+      # Set caption.
+      .set_caption("User data analysis - significant hits"))
 
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
