@@ -6,6 +6,7 @@ from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
 from werkzeug.utils import secure_filename
 from kinase_db_app.model import User
+from data_access.sqlalchemy_declarative import Kinase
 import traceback
 
 
@@ -34,8 +35,18 @@ def search():
     """render template with browse data and title for browse page"""
     form = SearchForm()
     search_txt = form.search.data
-    flash(f'Search for " { search_txt }"', 'info')
-    return render_template('search.html', title="Search", form=form)
+    if search_txt:
+        #Currently just searching on Kinase NAME field only.
+        flash(f'Search for "{search_txt}" in Kinase name', 'info')
+        ##?add functionality for exact or partial match here.
+        results = query_testdb.searchlike(search_txt, Kinase, Kinase.kin_name)
+        print(results)
+        return render_template('search_results.html', title="Search results",
+                               browse_data=results)
+
+    else:
+
+        return render_template('search.html', title="Search", form=form)
 
 
 # route for upload page with file handling method
@@ -60,7 +71,7 @@ def analysis():
                 flash(f'File {filename} successfully analysed', 'success')
                 return render_template('results.html',
                             title='All results',
-                                       table=table)
+                                    table=table )
 
             else:
 
