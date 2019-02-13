@@ -41,17 +41,19 @@ class LoginForm(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-    """Basic single search box"""
+    """Search form with selectors"""
     search = StringField('Enter search criteria',
                           validators=[])
+
+    search_options = [('exact', 'Show exact matches'),
+                      ('like', 'Show similar matches')]
+
+    select = SelectField('Choose result format', choices=search_options)
+
+
     submit = SubmitField("Search")
 
-    def validate_email(self, email):
-        #custom validation for unique email (check not in db)
-        user = User.query.filter_by(email=email.data).first()
 
-        if user:
-            raise ValidationError('Email already in use!')
 
 class UploadForm(FlaskForm):
     """Upload data form class with file type validator"""

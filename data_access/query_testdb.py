@@ -10,6 +10,14 @@ DBsession = sessionmaker()
 DBsession.bind = engine
 
 
+def query_switch(text,selector):
+    """function to switch between different query methods
+    based on the inputs from the website interface options"""
+    #TODO write this switch function
+    pass
+
+
+
 def querytest():
     """ query test db and get first item from each table """
     session = DBsession()
