@@ -1,6 +1,6 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
-from service_scripts import query_testdb
+from data_access import query_testdb
 from service_scripts import userdata_display, user_data_crunch
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm

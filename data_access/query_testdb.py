@@ -17,6 +17,7 @@ def querytest():
     session.close()
     return kinase
 
+
 def searchlike(text, table, fieldname):
     """ Test universal LIKE search function for table/field name"""
     text = '%'+ text + '%'
@@ -27,8 +28,6 @@ def searchlike(text, table, fieldname):
     if results != []:
         session.close()
         return results
-
-
     else:
         session.close()
         return ['No results found']
@@ -37,8 +36,7 @@ def searchlike(text, table, fieldname):
 def searchexact(text, table, fieldname):
     """ Test universal exact search function for table/field name"""
     session = DBsession()
-    results = session.query(table).filter(fieldname \
-                                              .like(text)).all()
+    results = session.query(table).filter(fieldname == text).all()
     # check if query has returned results
     if results != []:
         session.close()
