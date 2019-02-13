@@ -108,7 +108,12 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
 import_kinase_substrate_data(kin_sub_human)
 
 
-# if needed, class.attr.primary_key boolean
+# if needed,
+# class.attr.primary_key boolean
+# If the model class is User and there are many primary keys,
+# >>> from sqlalchemy.inspection import inspect
+# >>> [key.name for key in inspect(User).primary_key]
+# ['id', 'name']
 
 ##############################
 ### SQLite useful commands ###
