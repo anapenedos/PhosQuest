@@ -1,13 +1,30 @@
 <!-- inherit template from layout with no sidebar-->
 {% extends "layout_no_sidebar.html" %}
 {% block content %}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+
 <H2> Your Phosphorylation Data Analysis Results</H2>
 <br>
-
-<div class=table.dataframe>
-
-    {{ table|safe }}
-
+<div id="tabs">
+  <ul>
+    <li><a href="#analysis-1"><span>Significant results</span></a></li>
+    <li><a href="#analysis-2"><span>Results Summary</span></a></li>
+    <li><a href="#analysis-3"><span>Download data</span></a></li>
+  </ul>
+  <div id="analysis-1">
+    <H3> Significant Results</H3>
+    <div class=table.dataframe>
+        {{ table|safe }}
+    </div>
+  </div>
+  <div id="analysis-2">
+    This could be lovely piecharts etc
+  </div>
+  <div id="analysis-3">
+This could be some more lovely things like a downloadable pdf
+  </div>
 </div>
-
 {% endblock content %}

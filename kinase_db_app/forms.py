@@ -45,10 +45,9 @@ class SearchForm(FlaskForm):
     search = StringField('Enter search criteria',
                           validators=[])
 
-    search_options = [('exact', 'Show exact matches'),
-                      ('like', 'Show similar matches')]
+    options= [('like', 'similar matches'),('exact', 'exact matches')]
 
-    select = SelectField('Choose result format', choices=search_options)
+    select = SelectField('Choose search type: ', choices=options)
 
 
     submit = SubmitField("Search")

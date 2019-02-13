@@ -10,16 +10,21 @@ DBsession = sessionmaker()
 DBsession.bind = engine
 
 
-def query_switch(text,selector):
+def query_switch(text,option):
     """function to switch between different query methods
     based on the inputs from the website interface options"""
-    #TODO write this switch function
-    pass
+    if option == "exact":
+        results = searchexact(text,Kinase, Kinase.kin_name)
+        return results
 
+    else:
+        results = searchlike(text,Kinase, Kinase.kin_name)
+        return results
 
 
 def querytest():
-    """ query test db and get first item from each table """
+    """ query test db and get first item from each table (BROWSE)
+    returns all fields"""
     session = DBsession()
     kinase  = session.query(Kinase).all()
     session.close()
@@ -27,8 +32,9 @@ def querytest():
 
 
 def searchlike(text, table, fieldname):
-    """ Test universal LIKE search function for table/field name"""
-    text = '%'+ text + '%'
+    """ Test universal LIKE search function for table/field name,
+        returns all fields"""
+    text = '%'+ text + '%' # add wildcards for LIKE search
     session = DBsession()
     results = session.query(table).filter(fieldname\
                                           .like(text)).all()
