@@ -105,5 +105,32 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
         session.close()
 
 
-# class.attr.primary_key boolean
 import_kinase_substrate_data(kin_sub_human)
+
+
+# if needed, class.attr.primary_key boolean
+
+##############################
+### SQLite useful commands ###
+##############################
+
+#  to get into database
+# from giardello folder in terminal
+# `sqlite3 database/PhosphoQuest.db`
+
+# to show table headers
+# `sqlite>.header on`
+
+# to how entries in columns
+# `sqlite>.mode column`
+
+# to show all entries in a TABLE
+# `SELECT * FROM TABLE;`
+
+# to sort results by COLUMN
+# `SELECT * FROM TABLE ORDER BY COLUMN;`
+
+# to count all entries in a TABLE
+# `SELECT COUNT(*) FROM TABLE;`
+
+
