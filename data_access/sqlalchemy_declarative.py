@@ -110,11 +110,12 @@ class Substrate(Base):
     def __repr__(self):
         return "<Substrate(accession='%s', short name='%s', full name='%s', " \
                           "protein type='%s', molecular weight(kD)='%s', " \
-                          "gene='%s', chromosomal location='%s')>" \
+                          "gene='%s', chromosomal location='%s', " \
+                          "organism='%s')>" \
                % (self.subs_accession, self.subs_short_name,
                   self.subs_full_name, self.subs_protein_type,
                   self.subs_molec_weight_kd, self.subs_gene,
-                  self.subs_chrom_location)
+                  self.subs_chrom_location, self.subs_organism)
 
 
 class Phosphosite(Base):

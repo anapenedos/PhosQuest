@@ -2,6 +2,7 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.inspection import inspect
 
 # Project imports
 # classes and join tables
@@ -41,101 +42,68 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
     # DB session to connect to DB and keep any changes in a "staging zone"
     DBSession = sessionmaker(bind=engine)
 
+    # get classes in data frame
+    classes_in_df = set()
+    for df_heading, class_match in kin_sub_human_to_class.items():
+        class_name = class_match[0]
+        classes_in_df.add(class_name)
+
+    # get classes primary keys attributes
+    classes_keys = {}  # {Kinase: ['kin_accession'], ...}
+    for available_class in classes_in_df:
+        classes_keys[available_class] = \
+            inspect(available_class).primary_key[0].name
+
     # iterate through the dataframe rows
     for index, row in kin_sub_dataframe.iterrows():
         # open a SQLite session
         session = DBSession()
-        # TODO get the primary keys in the row
-        # get the kinase accession number in the df row
-        new_kin_acc = row['KIN_ACC_ID']
-        # print('new_kin_acc', new_kin_acc)
-        # check if accession already in kinases table
-        query_res = session.query(Kinase) \
-            .filter(Kinase.kin_accession == new_kin_acc).first()
-        # print('query_res', query_res)
-        # kinase accession number not in table
-        if query_res is None:
-            kinase = Kinase(kin_accession=new_kin_acc)
-        else:
-            kinase = query_res
+
+        # get keys for classes in row
+        # dictionary of primary key values to class and key they belong to
+        new_key_to_table = {}  # {key_value: (class, attr), ...}
         for df_heading, class_match in kin_sub_human_to_class.items():
+            # df heading corresponds to class and class attribute
             class_name = class_match[0]
             class_attr = class_match[1]
-            if class_name == Kinase and class_attr != 'kin_accession':
-                attr = getattr(kinase, class_attr, None)
-                if (attr in [None, '', ' ', 'nan', 'NaN']):
-                    setattr(kinase, class_attr, row[df_heading])
-        session.add(kinase)
-        session.commit()
+            # if the df heading contains a primary, add key to the dict
+            if class_attr in classes_keys.values():
+                new_key_to_table[row[df_heading]] = (class_name, class_attr)
+
+        # check if records already exist in tables and obtain class instances
+        class_instances = {}  # {Class: class_instance, ...}
+        for obj_key, class_info in new_key_to_table.items():
+            class_name = class_info[0]
+            class_attr = class_info[1]
+            query_res = session.query(class_name)\
+                .filter(getattr(class_name, class_attr) == obj_key).first()
+            # create new class instance if not
+            if query_res is None:
+                class_instance = class_name(**{class_attr: obj_key})
+                session.add(class_instance)
+            # get the existing class instance if so
+            else:
+                class_instance = query_res
+            # keep track of the new instances
+            class_instances[class_name] = class_instance
+
+        # get remaining attributes for each instance
+        for instance_class_name, class_instance in class_instances.items():
+            for df_heading, class_match in kin_sub_human_to_class.items():
+                class_name = class_match[0]
+                class_attr = class_match[1]
+                if class_name == instance_class_name:
+                    attr = getattr(class_instance, class_attr, None)
+                    if (attr in [None, '', ' ', 'nan', 'NaN']):
+                        setattr(class_instance, class_attr, row[df_heading])
+            session.add(class_instance)
+            session.commit()
+
+        # TODO set up related objects
+
+
         session.close()
+
 
 # class.attr.primary_key boolean
 import_kinase_substrate_data(kin_sub_human)
-#
-#
-#
-#             'SUB_ACC_ID'
-#
-#
-#
-# # import relevant fields from kin_sub df into corresponding classes.attributes
-# # check if primary keys are already in table
-# # if in table, check info matches
-# # try adding except if primary key error?
-#
-#
-# for index, row in kin_sub_human.iterrows():
-#     session = DBSession()
-#     # get the kinase accession number in the df row
-#     new_kin_acc = row['KIN_ACC_ID']
-#     # check if accession already in kinases table
-#     query_res = session.query(Kinase.kin_accession)\
-#         .filter(Kinase.kin_accession == new_kin_acc).first()
-#     if query_res is not None:
-#         if query_res.
-#
-#
-# for row in df:
-#     session = DBSession()
-#
-#     sqlalchemy query
-#     Kinase(kin_acc_num=df['KIN_ACC_ID'])
-#     session.commit()
-#     session.close()
-#
-#
-# session.add_all([
-#     Kinase(kin_acc_num='AA00001', kin_name='Kinase 1', kin_gene='KIN1',
-#            kin_prot='Kin1', kin_org='H. sapiens', kin_loc='cytoplasm',
-#            kin_fam='family 1'),
-#     Kinase(kin_acc_num='AA00002', kin_name='Kinase 2', kin_gene='KIN2',
-#            kin_prot='Kin2', kin_org='H. sapiens', kin_loc='nucleous',
-#            kin_fam='family 1'),
-#     Kinase(kin_acc_num='AA00003', kin_name='Kinase 3', kin_gene='KIN3',
-#            kin_prot='Kin3', kin_org='H. sapiens', kin_loc='nucleous',
-#            kin_fam='family 2'),
-#     Kinase(kin_acc_num='AA00004', kin_name='Kinase 4', kin_gene='KIN4',
-#            kin_prot='Kin4', kin_org='H. sapiens', kin_loc='cytoplasm',
-#            kin_fam='family 3'),
-#     Kinase(kin_acc_num='AA00005', kin_name='Kinase 5', kin_gene='KIN5',
-#            kin_prot='Kin5', kin_org='H. sapiens', kin_loc='cytoplasm',
-#            kin_fam='family 3'),
-#     Substrate(subs_acc_num='SU00001', subs_name='Substrate 1',
-#               subs_gene_id='S001', subs_gene='SUB1', subs_org='H. sapiens',
-#               subs_mod_res='T', subs_domain='domain 1', subs_ab='XX-0001'),
-#     Substrate(subs_acc_num='SU00002', subs_name='Substrate 2',
-#               subs_gene_id='S002', subs_gene='SUB2', subs_org='H. sapiens',
-#               subs_mod_res='S', subs_domain='domain 1', subs_ab='XX-0002'),
-#     Substrate(subs_acc_num='SU00003', subs_name='Substrate 3',
-#               subs_gene_id='S003', subs_gene='SUB3', subs_org='H. sapiens',
-#               subs_mod_res='T', subs_domain='domain 2', subs_ab='XX-0003'),
-#     Substrate(subs_acc_num='SU00004', subs_name='Substrate 4',
-#               subs_gene_id='S004', subs_gene='SUB4', subs_org='H. sapiens',
-#               subs_mod_res='S', subs_domain='domain 1', subs_ab='XX-0004'),
-#     Substrate(subs_acc_num='SU00005', subs_name='Substrate 5',
-#               subs_gene_id='S005', subs_gene='SUB5', subs_org='H. sapiens',
-#               subs_mod_res='T', subs_domain='domain 2', subs_ab='XX-0005')])
-#
-#
-# # commit all changes
-# session.commit()
