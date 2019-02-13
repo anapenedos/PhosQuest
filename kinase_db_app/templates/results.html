@@ -1,30 +1,131 @@
-<!-- inherit template from layout with no sidebar-->
-{% extends "layout_no_sidebar.html" %}
-{% block content %}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- jQuery implementation -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- Bootstrap Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- our main custom css in static-->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/main.css')}}">
+
+    <!--Set title if entered in to render function or add default-->
+    {% if title %}
+       <title>PhosphoQuest -{{ title }}</title>
+    {% else %}
+        <title>PhosphoQuest toolkit</title>
+    {% endif %}
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<!--add header bar with bootstrap classes-->
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">PhosphoQuest</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse"
+                  data-target="#navbarToggle" aria-controls="navbarToggle"
+                  aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+              <a class="nav-item nav-link" href= "{{ url_for('browse') }}">Browse</a>
+              <a class="nav-item nav-link" href= "{{ url_for('search') }}" >Search</a>
+              <a class="nav-item nav-link" href="{{ url_for('analysis') }}">User Data Analysis</a>
+            </div>
+            <!--Navbar Right Side-->
+            <div class="navbar-nav">
+              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
+              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
 
 
-<H2> Your Phosphorylation Data Analysis Results</H2>
-<br>
-<div id="tabs">
-  <ul>
-    <li><a href="#analysis-1"><span>Significant results</span></a></li>
-    <li><a href="#analysis-2"><span>Results Summary</span></a></li>
-    <li><a href="#analysis-3"><span>Download data</span></a></li>
-  </ul>
-  <div id="analysis-1">
-    <H3> Significant Results</H3>
-    <div class=table.dataframe>
-        {{ table|safe }}
+    <!-- flash messages bootstrap styles-->
+    <main role="main" div class="container">
+      <div class="row">
+        <div class="col-md-12">
+             <!-- print error messages from form validation-->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+               {% if messages %}
+                  {% for category, message in messages %}
+                     <div class = "alert alert-{{ category }}">
+                         {{ message }}
+                     </div>
+                   {% endfor %}
+               {% endif %}
+            {% endwith %}
+        </div>
+    </main>
+
+    <!-- Optional JavaScript (bootstrap) -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+  -->
+  </body>
+<div class="container">
+    <H2> Your Phosphorylation Data Analysis Results</H2>
+    <br>
+    <div id="tabs">
+      <ul>
+        <li><a href="#analysis-1"><span>Significant results</span></a></li>
+        <li><a href="#analysis-2"><span>Results Summary</span></a></li>
+        <li><a href="#analysis-3"><span>Download data</span></a></li>
+      </ul>
+      <div id="analysis-1">
+        <H3> Significant Results</H3>
+        <div class=table.dataframe>
+            {{ table|safe }}
+        </div>
+      </div>
+      <div id="analysis-2">
+          <p>This could be lovely piecharts etc</p>
+          <hr>
+          <img src={{url_for('static', filename='test_piechart.png')}}>
+
+
+      </div>
+      <div id="analysis-3">
+    This could be some more lovely things like a downloadable pdf
+
+          1 <p>1</p>
+          a <p>1</p>
+          big <p>1</p>
+          long
+          page
+          of
+          stuf <p>1</p>f
+          to
+          show <p>1</p>
+          our <p>1</p>
+          lovely <p>1</p>
+          people <p>1</p>
+
+      </div>
     </div>
-  </div>
-  <div id="analysis-2">
-    This could be lovely piecharts etc
-  </div>
-  <div id="analysis-3">
-This could be some more lovely things like a downloadable pdf
-  </div>
+    <script>
+    $( "#tabs" ).tabs();
+    </script>
 </div>
-{% endblock content %}
+</body>
+</html>
+
+
