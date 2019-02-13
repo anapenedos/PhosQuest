@@ -1,6 +1,6 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
-from data_access import query_testdb
+from data_access import query_db
 from service_scripts import userdata_display, user_data_crunch
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
@@ -22,7 +22,7 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = query_testdb.querytest()
+    browse_data = query_db.querytest()
 
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
@@ -33,15 +33,17 @@ def browse():
 def search():
     """render template with browse data and title for browse page"""
     form = SearchForm()
+    #gather form info, text and user selections
     search_txt = form.search.data
-    search_type= form.select.data
+    search_type = form.select.data
+    search_table = form.table.data
 
     if search_txt:
         #Currently just searching on Kinase NAME field only.
         flash(f'You searched for {search_txt}\
-            in Kinase name using {search_type} match', 'info')
+            in {search_table} using {search_type} match', 'info')
         ##?add functionality for exact or partial match here.
-        results = query_testdb.query_switch(search_txt, search_type)
+        results = query_db.query_switch(search_txt, search_type)
         print(results)
         return render_template('search_results.html', title="Search results",
                                browse_data=results)

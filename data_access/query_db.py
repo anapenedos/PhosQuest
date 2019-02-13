@@ -1,16 +1,20 @@
 import os
-from data_access.sqlalchemy_declarative import Base, Kinase
+from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
+    Inhibitor, Phosphosite, Disease, DiseaseAlteration, Location
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, attributes
 
-dbpath = os.path.join('database', 'test_db.db')
+dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
 Base.metadata.bind = engine
 DBsession = sessionmaker()
+
 DBsession.bind = engine
 
+#create table dictionary to translate table name from queries
+tabledict =
 
-def query_switch(text,option):
+def query_switch(text,option,table):
     """function to switch between different query methods
     based on the inputs from the website interface options"""
     if option == "exact":
@@ -22,11 +26,11 @@ def query_switch(text,option):
         return results
 
 
-def querytest():
+def allbrowse(table):
     """ query test db and get first item from each table (BROWSE)
     returns all fields"""
     session = DBsession()
-    kinase  = session.query(Kinase).all()
+    kinase  = session.query(table).all()
     session.close()
     return kinase
 

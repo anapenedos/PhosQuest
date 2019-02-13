@@ -2,7 +2,7 @@
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField, \
-    SelectField
+    SelectField, RadioField
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
 from flask_wtf.file import FileField, FileAllowed, FileRequired
 from kinase_db_app.model import User
@@ -44,11 +44,16 @@ class SearchForm(FlaskForm):
     """Search form with selectors"""
     search = StringField('Enter search criteria',
                           validators=[])
-
+    #Dropdown selector for exact or like match
     options= [('like', 'similar matches'),('exact', 'exact matches')]
-
     select = SelectField('Choose search type: ', choices=options)
 
+    #radio button selector for table to search
+    criteria =[
+        ('kinase', 'Kinases'), ('phosphosite', 'Phosphosites'),
+        ('substrates','Substrates'),('inhibitor','Inhibitors')]
+
+    table = RadioField('Select search criteria: ', choices=criteria)
 
     submit = SubmitField("Search")
 
