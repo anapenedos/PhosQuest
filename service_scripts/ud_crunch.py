@@ -1,4 +1,4 @@
-### User data analysis script. 
+### User data analysis script.
 ### Alex and Carmen "data_crunch_fu" in action.
 
 # --------------------------------------------------------------------------- #
@@ -8,15 +8,16 @@ import pandas as pd
 import numpy as np
 import seaborn as sb
 import matplotlib as mpl
-from statsmodels.stats.multitest import fdrcorrection
 import os
+from statsmodels.stats.multitest import fdrcorrection
+
 
 # --------------------------------------------------------------------------- #
 
 ### Function to read user data and sequentially generate data frames.
 def create_filtered_dfs(datafile):
     """ Create data frame subsets of user data and expand
-    with further analysis. """
+    with further analysis"""
     # Read user_data and assign to dataframe variable.
     ud_df_orig = pd.read_table(datafile)
 
@@ -29,24 +30,24 @@ def create_filtered_dfs(datafile):
     # Parse data that contains at least 1 quant value in either condition and
     # pass to variable. Note: "df.iloc" function used to specify column indices
     # instead of column names. Allows for  different field names.
-    ud_df1_quant = ud_df_orig[(ud_df_orig.iloc[:, 1] > 0) |\
-                            (ud_df_orig.iloc[:, 2] > 0)]
+    ud_df1_quant = ud_df_orig[(ud_df_orig.iloc[:, 1] > 0) | \
+                              (ud_df_orig.iloc[:, 2] > 0)]
 
     # Copy phospho-site id from "Substrate" field and append to new column.
-    ud_df1_quant["Phospho site ID"] = ud_df1_quant.iloc[:, 0].\
-                            str.extract(r"\((.*?)\)", expand=False)
+    ud_df1_quant["Phospho site ID"] = ud_df1_quant.iloc[:, 0]. \
+        str.extract(r"\((.*?)\)", expand=False)
 
     # Remove Phospho-site ID including () from "Substrate" column
-    ud_df1_quant.iloc[:, 0] = ud_df1_quant.iloc[:, 0].\
-                            str.replace(r"\(.*\)", "")
+    ud_df1_quant.iloc[:, 0] = ud_df1_quant.iloc[:, 0]. \
+        str.replace(r"\(.*\)", "")
 
     # Parse data that contains only Ser, Thr, Tyr & non phospho-sites (STYN).
     ud_df2_styn = ud_df1_quant[ud_df1_quant.iloc[:, 7].
-                            str.contains("S|T|Y|None", case=False)]
+        str.contains("S|T|Y|None", case=False)]
     # Search not case sensitive.
     # Parse data that contains Ser, Thr & Tyr phospho-sites only (STY)
     ud_df3_sty = ud_df2_styn[ud_df2_styn.iloc[:, 7].
-                            str.contains("S|T|Y", case=False)]
+        str.contains("S|T|Y", case=False)]
 
     # Parse data for phospo-sites with valid p-values.
     ud_df4_sty_valid = ud_df3_sty[(ud_df3_sty.iloc[:, 4] > 0)]
@@ -59,39 +60,40 @@ def create_filtered_dfs(datafile):
 
     # Calculate "fold conditions over max" values and append to new columns.
     # "df.divide" used to divide individual elements in a column by a variable.
-    ud_df4_sty_valid["Fold control over max"] =\
-                    ud_df4_sty_valid.iloc[:, 1].divide(condition_max, axis=0)
-    ud_df4_sty_valid["Fold condition over max"] =\
-                    ud_df4_sty_valid.iloc[:, 2].divide(condition_max, axis=0)
+    ud_df4_sty_valid["Fold control over max"] = \
+        ud_df4_sty_valid.iloc[:, 1].divide(condition_max, axis=0)
+    ud_df4_sty_valid["Fold condition over max"] = \
+        ud_df4_sty_valid.iloc[:, 2].divide(condition_max, axis=0)
 
     # Take log10 of control & condition intensities and pass to new columns.
-    ud_df4_sty_valid["Log10 control intensity"] =\
-                    np.log10(ud_df4_sty_valid.iloc[:, 1])
-    ud_df4_sty_valid["Log10 condition intensity"] =\
-                    np.log10(ud_df4_sty_valid.iloc[:, 2])
+    ud_df4_sty_valid["Log10 control intensity"] = \
+        np.log10(ud_df4_sty_valid.iloc[:, 1])
+    ud_df4_sty_valid["Log10 condition intensity"] = \
+        np.log10(ud_df4_sty_valid.iloc[:, 2])
 
-    # Calc log2 fold change - condition/control and append as new column to df.
-    ud_df4_sty_valid["Log2 fold change - condition over control"] =\
-                    np.log2(ud_df4_sty_valid.iloc[:, 3])
+    # Calc log2 fold change - condition/control append as new column to df.
+    ud_df4_sty_valid["Log2 fold change - condition over control"] = \
+        np.log2(ud_df4_sty_valid.iloc[:, 3])
 
     # Phospho-sites detected in single conditions and append to new columns.
-    # Boolean true/false outputs returned.
-    ud_df4_sty_valid["control only"] = ((ud_df4_sty_valid.iloc[:, 2]>0) &
-                    (ud_df4_sty_valid.iloc[:, 3]==0)) # control only.
-    ud_df4_sty_valid["condition only"] = ((ud_df4_sty_valid.iloc[:, 2]==0) &
-                    (ud_df4_sty_valid.iloc[:, 3]>0)) # AZ20 only.
+    ud_df4_sty_valid["control only"] = ((ud_df4_sty_valid.iloc[:, 2] > 0) &
+                                        (ud_df4_sty_valid.iloc[:,
+                                         3] == 0))  # control only.
+    ud_df4_sty_valid["condition only"] = ((ud_df4_sty_valid.iloc[:, 2] == 0) &
+                                          (ud_df4_sty_valid.iloc[:,
+                                           3] > 0))  # AZ20 only.
 
     # Phospho-sites detected in both conditions and append to new column.
-    # Boolean true/false outputs returned.
-    ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 2]>0) &
-                    (ud_df4_sty_valid.iloc[:, 3]>0))
+    ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 2] > 0) &
+                                           (ud_df4_sty_valid.iloc[:, 3] > 0))
 
     # Calculate if condtion CVs <=25% in both conditions.
-    # Boolean true/false outputs returned.
-    ud_df4_sty_valid["CV<=25% (both)"] = ((ud_df4_sty_valid.iloc[:, 5]<=0.25) &
-                    (ud_df4_sty_valid.iloc[:, 6]<=0.25))
+    ud_df4_sty_valid["CV<=25% (both)"] = (
+                (ud_df4_sty_valid.iloc[:, 5] <= 0.25) &
+                (ud_df4_sty_valid.iloc[:, 6] <= 0.25))
 
-    return(ud_df2_styn, ud_df4_sty_valid)
+    return (ud_df2_styn, ud_df4_sty_valid)
+
 
 # --------------------------------------------------------------------------- #
 
@@ -104,7 +106,7 @@ def correct_pvalue(filtered_df):
     - "corr_p_value" = array of corrected p-values in original series order."""
     # Pass data-frame to "fdrcorrection" function.
     rej_hyp, corr_p_val = fdrcorrection(filtered_df.iloc[:, 4],
-                                        alpha=0.05) # permissable error rate.
+                                        alpha=0.05)  # permissable error rate.
 
     # Convert "rej_hyp" & "corr_p_value" to data-frames.
     rej_hyp_df = pd.DataFrame(rej_hyp)
@@ -132,13 +134,14 @@ def correct_pvalue(filtered_df):
     filtered_df = filtered_df.assign(neg_log10_corr_p_values=
                                      neg_log10_corr_p_val.values)
 
-    return(filtered_df)
+    return (filtered_df)
+
 
 # --------------------------------------------------------------------------- #
 
 ### Function to sort and parse phospho only data frame.
 def table_sort_parse(filtered_df):
-    """ Sort table, parse most significant hits and export to csv. """
+    """ Sort table, parse most significant hits and export to csv """
     # Specify a new list of ordered column indices.
     # Note: not dependent on column names!
     new_col_order = [0, 7, 1, 2, 8, 9, 10, 11, 3, 12, 5, 6,
@@ -147,12 +150,12 @@ def table_sort_parse(filtered_df):
     # List comprehension to re-order df columns by new index list.
     filtered_df = filtered_df[[filtered_df.columns[i] for i in new_col_order]]
 
-    # Sort level variables for sorting data frame.
-    sort_level_1 = filtered_df.columns[15] # Rejected hypotheses.
-    sort_level_2 = filtered_df.columns[19] # CV <= 0.25 in both.
-    sort_level_3 = filtered_df.columns[16] # Sites in only control.
-    sort_level_4 = filtered_df.columns[17] # Sites in only AZ20.
-    sort_level_5 = filtered_df.columns[18] # Sites in both conditions.
+    # Sort level variable for sorting data frame.
+    sort_level_1 = filtered_df.columns[15]  # Rejected hypotheses.
+    sort_level_2 = filtered_df.columns[19]  # CV <= 0.25 in both.
+    sort_level_3 = filtered_df.columns[16]  # Sites in only control.
+    sort_level_4 = filtered_df.columns[17]  # Sites in only AZ20.
+    sort_level_5 = filtered_df.columns[18]  # Sites in both conditions.
     sort_level_6 = filtered_df.columns[9]  # Log2 fold change.
 
     # Boolean sorting - true hits at top.
@@ -162,14 +165,15 @@ def table_sort_parse(filtered_df):
                                               sort_level_4,
                                               sort_level_5,
                                               sort_level_6],
-                                              ascending=False)
+                                          ascending=False)
 
     # Parse phospho-sites with corrected p-values <=0.05
     # and CV <= 25% in both condtions - pass to new variable.
     filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15] &
                                          filtered_df.iloc[:, 19]]
 
-    return(filtered_df, filtered_signif_df)
+    return (filtered_df, filtered_signif_df)
+
 
 # --------------------------------------------------------------------------- #
 
@@ -188,42 +192,32 @@ def data_extract(filtered_df, styn):
     non_phos_num = len(styn) - phos_site_num
 
     # Calculate % proportion of phospho-sites in total data-set.
-    phos_perc_enrich = round((phos_site_num/(non_phos_num+phos_site_num)\
-                              *100),1)
+    phos_perc_enrich = round((phos_site_num / (non_phos_num + phos_site_num) \
+                              * 100), 1)
 
-    # Create dictionary of variables.
-    enrich_data_dict = {"Number of phospho sites": phos_site_num,
-                        "Number of non-phospho sites": non_phos_num,
-                        "% Enrichment": phos_perc_enrich}
-    
-    
-    # Pass dictionary to dataframe object.
-    data_group_1 = pd.DataFrame.from_dict(enrich_data_dict, 
-                                          orient='index') # Keys as rows.
-    
-     # Name column for numerical data.
-    data_group_1.columns = ["Total"]
+    # Concatenate into data frame.
+    data_group_1 = pd.DataFrame({"number of phospho sites": phos_site_num,
+                                 "number of non-phospho sites": non_phos_num,
+                                 "%_enrichment": phos_perc_enrich},
+                                index=[0])
 
     # ----------------------------------------------------------------------- #
 
     ### Data group - 2.
     # Calculate frequency of each phospho AA residue - case insensitive.
-    phos_ser = sum(filtered_df.iloc[:, 1].str.contains("S", case=False)) # Ser.
-    phos_thr = sum(filtered_df.iloc[:, 1].str.contains("T", case=False)) # Thr.
-    phos_tyr = sum(filtered_df.iloc[:, 1].str.contains("Y", case=False)) # Tyr.
+    phos_ser = sum(
+        filtered_df.iloc[:, 1].str.contains("S", case=False))  # Ser.
+    phos_thr = sum(
+        filtered_df.iloc[:, 1].str.contains("T", case=False))  # Thr.
+    phos_tyr = sum(
+        filtered_df.iloc[:, 1].str.contains("Y", case=False))  # Tyr.
 
-    # Create dictionary of variables.
-    AA_data_dict = {"Serine": phos_ser,
-                    "Threonine": phos_thr,
-                    "Tyrosine": phos_tyr}
-    
-    # Pass dictionary to dataframe object.
-    data_group_2 = pd.DataFrame.from_dict(AA_data_dict, 
-                                          orient='index') # Keys as rows.
-    
-    # Name column for numerical data.
-    data_group_2.columns = ["Total number with phospho"]
-    
+    # Concatenate into data frame.
+    data_group_2 = pd.DataFrame({"serine": phos_ser,
+                                 "threonine": phos_thr,
+                                 "tyrosine": phos_tyr},
+                                index=[0])
+
     # ----------------------------------------------------------------------- #
 
     ### Data group - 3.
@@ -235,17 +229,17 @@ def data_extract(filtered_df, styn):
     # Create data frame with 3 fields from main data frame.
     df_subset = filtered_df[[filtered_df.columns[0],  # Substrate.
                              filtered_df.columns[2],  # control_mean.
-                             filtered_df.columns[3]]] # AZ20_mean.
+                             filtered_df.columns[3]]]  # AZ20_mean.
 
     # Parse hits unique to control & condition.
-    cont_unique = df_subset.loc[(df_subset.iloc[:, 1]>0) &
-                                (df_subset.iloc[:, 2]==0)]
-    cond_unique = df_subset.loc[(df_subset.iloc[:, 2]>0) &
-                                (df_subset.iloc[:, 1]==0)]
+    cont_unique = df_subset.loc[(df_subset.iloc[:, 1] > 0) &
+                                (df_subset.iloc[:, 2] == 0)]
+    cond_unique = df_subset.loc[(df_subset.iloc[:, 2] > 0) &
+                                (df_subset.iloc[:, 1] == 0)]
 
     # Parse hits with all intensities reported in both conditions.
-    complete = df_subset.loc[(df_subset.iloc[:, 1]>0) &
-                             (df_subset.iloc[:, 2]>0)]
+    complete = df_subset.loc[(df_subset.iloc[:, 1] > 0) &
+                             (df_subset.iloc[:, 2] > 0)]
 
     # "df.groupby" function used to return groups of a series.
     # Note: function iterates through data frame indices (default = by rows).
@@ -264,7 +258,7 @@ def data_extract(filtered_df, styn):
                                       complete.iloc[:, 2]]).size()
 
     # Compute summary of AA phos residue frequencies for
-    # both unique control/condition & complete groups.
+    # both unique control/condition & complete gropus
     cont_unique_res_freq = cont_unique_grps.value_counts()
     cond_unique_res_freq = cond_unique_grps.value_counts()
     complete_res_freq = complete_grps.value_counts()
@@ -273,7 +267,7 @@ def data_extract(filtered_df, styn):
     total_res_freq_df = pd.concat([cont_unique_res_freq,
                                    cond_unique_res_freq,
                                    complete_res_freq],
-                                   axis=1) # sets join columns by rows.
+                                  axis=1)  # sets join columns by rows.
 
     # Sum all frequency series to compute total multiply phosphorylated AA.
     total_res_freq_summary = total_res_freq_df.sum(axis=1)
@@ -281,7 +275,7 @@ def data_extract(filtered_df, styn):
     # Add categories to table.
     data_group_3 = pd.DataFrame({"Number of phosphos": range(1, 6),
                                  "Frequency": total_res_freq_summary.loc[1:6]})
-    
+
     # ----------------------------------------------------------------------- #
 
     ### Data group - 4.
@@ -291,26 +285,26 @@ def data_extract(filtered_df, styn):
 
     # ----------------------------------------------------------------------- #
 
-    return(data_group_1, data_group_2, data_group_3, data_group_4)
+    return (data_group_1, data_group_2, data_group_3, data_group_4)
+
 
 # --------------------------------------------------------------------------- #
 
 ### Function to plot heatmap of intensity data.
-def heat_map(phospho_df,prefix):
-    """ Apply heatmap to subset of phospho hits dataframe & export as png. """
+def heat_map(phospho_df, filename):
     # Combine substrate, Phospho site ID with condition fold over max columns.
     phospho_df = phospho_df[[phospho_df.columns[0],  # Substrate.
                              phospho_df.columns[1],  # Phospho_site_ID.
                              phospho_df.columns[4],  # Fold_cont_over_max.
-                             phospho_df.columns[5]]] # Fold_cond_over_max.
+                             phospho_df.columns[5]]]  # Fold_cond_over_max.
 
-    # Concatenate "Substrate" & "Phospho site ID" into one string,
+    # Concatenate "Substrate" & "Phospho site ID" into one column,
     # and append to new column.
-    phospho_df["Phospho_site_ID"] = phospho_df.iloc[:, 0].astype(str)+"_"+\
+    phospho_df["Phospho_site_ID"] = phospho_df.iloc[:, 0].astype(str) + "_" + \
                                     phospho_df.iloc[:, 1]
 
     # Parse concatenated id and fold over max columns.
-    phospho_df = phospho_df[[phospho_df.columns[4],
+    phospho_df = phospho_df[[phospho_df.columns[1],
                              phospho_df.columns[2],
                              phospho_df.columns[3]]]
 
@@ -322,91 +316,25 @@ def heat_map(phospho_df,prefix):
                              phospho_df.columns[2]]]
 
     # Set parameters for heatmap plot.
-    phospho_fig = mpl.pyplot.figure(figsize=(16,48))
+    phospho_fig = mpl.pyplot.figure(figsize=(16, 48))
     phospho_fig.subplots_adjust(right=0.4)
-    sb.heatmap(phospho_df, cmap="YlGnBu", cbar_kws={"shrink":0.25})
+    sb.heatmap(phospho_df, cmap="YlGnBu", cbar_kws={"shrink": 0.25})
+    # put image into static folder
+    try:
+        file = os.path.join("kinase_db_app/static", f"{filename}_heatmap.png")
+        phospho_heatmap = phospho_fig.savefig(file)
 
+        return (phospho_heatmap)
 
-    file = os.path.join("kinase_db_app/static", f"{prefix}_heatmap.png")
-    phospho_heatmap = phospho_fig.savefig(file)
+    except:
+        print(Exception)
 
-    return (phospho_heatmap)
-
-# --------------------------------------------------------------------------- #
-
-### Function to style table of significant phospho sites and render to html.
-def style_df(phospho_df):
-    """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
-    and render/export as html. """
-    phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
-                             phospho_df.columns[1],   # Phospho_site_ID.
-                             phospho_df.columns[4],   # Fold_cont_over_max.
-                             phospho_df.columns[5],   # Fold_cond_over_max.
-                             phospho_df.columns[9],   # Log2 fold change.
-                             phospho_df.columns[13]]] # Corrected p-value.
-    
-    # Set CSS properties for table header/index in dataframe. 
-    th_props = [
-      ('font-size', '16px'),
-      ('font-family', 'Calibri'),
-      ('text-align', 'center'),
-      ('font-weight', 'bold'),
-      ('color', '#000000'),
-      ('background-color', '#708090'),
-      ('border', '1px solid black'),
-      ('height', '50px')
-      ]
-    
-    # Set CSS properties for table data in dataframe.
-    td_props = [
-      ('font-size', '12px'),
-      ('border', '1px solid black'),
-      ('text-align', 'center'),
-      ('font-weight', 'bold'),
-      ]
-    
-    # Set table styles.
-    styles = [
-      dict(selector="th", props=th_props),
-      dict(selector="td", props=td_props)
-      ]
-    
-    # Pass data frame fields to multiple style methods.
-    styled_phospho_df = (phospho_df.style
-      # Use "background_gradient" method to apply heatmap to table
-      # fold control & condition intensity over max values.                    
-      .background_gradient(subset=["Fold control over max", 
-                                  "Fold condition over max"], 
-                           cmap="YlGnBu",   # Choose colour-map.
-                           low=0, high=0.5) # Set color range .
-                                            # Set "high" arg to low value. 
-                                            # Accentuates differences between
-                                            # low and high intensity values.
-      
-      # Use "bar" method to apply bar-chart styling to log2 fold change field.
-      .bar(subset=["Log2 fold change - condition over control"], 
-           align='mid',                  # Align bars with cells
-           color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
-                  
-      # Pass CSS styling to styled table.
-      .set_table_styles(styles)
-      
-      # Set caption.
-      .set_caption("User data analysis - significant hits"))
-
-    # Render table as html and export to wkdir.
-    html = styled_phospho_df.hide_index().render()
-    #with open("style_df_rename.html","w") as fp:
-     #  fp.write(html)
-
-    return html
 
 # --------------------------------------------------------------------------- #
 
 # set up run if running this script only
 if __name__ == "__main__":
-
-    #set up runs for testing functions
+    # set up runs for testing functions
     file = 'AZ20.tsv'
 
     styn, sty = create_filtered_dfs(file)
@@ -415,16 +343,11 @@ if __name__ == "__main__":
 
     full_sty_sort, parsed_sty_sort = table_sort_parse(corrected_p)
 
-    phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
-    data_extract(full_sty_sort, styn)
+    data_1, data_2, data_3, data_4 = data_extract(full_sty_sort, styn)
 
-    heat_map(full_sty_sort,"full")
+    heat_map(full_sty_sort,"test2")
 
-    heat_map(parsed_sty_sort,"sig")
-
-    style_df(parsed_sty_sort)
-
-    style_df(full_sty_sort)
+    heat_map(parsed_sty_sort, "test2")
 
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 
