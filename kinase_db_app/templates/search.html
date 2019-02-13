@@ -1,12 +1,12 @@
 <!-- inherit template from layout.html-->
 {% extends "layout.html" %}
 {% block content %}
-<H1>Search database for Kinase Name</H1>
-<br>
 
+<H2>This search allows you to search by name or accession number
+    for Kinases, Inhibitors, Phosphosites or Substrates.</H2>
+<br>
 <form method='POST' action="">
     <fieldset class="form-group">
-      <legend class="border-bottom mb-4">Search</legend>
       <div class="form-group">
         {{ form.search.label(class="form-control-label") }}
         {% if form.search.errors%}
@@ -27,9 +27,25 @@
         {{ form.select.label() }}
           {{ form.select }}
       </div>
+    <hr>
+    Select which information to search.
         <div>
-        {{ form.table.label() }}
-          {{ form.table }}
+            {% for subfield in form.table %}
+        <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+        {% endfor %}
+      </div>
+        <hr>
+    Select which to search by accession number (ID) or name
+      <div>
+            {% for subfield in form.option %}
+        <tr>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        </tr>
+        {% endfor %}
       </div>
     <div class="form-group">
           {{ form.submit(class="btn btn-outline-info") }}

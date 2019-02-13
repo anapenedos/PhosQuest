@@ -8,19 +8,26 @@
 {% if 'No results found' in browse_data %}
         <H3> No results found </H3>
 {% else %}
-    {% for kinase in browse_data %}
-        <hr>
-        <p><u>Kinase Accession Number</u> {{ kinase.kin_acc_num }}</p>
-        <p><u>Kinase Name</u> {{ kinase.kin_name }}</p>
-        <p><u>Gene Name</u> {{ kinase.kin_gene}}</p>
-        <p><u>Protein</u> {{ kinase.kin_prot}}<p>
-         <p><u>Organism</u> {{ kinase.kin_org}}<p>
-        <p><u>Location</u> {{ kinase.kin_loc}}<p>
-        <p><u>Family</u> {{ kinase.kin_fam}}<p>
-
-    {% endfor %}
-
+    <div class=table.dataframe>
+            {{ browse_data|safe }}
+    </div>
 {% endif %}
 
-
 {% endblock content %}
+<!--
+    {% for kinase in browse_data %}
+            {% for kinase in browse_data %}
+        <hr>
+        <p>{{ kinase.kin_accession }}</p>
+        <p>{{ kinase.kin_short_name }}</p>
+        <p>{{ kinase.kin_gene}}</p>
+        <p>{{ kinase.kin_prot}}<p>
+        <p> {{ kinase.kin_org}}<p>
+        <p> {{ kinase.kin_loc}}<p>
+        <p>{{ kinase.kin_fam}}<p>
+        {% endfor %}
+{% endfor %}
+
+-->
+
+

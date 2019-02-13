@@ -42,7 +42,7 @@ class LoginForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     """Search form with selectors"""
-    search = StringField('Enter search criteria',
+    search = StringField('Enter Search text',
                           validators=[])
     #Dropdown selector for exact or like match
     options= [('like', 'similar matches'),('exact', 'exact matches')]
@@ -51,9 +51,14 @@ class SearchForm(FlaskForm):
     #radio button selector for table to search
     criteria =[
         ('kinase', 'Kinases'), ('phosphosite', 'Phosphosites'),
-        ('substrates','Substrates'),('inhibitor','Inhibitors')]
+        ('substrate','Substrates'),('inhibitor','Inhibitors')]
 
-    table = RadioField('Select search criteria: ', choices=criteria)
+    table = RadioField('Search by: ', choices=criteria, default='kinase')
+
+    fields=[
+        ('acc_no', 'Accession or ID'), ('name', 'Name')]
+
+    option = RadioField('Search in: ', choices=fields, default='acc_no')
 
     submit = SubmitField("Search")
 

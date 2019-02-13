@@ -3,32 +3,92 @@ from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
     Inhibitor, Phosphosite, Disease, DiseaseAlteration, Location
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, attributes
-
+import pandas as pd
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
 Base.metadata.bind = engine
 DBsession = sessionmaker()
-
 DBsession.bind = engine
 
-#create table dictionary to translate table name from queries
-tabledict =
+#create table dictionary to translate table name for search queries
+tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
+                 inhibitor=Inhibitor)
 
-def query_switch(text,option,table):
+#create field dictionary to give appropriate field name for search  queries
+#accession no in first index, name in second index.
+#For Phosphosite there is no name so the field phos.site is used
+
+#TODO update to long name when available for Kinase
+
+
+
+def query_switch(text,option,table,field):
     """function to switch between different query methods
     based on the inputs from the website interface options"""
-    if option == "exact":
-        results = searchexact(text,Kinase, Kinase.kin_name)
-        return results
+
+    #find right field to search based on selected table and name or acc_no
+    #using short name for now until long name avail
+    fielddict = {'kinase': [Kinase.kin_accession, Kinase.kin_short_name],
+                 'substrate': [Substrate.subs_accession,
+                               Substrate.subs_full_name],
+                 'inhibitor': [Inhibitor.inhib_pubchem_cid,
+                               Inhibitor.inhib_full_name],
+                 'phosphosite': [Phosphosite.phos_group_id,
+                                 Phosphosite.phos_site]}
+
+    # find appropriate field to apply and find field object
+    if table == 'kinase':
+        if option == 'acc_no':
+            field = fielddict['kinase'][0]
+        else:
+            field = fielddict['kinase'][1]
+
+    elif table == 'substrate':
+        if option == 'acc_no':
+            field = fielddict['substrate'][0]
+        else:
+            field = fielddict['substrate'][1]
+
+    elif table == 'inhibitor':
+        if option == 'acc_no':
+            field = fielddict['inhibitor'][0]
+        else:
+            field = fielddict['inhibitor'][1]
+    #TODO find out if searching for phosphosites is actually useful????
 
     else:
-        results = searchlike(text,Kinase, Kinase.kin_name)
-        return results
+        if option == 'acc_no':
+            field = fielddict['phosphosite'][0]
+        else:
+            field = fielddict['phosphosite'][1]
 
+    #convert table text to table object to apply to query
+    table = tabledict[table]
+    #carry out query with exact or like method depending on user choice
+    if option == "exact":
+    #TODO work out how to put results into dataframe
+
+        results = searchexact(text,table, field)
+        if results != ['No results found']:
+            df= pd.DataFrame(results)
+            print(df)
+            return(df)
+
+        else:
+            return results
+    else:
+        results = searchlike(text,table,field)
+        if results != ['No results found']:
+            df= pd.DataFrame(results)
+            print(df)
+            return(df)
+
+        else:
+            return results
 
 def allbrowse(table):
-    """ query test db and get first item from each table (BROWSE)
-    returns all fields"""
+    """ query db and get first item from each table (BROWSE)
+    returns all fields """
     session = DBsession()
     kinase  = session.query(table).all()
     session.close()
