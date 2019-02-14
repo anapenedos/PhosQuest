@@ -16,16 +16,7 @@ from data_import_scripts.db_parsing import kin_sub_human, \
 from data_import_scripts.dataframes_to_attributes import kin_sub_human_to_class
 
 
-# def add_update_info
-#
-# def
-# def get_primary_key_values (df_row, key_list)
-#
-# def is_in_table
-#
-# def create_relationships
-
-def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosphosite]
+def import_kinase_substrate_data(kin_sub_dataframe):  # TODO add df dicts as args so it works for all
     """
     Takes in dataframe storing kinase substrate info and populates relevant
     entries in SQLite database.
@@ -120,23 +111,20 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
                     attr = getattr(class_instance, class_attr, None)
                     if (attr in [None, '', ' ', 'nan', 'NaN']):
                         setattr(class_instance, class_attr, row[df_heading])
-            # session.add(class_instance)
-            # session.commit()
 
-        # add relationship field
-        kinase_in_row = class_instances[Kinase]
-        phosphosite_in_row = class_instances[Phosphosite]
-        substrate_in_row = class_instances[Substrate]
-        # kinase phosphorylates relationship
-        kinase_in_row.kin_phosphorylates.append(phosphosite_in_row)
-        # substrate field in phosphosite table
-        phosphosite_in_row.phos_in_substrate = substrate_in_row.subs_accession
-        # phosphosite belongs to substrate relationship
-        phosphosite_in_row.site_in_subs = substrate_in_row
-        # TODO set up related objects
-        # session.add(kinase_in_row)
-        # session.add(phosphosite_in_row)
-        # session.add(substrate_in_row)
+        # if more than one class in the data frame, set up relationships
+        if len(classes_in_df) > 1:
+            # TODO make relationship set up universal
+            # add relationship fields
+            kinase_in_row = class_instances[Kinase]
+            phosphosite_in_row = class_instances[Phosphosite]
+            substrate_in_row = class_instances[Substrate]
+            # kinase phosphorylates relationship
+            kinase_in_row.kin_phosphorylates.append(phosphosite_in_row)
+            # substrate field in phosphosite table
+            phosphosite_in_row.phos_in_substrate = substrate_in_row.subs_accession
+            # phosphosite belongs to substrate relationship
+            phosphosite_in_row.site_in_subs = substrate_in_row
         session.commit()
         session.close()
 
