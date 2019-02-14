@@ -8,6 +8,11 @@ from werkzeug.utils import secure_filename
 from kinase_db_app.model import User
 import traceback
 
+#Create 404 errorhandling route
+@app.errorhandler(404)
+def page_not_found(e):
+    """render special 404 page"""
+    return render_template('404_error.html'), 404
 
 # create route for home page works with / and /home page address
 # uses home html template
