@@ -49,37 +49,60 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
         classes_in_df.add(class_name)
 
     # get classes primary keys attributes
-    classes_keys = {}  # {Kinase: ['kin_accession'], ...}
-    for available_class in classes_in_df:
-        classes_keys[available_class] = \
-            inspect(available_class).primary_key[0].name
+    classes_keys = {}  # {Class: ['key_attr_1', 'key_attr_2'], ...}
+    for class_in_df in classes_in_df:
+        # produce list of primary keys for each class_in_df for all the classes
+        # present in the data frame (from the classes_in_df set)
+        keys_of_class = [key.name for key in inspect(class_in_df).primary_key]
+        # add a dictionary entry from the class_in_df to corresponding list of
+        # primary keys
+        classes_keys[class_in_df] = keys_of_class
 
-    # iterate through the dataframe rows
+    # iterate through the data frame rows (of the data frame containing data to
+    # import) to:
+    # 1. set up new instances of classes or retrieve existing instances
+    # from the db
+    # 2. populate instance class attributes from data frame data
+    # 3. generate relationships between instances of different classes
     for index, row in kin_sub_dataframe.iterrows():
         # open a SQLite session
         session = DBSession()
 
         # get keys for classes in row
-        # dictionary of primary key values to class and key they belong to
-        new_key_to_table = {}  # {key_value: (class, attr), ...}
+        # dictionary of class to primary key attributes and key values tuples
+        new_table_keys = {}  # {class: {key_attr: key_value, ...}, ...}
+        # iterate through dict mapping df_heading: (Class, class_attr)
         for df_heading, class_match in kin_sub_human_to_class.items():
             # df heading corresponds to class and class attribute
             class_name = class_match[0]
             class_attr = class_match[1]
-            # if the df heading contains a primary, add key to the dict
-            if class_attr in classes_keys.values():
-                new_key_to_table[row[df_heading]] = (class_name, class_attr)
+            # if the df heading contains a primary key, add key value to dict
+            if class_attr in classes_keys[class_name]:
+                # append the new (key_attr, key_value) tuple to the
+                # new_table_keys dict entry for the class if class in dict
+                if class_name in new_table_keys:
+                    new_table_keys[class_name][class_attr] = row[df_heading]
+                # add class and its first value to new_table_keys dict if
+                # class not in dict
+                else:
+                    new_table_keys[class_name] = {class_attr: row[df_heading]}  # look setdefault
 
         # check if records already exist in tables and obtain class instances
         class_instances = {}  # {Class: class_instance, ...}
-        for obj_key, class_info in new_key_to_table.items():
-            class_name = class_info[0]
-            class_attr = class_info[1]
-            query_res = session.query(class_name)\
-                .filter(getattr(class_name, class_attr) == obj_key).first()
+        for class_name, keys_info in new_table_keys.items():  # {class: {key_attr: key_value, ...}, ...}
+            # create query object
+            query_res = session.query(class_name)
+            # apply filters to the query_res based on primary keys
+            for key_attr, key_value in keys_info.items():
+                query_res = query_res.filter(
+                    getattr(class_name, key_attr) == key_value)
+            # given query_res was filterd by all primary keys in table, it
+            # should now list a single instance, which can be obtained with
+            # .first
+            query_res = query_res.first()
             # create new class instance if not
             if query_res is None:
-                class_instance = class_name(**{class_attr: obj_key})
+                class_instance = class_name(**keys_info)
                 session.add(class_instance)
             # get the existing class instance if so
             else:
@@ -89,7 +112,7 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
 
         # get remaining attributes for each instance
         for instance_class_name, class_instance in class_instances.items():
-            # class attributes
+            # get the class attributes
             for df_heading, class_match in kin_sub_human_to_class.items():
                 class_name = class_match[0]
                 class_attr = class_match[1]
@@ -111,9 +134,9 @@ def import_kinase_substrate_data(kin_sub_dataframe): #[Kinase, Substrate, Phosph
         # phosphosite belongs to substrate relationship
         phosphosite_in_row.site_in_subs = substrate_in_row
         # TODO set up related objects
-        session.add(kinase_in_row)
-        session.add(phosphosite_in_row)
-        session.add(substrate_in_row)
+        # session.add(kinase_in_row)
+        # session.add(phosphosite_in_row)
+        # session.add(substrate_in_row)
         session.commit()
         session.close()
 
