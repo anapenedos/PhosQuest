@@ -30,7 +30,6 @@ def querytest():
     session.close()
     return kinase
 
-
 def searchlike(text, table, fieldname):
     """ Test universal LIKE search function for table/field name,
         returns all fields"""
