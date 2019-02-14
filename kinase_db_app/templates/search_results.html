@@ -1,33 +1,16 @@
 <<!--inherits layout from layout.html-->
-{% extends "layout.html" %}
+{% extends "layout_no_sidebar.html" %}
 {% block content %}
 
 <br>
 <!--This code adds entries from test query -->
 <H3><b>Search Results </b></H3>
-{% if 'No results found' in browse_data %}
-        <H3> No results found </H3>
-{% else %}
-    <div class=table.dataframe>
-            {{ browse_data|safe }}
-    </div>
-{% endif %}
+
+<div class=results.dataframe>
+    {{ results|safe }}
+</div>
 
 {% endblock content %}
-<!--
-    {% for kinase in browse_data %}
-            {% for kinase in browse_data %}
-        <hr>
-        <p>{{ kinase.kin_accession }}</p>
-        <p>{{ kinase.kin_short_name }}</p>
-        <p>{{ kinase.kin_gene}}</p>
-        <p>{{ kinase.kin_prot}}<p>
-        <p> {{ kinase.kin_org}}<p>
-        <p> {{ kinase.kin_loc}}<p>
-        <p>{{ kinase.kin_fam}}<p>
-        {% endfor %}
-{% endfor %}
 
--->
 
 

@@ -22,7 +22,7 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = query_db.allbrowse('kinase')
+    browse_data = query_db.allbrowse()
 
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
@@ -41,15 +41,14 @@ def search():
 
     if search_txt:
         #Currently just searching on Kinase NAME field only.
-        flash(f'You searched for {search_txt}\
+        flash(f'You searched for "{search_txt}"\
             in {search_table} {search_option} using {search_type} match',
               'info')
         ##?add functionality for exact or partial match here.
-        results = query_db.query_switch(search_txt, search_type, search_table,
-                                        search_option)
-        print(results)
+        results= query_db.query_switch(search_txt, search_type,
+                                                 search_table, search_option)
         return render_template('search_results.html', title="Search results",
-                               browse_data=results)
+                               results=results)
 
     else:
 

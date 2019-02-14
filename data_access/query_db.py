@@ -7,8 +7,7 @@ import pandas as pd
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
 Base.metadata.bind = engine
-DBsession = sessionmaker()
-DBsession.bind = engine
+
 
 #create table dictionary to translate table name for search queries
 tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
@@ -18,14 +17,28 @@ tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
 #accession no in first index, name in second index.
 #For Phosphosite there is no name so the field phos.site is used
 
-#TODO update to long name when available for Kinase
+
+def query_to_df(query_results,table):
+    """ Function to parse query output to pandas dataframe"""
+
+    colnames = table.__table__.columns.keys()
+    datalist = {}
+    for col in colnames:
+        datalist[col] = []
+        for item in query_results:
+            datalist[col].append(getattr(item,col))
+
+    print(datalist)
+
+    df = pd.DataFrame.from_dict(datalist)
+    df = df.to_html()
+    return df
 
 
-
-def query_switch(text,option,table,field):
+def query_switch(text,type, table, option):
     """function to switch between different query methods
     based on the inputs from the website interface options"""
-
+    # TODO update to long name when available for Kinase
     #find right field to search based on selected table and name or acc_no
     #using short name for now until long name avail
     fielddict = {'kinase': [Kinase.kin_accession, Kinase.kin_short_name],
@@ -35,6 +48,7 @@ def query_switch(text,option,table,field):
                                Inhibitor.inhib_full_name],
                  'phosphosite': [Phosphosite.phos_group_id,
                                  Phosphosite.phos_site]}
+    print(option)
 
     # find appropriate field to apply and find field object
     if table == 'kinase':
@@ -64,35 +78,38 @@ def query_switch(text,option,table,field):
 
     #convert table text to table object to apply to query
     table = tabledict[table]
+    #get column names for display
+
+
     #carry out query with exact or like method depending on user choice
-    if option == "exact":
-    #TODO work out how to put results into dataframe
-
+    if type == "exact":
         results = searchexact(text,table, field)
-        if results != ['No results found']:
-            df= pd.DataFrame(results)
-            print(df)
-            return(df)
-
-        else:
+        if 'No results found' in (results):
             return results
+        else:
+            results = query_to_df(results,table)
+            return results
+
+
     else:
         results = searchlike(text,table,field)
-        if results != ['No results found']:
-            df= pd.DataFrame(results)
-            print(df)
-            return(df)
-
+        if 'No results found' in (results):
+            return results
         else:
+            results = query_to_df(results,table)
             return results
 
-def allbrowse(table):
-    """ query db and get first item from each table (BROWSE)
-    returns all fields """
-    session = DBsession()
-    kinase  = session.query(table).all()
-    session.close()
-    return kinase
+
+# def allbrowse(table):
+# # #     """ query db and get first item from each table (BROWSE)
+# # #     returns all fields """
+# # #     DBsession = sessionmaker()
+# # #     DBsession.bind = engine
+# # #     session = DBsession()
+# # #     query  = session.query(table).paginagete()
+# # #     session.close()
+# # #     browse_data = query_to_df(query,table)
+# # #     return browse_data
 
 def searchlike(text, table, fieldname):
     """ Test universal LIKE search function for table/field name,

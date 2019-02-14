@@ -26,15 +26,15 @@ h1, h2, h3, h4, h5, h6 {
 
 table.dataframe, .dataframe th, .dataframe td {
   border: 1px solid black;
-  border-bottom: 1px solid #add8e6;
+  border-bottom: 0.8px solid #add8e6;
   border-collapse: collapse;
   text-align:center;
   padding: 10px;
   margin-bottom: 40px;
-  font-size: 0.7em;
+  font-size: 1em;
 }
 
-tr:nth-child(odd)		{ background-color:#dbe4f0; }
-tr:nth-child(even)	{ background-color:#fff; }
+tr:nth-child(odd)	{ background-color#fff; }
+tr:nth-child(even)	{ background-color: #dbe4f0;}
 tr:hover            { background-color: #EEE8AA;}
 
