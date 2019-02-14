@@ -51,7 +51,7 @@ class SearchForm(FlaskForm):
     #radio button selector for table to search
     criteria =[
         ('kinase', 'Kinases'), ('substrate','Substrates'),
-        ('inhibitor','Inhibitors'),('phosphosite', 'Phosphosites')]
+        ('inhibitor','Inhibitors')]
 
     table = RadioField('Search by: ', choices=criteria, default='kinase')
 

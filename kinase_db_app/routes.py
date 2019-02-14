@@ -22,8 +22,8 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = query_db.allbrowse()
-
+    #browse_data = query_db.allbrowse()
+    browse_data = None
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
                            title="Browse")

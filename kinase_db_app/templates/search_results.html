@@ -3,13 +3,17 @@
 {% block content %}
 
 <br>
-<!--This code adds entries from test query -->
+<!--This code adds entries from query -->
 <H3><b>Search Results </b></H3>
-
-<div class=results.dataframe>
-    {{ results|safe }}
-</div>
-
+<hr>
+<br>
+{% if 'No results found' in results %}
+    <b> Sorry no results found please try again!</b>
+{% else %}
+    <div class=results.dataframe>
+        {{ results|safe }}
+    </div>
+{% endif %}
 {% endblock content %}
 
 

@@ -6,8 +6,9 @@ from sqlalchemy.orm import sessionmaker, attributes
 import pandas as pd
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
-Base.metadata.bind = engine
 
+Base.metadata.bind = engine
+DBsession = sessionmaker()
 
 #create table dictionary to translate table name for search queries
 tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
@@ -18,20 +19,55 @@ tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
 #For Phosphosite there is no name so the field phos.site is used
 
 
-def query_to_df(query_results,table):
-    """ Function to parse query output to pandas dataframe"""
+#dictionary for human friendly attribute names
+#TODO finish adding Inhibitors to this dict as will be helpful for other things
+headers = {
+    'kin_accession':'Accession no', 'kin_short_name':'Short name',
+    'kin_full_name' :'Full name', 'kin_gene':'Gene',
+    'kin_organism':'species', 'kin_cellular_location':'Cellular location',
+    'kin_family': 'Family', 'subs_accession':'Accession no',
+    'subs_short_name':'Short name', 'subs_full_name':'Full name',
+    'subs_protein_type':'Protein type',
+              'subs_molec_weight_kd':'Molecular weight (kd)',
+    'subs_gene':'Gene', 'subs_chrom_location':'Chromosome location',
+    'subs_organism':'Species', 'phos_group_id':'Group ID',
+    'phos_modified_residue': 'Modified residue','phos_site':'Phosphosite',
+    'phos_domain':'Phosphorylation domain',
+              'phos_cst_catalog_number':'CST Catalog number',
+    'phos_p_function':'Phosphorylation Function',
+    'phos_p_processes':'Processes',
+        'phos_prot_interactions':'Protein Interactions',
+    'other_interactions':'Other interactions',
+    'phos_bibl_references':'References','phos_notes':'Notes',
+    'phos_in_substrate':'In substrate'
+}
 
+
+def query_to_dfhtml(query_results, table):
+    """ Function to parse query output to pandas dataframe and
+    create html for website"""
+
+    #get attribute names for this table
     colnames = table.__table__.columns.keys()
     datalist = {}
-    for col in colnames:
-        datalist[col] = []
-        for item in query_results:
-            datalist[col].append(getattr(item,col))
 
-    print(datalist)
+    for col in colnames:
+
+        if col in headers:
+            # find human friendly column header
+            header = headers[col]
+            datalist[header] = []
+            for item in query_results:
+                datalist[header].append(getattr(item,col))
+
+        else:
+            datalist[col] = []
+            #if human friendly version not available
+            for item in query_results:
+                datalist[col].append(getattr(item, col))
 
     df = pd.DataFrame.from_dict(datalist)
-    df = df.to_html()
+    df = df.to_html(index=False)
     return df
 
 
@@ -45,10 +81,7 @@ def query_switch(text,type, table, option):
                  'substrate': [Substrate.subs_accession,
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,
-                               Inhibitor.inhib_full_name],
-                 'phosphosite': [Phosphosite.phos_group_id,
-                                 Phosphosite.phos_site]}
-    print(option)
+                               Inhibitor.inhib_full_name]}
 
     # find appropriate field to apply and find field object
     if table == 'kinase':
@@ -68,13 +101,11 @@ def query_switch(text,type, table, option):
             field = fielddict['inhibitor'][0]
         else:
             field = fielddict['inhibitor'][1]
-    #TODO find out if searching for phosphosites is actually useful????
-
     else:
-        if option == 'acc_no':
-            field = fielddict['phosphosite'][0]
-        else:
-            field = fielddict['phosphosite'][1]
+        print(" an error has occurred")
+
+
+
 
     #convert table text to table object to apply to query
     table = tabledict[table]
@@ -87,7 +118,7 @@ def query_switch(text,type, table, option):
         if 'No results found' in (results):
             return results
         else:
-            results = query_to_df(results,table)
+            results = query_to_dfhtml(results, table)
             return results
 
 
@@ -96,14 +127,14 @@ def query_switch(text,type, table, option):
         if 'No results found' in (results):
             return results
         else:
-            results = query_to_df(results,table)
+            results = query_to_dfhtml(results, table)
             return results
 
 
 # def allbrowse(table):
 # # #     """ query db and get first item from each table (BROWSE)
 # # #     returns all fields """
-# # #     DBsession = sessionmaker()
+# # #
 # # #     DBsession.bind = engine
 # # #     session = DBsession()
 # # #     query  = session.query(table).paginagete()
