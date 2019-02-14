@@ -76,21 +76,30 @@ def create_filtered_dfs(datafile):
 
     # Phospho-sites detected in single conditions and append to new columns.
     # Boolean true/false outputs returned.
-    ud_df4_sty_valid["control only"] = ((ud_df4_sty_valid.iloc[:, 2]>0) &
-                    (ud_df4_sty_valid.iloc[:, 3]==0)) # control only.
-    ud_df4_sty_valid["condition only"] = ((ud_df4_sty_valid.iloc[:, 2]==0) &
-                    (ud_df4_sty_valid.iloc[:, 3]>0)) # AZ20 only.
+    ud_df4_sty_valid["control only"] = ((ud_df4_sty_valid.iloc[:, 1]>0) &
+                    (ud_df4_sty_valid.iloc[:, 2]==0)) # control only.
+    ud_df4_sty_valid["condition only"] = ((ud_df4_sty_valid.iloc[:, 1]==0) &
+                    (ud_df4_sty_valid.iloc[:, 2]>0)) # AZ20 only.
 
     # Phospho-sites detected in both conditions and append to new column.
     # Boolean true/false outputs returned.
-    ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 2]>0) &
-                    (ud_df4_sty_valid.iloc[:, 3]>0))
+    ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 1]>0) &
+                    (ud_df4_sty_valid.iloc[:, 2]>0))
 
-    # Calculate if condtion CVs <=25% in both conditions.
+    # Check if condition CVs <=25% in both conditions.
     # Boolean true/false outputs returned.
-    ud_df4_sty_valid["CV<=25% (both)"] = ((ud_df4_sty_valid.iloc[:, 5]<=0.25) &
+    # Append category to new column.
+    ud_df4_sty_valid["CV <=25%(both)"] = ((ud_df4_sty_valid.iloc[:, 5]<=0.25) &
                     (ud_df4_sty_valid.iloc[:, 6]<=0.25))
-
+    
+    # Check if unique sites have CVs <=25%.
+    # Boolean true/false outputs returned.
+    # Append category to new column.
+    ud_df4_sty_valid["CV <=25%(control)"] = ((ud_df4_sty_valid.iloc[:, 5]\
+                     <=0.25) & (ud_df4_sty_valid.iloc[:, 13]==1))
+    ud_df4_sty_valid["CV <=25%(condition)"] = ((ud_df4_sty_valid.iloc[:, 6]\
+                     <=0.25) & (ud_df4_sty_valid.iloc[:, 14]==1))
+    
     return(ud_df2_styn, ud_df4_sty_valid)
 
 # --------------------------------------------------------------------------- #
@@ -142,32 +151,41 @@ def table_sort_parse(filtered_df):
     # Specify a new list of ordered column indices.
     # Note: not dependent on column names!
     new_col_order = [0, 7, 1, 2, 8, 9, 10, 11, 3, 12, 5, 6,
-                     4, 17, 19, 18, 13, 14, 15, 16]
+                     4, 19, 21, 20, 13, 14, 15, 16, 17, 18]
 
     # List comprehension to re-order df columns by new index list.
     filtered_df = filtered_df[[filtered_df.columns[i] for i in new_col_order]]
 
     # Sort level variables for sorting data frame.
     sort_level_1 = filtered_df.columns[15] # Rejected hypotheses.
-    sort_level_2 = filtered_df.columns[19] # CV <= 0.25 in both.
-    sort_level_3 = filtered_df.columns[16] # Sites in only control.
-    sort_level_4 = filtered_df.columns[17] # Sites in only AZ20.
-    sort_level_5 = filtered_df.columns[18] # Sites in both conditions.
-    sort_level_6 = filtered_df.columns[9]  # Log2 fold change.
+    sort_level_2 = filtered_df.columns[21] # CV <= 0.25 in control
+    sort_level_3 = filtered_df.columns[19] # CV <= 0.25 in both.
+    sort_level_4 = filtered_df.columns[20] # CV <= 0.25 in condition
+    sort_level_5 = filtered_df.columns[9]  # Log2 fold change.
 
     # Boolean sorting - true hits at top.
     filtered_df = filtered_df.sort_values(by=[sort_level_1,
                                               sort_level_2,
                                               sort_level_3,
                                               sort_level_4,
-                                              sort_level_5,
-                                              sort_level_6],
+                                              sort_level_5],
                                               ascending=False)
 
-    # Parse phospho-sites with corrected p-values <=0.05
-    # and CV <= 25% in both condtions - pass to new variable.
+    # Parse phospho-sites with corrected p-values <=0.05 & CV <=25% in both 
+    # conditions or CV <=25% in either control or condition.
+    # Parsed table passed to new data frame.
     filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15] &
-                                         filtered_df.iloc[:, 19]]
+                                         filtered_df.iloc[:, 19] |
+                                         filtered_df.iloc[:, 20] |
+                                         filtered_df.iloc[:, 21]]
+    
+    # Replace "inf" & "-inf" values in log2 fold change column with nan.
+    filtered_signif_df["Log2 fold change - condition over control"]\
+                      .replace([np.inf, -np.inf], np.nan, inplace=True)
+    
+    # Replace nan with 0.
+    filtered_signif_df["Log2 fold change - condition over control"] =\
+    filtered_signif_df.iloc[:, 9].fillna(0)
 
     return(filtered_df, filtered_signif_df)
 
@@ -389,15 +407,12 @@ def style_df(phospho_df):
            color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
                   
       # Pass CSS styling to styled table.
-      .set_table_styles(styles)
-      
-      # Set caption.
-      .set_caption("User data analysis - significant hits"))
-
+      .set_table_styles(styles))    
+    
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
     #with open("style_df_rename.html","w") as fp:
-     #  fp.write(html)
+        #fp.write(html)
 
     return html
 
