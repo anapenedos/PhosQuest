@@ -1,26 +1,32 @@
 <<!--inherits layout from layout.html-->
-{% extends "layout.html" %}
+{% extends "layout_no_sidebar.html" %}
 {% block content %}
 
 <br>
-<!--This code adds entries from test query -->
+<!--This code adds entries from query -->
 <H3><b>Search Results </b></H3>
-{% if 'No results found' in browse_data %}
-        <H3> No results found </H3>
-{% else %}
-    {% for kinase in browse_data %}
-        <hr>
-        <p><u>Kinase Accession Number</u> {{ kinase.kin_acc_num }}</p>
-        <p><u>Kinase Name</u> {{ kinase.kin_name }}</p>
-        <p><u>Gene Name</u> {{ kinase.kin_gene}}</p>
-        <p><u>Protein</u> {{ kinase.kin_prot}}<p>
-         <p><u>Organism</u> {{ kinase.kin_org}}<p>
-        <p><u>Location</u> {{ kinase.kin_loc}}<p>
-        <p><u>Family</u> {{ kinase.kin_fam}}<p>
+<hr>
+<br>
+<div class = 'container'></div>
+{% if style == 'None' %}
+    <b> Sorry no results found please try again!</b>
 
-    {% endfor %}
+{% elif style == 'list'  %}
+    {% for item in results %}
+        {% for attr in item %}
+<p> <b>{{ attr[0] }}</b> :{{ attr[1] }}</p>
+        {% endfor %}
+    <br>
+    <hr>
+    {% endfor%}
+</div>
 
+{% elif style == 'dataframe' %}
+    <div class=results.dataframe>
+        {{ results|safe }}
+    </div>
 {% endif %}
-
-
 {% endblock content %}
+
+
+

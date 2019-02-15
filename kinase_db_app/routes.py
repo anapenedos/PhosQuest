@@ -1,6 +1,6 @@
 from flask import flash, render_template, url_for, redirect
 from kinase_db_app import app, db, bcrypt
-from data_access import query_testdb
+from data_access import query_db
 from service_scripts import userdata_display, user_data_crunch
 from kinase_db_app.forms import RegistrationForm, LoginForm, UploadForm
 from kinase_db_app.forms import SearchForm
@@ -8,6 +8,11 @@ from werkzeug.utils import secure_filename
 from kinase_db_app.model import User
 import traceback
 
+#Create 404 errorhandling route
+@app.errorhandler(404)
+def page_not_found(e):
+    """render special 404 page"""
+    return render_template('404_error.html'), 404
 
 # create route for home page works with / and /home page address
 # uses home html template
@@ -22,8 +27,8 @@ def home():
 @app.route("/browse")
 def browse():
     """ Use test query function to populate browse page"""
-    browse_data = query_testdb.querytest()
-
+    #browse_data = query_db.allbrowse()
+    browse_data = None
     """render template with browse data and title for browse page"""
     return render_template('browse.html', browse_data=browse_data,
                            title="Browse")
@@ -33,18 +38,22 @@ def browse():
 def search():
     """render template with browse data and title for browse page"""
     form = SearchForm()
-    search_txt = form.search.data
-    search_type= form.select.data
+    #gather form info, text and user selections
+    search_txt = form.search.data # user entered text
+    search_type = form.select.data # exact or LIKE match
+    search_table = form.table.data # data table in DB to search
+    search_option = form.option.data # name or accession no
 
     if search_txt:
         #Currently just searching on Kinase NAME field only.
-        flash(f'You searched for {search_txt}\
-            in Kinase name using {search_type} match', 'info')
-        ##?add functionality for exact or partial match here.
-        results = query_testdb.query_switch(search_txt, search_type)
-        print(results)
+        flash(f'You searched for "{search_txt}"\
+            in {search_table} {search_option} using {search_type} match',
+              'info')
+        # call query switch function to decide which search and display option
+        results, style = query_db.query_switch(search_txt, search_type,
+                                                 search_table, search_option)
         return render_template('search_results.html', title="Search results",
-                               browse_data=results)
+                               results=results, style=style)
 
     else:
 

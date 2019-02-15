@@ -55,7 +55,7 @@
     <!-- block content from child templates with bootstrap styles-->
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <!-- print error messages from form validation-->
             {% with messages = get_flashed_messages(with_categories=true) %}
                {% if messages %}
@@ -68,20 +68,7 @@
             {% endwith %}
             {% block content %}{% endblock %}
         </div>
-        <div class="col-md-4">
-          <div class="content-section">
-            <h3>Browse Database</h3>
-            <p class='text-muted'>Categories
-              <ul class="list-group">
-                <li class="list-group-item list-group-item-dark">Kinases</li>
-                <li class="list-group-item list-group-item-dark">Substrates</li>
-                <li class="list-group-item list-group-item-dark">Inhibitors</li>
-                <li class="list-group-item list-group-item-dark">Diseases</li>
-              </ul>
-            </p>
-          </div>
-        </div>
-      </div>
+
     </main>
 
 
