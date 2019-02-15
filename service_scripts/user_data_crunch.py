@@ -363,6 +363,11 @@ def style_df(phospho_df):
                              phospho_df.columns[9],   # Log2 fold change.
                              phospho_df.columns[13]]] # Corrected p-value.
     
+    # Insert new column at index 0 to specify row position as integer. 
+    idx = 0 # Set index for inserting column.
+    idx_col = range(1, (len(phospho_df)+1)) # Specify range as 1:len(df)+1
+    phospho_df.insert(loc=idx, column="Number", value=idx_col) # Insert.
+    
     # Set CSS properties for table header/index in dataframe. 
     th_props = [
       ('font-size', '16px'),
