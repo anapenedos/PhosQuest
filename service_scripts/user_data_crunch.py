@@ -377,7 +377,11 @@ def style_df(phospho_df):
       ('color', '#000000'),
       ('background-color', '#708090'),
       ('border', '1px solid black'),
-      ('height', '50px')
+      ('height', '50px'),
+      ('position', 'sticky'),
+      ('position', '-webkit-sticky'),
+      ('top', '0'),
+      ('z-index', '999')
       ]
     
     # Set CSS properties for table data in dataframe.
@@ -393,6 +397,13 @@ def style_df(phospho_df):
       dict(selector="th", props=th_props),
       dict(selector="td", props=td_props)
       ]
+    
+    # Define function to ascertain minimum value in log2 fold column,
+    # and highlight as green.
+    def highlight_zero(s):
+        """highlight the minimum in a series green. """
+        is_zero = s == 0
+        return ['background-color: #d65f5f' if v else '' for v in is_zero]
     
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
@@ -411,11 +422,14 @@ def style_df(phospho_df):
            align='mid',                  # Align bars with cells
            color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
                   
-      # Set float precision for data - 3 significant figures. 
-      .set_precision(3)
+      # Set float precision for data - 2 significant figures. 
+      .set_precision(2)
       
       # Pass CSS styling to styled table.
-      .set_table_styles(styles))    
+      .set_table_styles(styles)    
+      
+      # Colour cells with 0 in log2 fold column as green.
+      .apply(highlight_zero))
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
