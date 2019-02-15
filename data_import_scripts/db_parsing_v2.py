@@ -77,7 +77,7 @@ bindingDB_source_df.columns = bindingDB_headers
 bindingDB_source_df.columns = bindingDB_source_df.columns.str.replace(" ", "_")  
 
 # Replace column header for target organism, to something more sensible
-bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_ n\
+bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_\n\
                                     Curator_or_DataSource":"ORGANISM"}, 
                            inplace=True)
 
