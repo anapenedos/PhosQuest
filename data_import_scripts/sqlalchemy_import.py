@@ -13,13 +13,17 @@ from data_access.sqlalchemy_declarative import Base, Kinase, Substrate, \
 from data_import_scripts.db_parsing import kin_sub_human, \
     phos_sites_human, reg_sites_human, dis_sites_human, mrc_inhib_source
 # dataframe headings to class attribute dictionaries
-from data_import_scripts.dataframes_to_attributes import kin_sub_human_to_class
+from data_import_scripts.dataframes_to_attributes \
+    import kin_sub_human_to_class, phos_sites_human_to_class, \
+    reg_sites_human_to_class, dis_sites_human_to_class, \
+    mrc_inhib_source_to_class
 
-# TODO add df dicts as args so it works for all
+
 # TODO solve issue of multi tables to df heading in dict
-def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict format
+# TODO correct dict format
+def import_data_from_data_frame(df, df_to_class_dict):
     """
-    Takes in dataframe storing kinase substrate info and populates relevant
+    Takes in data frame storing kinase substrate info and populates relevant
     entries in SQLite database.
 
     :param df: pandas data frame from PhosphositePlus import (df)
@@ -37,7 +41,7 @@ def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict for
 
     # get classes in data frame
     classes_in_df = set()
-    for df_heading, class_match in kin_sub_human_to_class.items():
+    for df_heading, class_match in df_to_class_dict.items():
         class_name = class_match[0]
         classes_in_df.add(class_name)
 
@@ -65,7 +69,7 @@ def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict for
         # dictionary of class to primary key attributes and key values tuples
         new_table_keys = {}  # {class: {key_attr: key_value, ...}, ...}
         # iterate through dict mapping df_heading: (Class, class_attr)
-        for df_heading, class_match in kin_sub_human_to_class.items():
+        for df_heading, class_match in df_to_class_dict.items():
             # df heading corresponds to class and class attribute
             class_name = class_match[0]
             class_attr = class_match[1]
@@ -82,7 +86,7 @@ def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict for
 
         # check if records already exist in tables and obtain class instances
         class_instances = {}  # {Class: class_instance, ...}
-        for class_name, keys_info in new_table_keys.items():  # {class: {key_attr: key_value, ...}, ...}
+        for class_name, keys_info in new_table_keys.items():
             # create query object
             query_res = session.query(class_name)
             # apply filters to the query_res based on primary keys
@@ -93,11 +97,11 @@ def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict for
             # should now list a single instance, which can be obtained with
             # .first
             query_res = query_res.first()
-            # create new class instance if not
+            # create new class instance if no record retrieved by query
             if query_res is None:
                 class_instance = class_name(**keys_info)
                 session.add(class_instance)
-            # get the existing class instance if so
+            # or get the existing class instance if already in table
             else:
                 class_instance = query_res
             # keep track of the new instances
@@ -106,7 +110,7 @@ def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict for
         # get remaining attributes for each instance
         for instance_class_name, class_instance in class_instances.items():
             # get the class attributes
-            for df_heading, class_match in kin_sub_human_to_class.items():
+            for df_heading, class_match in df_to_class_dict.items():
                 class_name = class_match[0]
                 class_attr = class_match[1]
                 if class_name == instance_class_name:
@@ -116,22 +120,30 @@ def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict for
 
         # if more than one class in the data frame, set up relationships
         if len(classes_in_df) > 1:
-            # TODO make relationship set up universal
-            # add relationship fields
-            kinase_in_row = class_instances[Kinase]
-            phosphosite_in_row = class_instances[Phosphosite]
-            substrate_in_row = class_instances[Substrate]
-            # kinase phosphorylates relationship
-            kinase_in_row.kin_phosphorylates.append(phosphosite_in_row)
-            # substrate field in phosphosite table
-            phosphosite_in_row.phos_in_substrate = substrate_in_row.subs_accession
-            # phosphosite belongs to substrate relationship
-            phosphosite_in_row.site_in_subs = substrate_in_row
+            for class_instance in class_instances.values():
+                class_instance.add_relationships(class_instances)
+            #
+            # # TODO make relationship set up universal
+            # # add relationship fields
+            # kinase_in_row = class_instances[Kinase]
+            # phosphosite_in_row = class_instances[Phosphosite]
+            # substrate_in_row = class_instances[Substrate]
+            # # kinase phosphorylates relationship
+            # kinase_in_row.kin_phosphorylates.append(phosphosite_in_row)
+            # # substrate field in phosphosite table
+            # phosphosite_in_row.phos_in_substrate = substrate_in_row.subs_accession
+            # # phosphosite belongs to substrate relationship
+            # phosphosite_in_row.site_in_subs = substrate_in_row
         session.commit()
         session.close()
 
 
-import_kinase_substrate_data(kin_sub_human, kin_sub_human_to_class)
+# import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
+import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
+# import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
+# import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
+# import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
+
 
 # pd DF.to_sql
 # if needed,
