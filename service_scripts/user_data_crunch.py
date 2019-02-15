@@ -377,7 +377,11 @@ def style_df(phospho_df):
       ('color', '#000000'),
       ('background-color', '#708090'),
       ('border', '1px solid black'),
-      ('height', '50px')
+      ('height', '50px'),
+      ('position', 'sticky'),
+      ('position', '-webkit-sticky'),
+      ('top', '0'),
+      ('z-index', '999')
       ]
     
     # Set CSS properties for table data in dataframe.
