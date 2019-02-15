@@ -7,24 +7,26 @@ from sqlalchemy.inspection import inspect
 # Project imports
 # classes and join tables
 from data_access.sqlalchemy_declarative import Base, Kinase, Substrate, \
-    Phosphosite, Disease, DiseaseAlteration, Inhibitor, Location, \
+    Phosphosite, Disease, DiseaseAlteration, Inhibitor, CellularLocation, \
     kinases_inhibitors_table, kinases_phosphosites_table
-# data import dataframes
+# data import data frames
 from data_import_scripts.db_parsing import kin_sub_human, \
     phos_sites_human, reg_sites_human, dis_sites_human, mrc_inhib_source
 # dataframe headings to class attribute dictionaries
 from data_import_scripts.dataframes_to_attributes import kin_sub_human_to_class
 
-
-def import_kinase_substrate_data(kin_sub_dataframe):  # TODO add df dicts as args so it works for all
+# TODO add df dicts as args so it works for all
+# TODO solve issue of multi tables to df heading in dict
+def import_kinase_substrate_data(df, df_to_class_dict):  # TODO correct dict format
     """
     Takes in dataframe storing kinase substrate info and populates relevant
     entries in SQLite database.
 
-    :param kin_sub_dataframe: pandas dataframe from PhosphositePlus import (df)
+    :param df: pandas data frame from PhosphositePlus import (df)
+    :param df_to_class_dict: data frame heading to class & attribute (dict)
+                             {'DF header': (Class, 'class_attribute')}
     """
     # Create engine that stores data to database\<file_name>.db
-    # TODO replace db file by the final db name
     db_path = os.path.join('database', 'PhosphoQuest.db')
     engine = create_engine('sqlite:///' + db_path)
     # Bind the engine to the metadata of the base class so that the
@@ -55,7 +57,7 @@ def import_kinase_substrate_data(kin_sub_dataframe):  # TODO add df dicts as arg
     # from the db
     # 2. populate instance class attributes from data frame data
     # 3. generate relationships between instances of different classes
-    for index, row in kin_sub_dataframe.iterrows():
+    for index, row in df.iterrows():
         # open a SQLite session
         session = DBSession()
 
@@ -76,7 +78,7 @@ def import_kinase_substrate_data(kin_sub_dataframe):  # TODO add df dicts as arg
                 # add class and its first value to new_table_keys dict if
                 # class not in dict
                 else:
-                    new_table_keys[class_name] = {class_attr: row[df_heading]}  # look setdefault
+                    new_table_keys[class_name] = {class_attr: row[df_heading]}  # TODO look at setdefault
 
         # check if records already exist in tables and obtain class instances
         class_instances = {}  # {Class: class_instance, ...}
@@ -87,7 +89,7 @@ def import_kinase_substrate_data(kin_sub_dataframe):  # TODO add df dicts as arg
             for key_attr, key_value in keys_info.items():
                 query_res = query_res.filter(
                     getattr(class_name, key_attr) == key_value)
-            # given query_res was filterd by all primary keys in table, it
+            # given query_res was filtered by all primary keys in table, it
             # should now list a single instance, which can be obtained with
             # .first
             query_res = query_res.first()
@@ -129,7 +131,7 @@ def import_kinase_substrate_data(kin_sub_dataframe):  # TODO add df dicts as arg
         session.close()
 
 
-import_kinase_substrate_data(kin_sub_human)
+import_kinase_substrate_data(kin_sub_human, kin_sub_human_to_class)
 
 # pd DF.to_sql
 # if needed,
@@ -148,10 +150,10 @@ import_kinase_substrate_data(kin_sub_human)
 # `sqlite3 database/PhosphoQuest.db`
 
 # to show table headers
-# `sqlite>.header on`
+# `.header on`
 
 # to how entries in columns
-# `sqlite>.mode column`
+# `.mode column`
 
 # to show all entries in a TABLE
 # `SELECT * FROM TABLE;`

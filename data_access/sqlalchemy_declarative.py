@@ -52,7 +52,7 @@ class Kinase(Base):
 
     # setting up relationships
     # many-to-one 'kinases' <> 'locations' tables
-    kin_located = relationship('Location', back_populates='kin_in_loc')
+    kin_located = relationship('CellularLocation', back_populates='kin_in_loc')
     # many-to-many 'kinases' <> 'inhibitors' tables
     kin_inhibitors = relationship('Inhibitor',
                                   secondary=kinases_inhibitors_table,
@@ -78,7 +78,7 @@ class Kinase(Base):
         :param class_instances: list of any class instances (list)
         """
         for class_instance in class_instances:
-            if isinstance(class_instance, Location):
+            if isinstance(class_instance, CellularLocation):
                 # set cellular location field in kinases table
                 self.kin_cellular_location = class_instance.loc_name
                 # set the kinase <> location relationship
@@ -398,9 +398,9 @@ class Inhibitor(Base):
                 self.inhib_target_kinases.append(class_instance)
 
 
-class Location(Base):
+class CellularLocation(Base):
     """
-    Defines an Location class mapping to 'locations' table
+    Defines an CellularLocation class mapping to 'locations' table
     Data source:
     Data source imported to data frame:
     """
@@ -416,7 +416,7 @@ class Location(Base):
     kin_in_loc = relationship('Kinase', back_populates='kin_located')
 
     def __repr__(self):
-        return "<Location(name='%s', figure URL='%s')>" \
+        return "<CellularLocation(name='%s', figure URL='%s')>" \
                % (self.loc_name, self.loc_image_path)
 
     def add_relationships(self, class_instances):
