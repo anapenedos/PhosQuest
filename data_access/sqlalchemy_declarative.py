@@ -46,7 +46,8 @@ class Kinase(Base):
     # in the first instance of the DB, only human kinases are included
     kin_organism = Column(String)
     # cellular location of the kinase
-    kin_cellular_location = Column(String, ForeignKey('locations.loc_name'))
+    kin_cellular_location = Column(String,
+                                   ForeignKey('cellular_locations.loc_name'))
     # kinase family to which the kinase belongs
     kin_family = Column(String)
 
@@ -404,7 +405,7 @@ class CellularLocation(Base):
     Data source:
     Data source imported to data frame:
     """
-    __tablename__ = 'locations'
+    __tablename__ = 'cellular_locations'
 
     # name of the cellular location, primary key of locations table
     loc_name = Column(String, primary_key=True)
