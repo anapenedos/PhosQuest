@@ -35,7 +35,7 @@ table.dataframe, .dataframe td {
   font-weight: bold;
 }
 
-.dataframe th {
+table.dataframe th {
 border: 1px solid black;
 border-bottom: 1px solid black;
 border-collapse: collapse;
@@ -48,10 +48,10 @@ font-weight: bold;
 color:#000000;
 background-color: #708090;
 border: 1px solid black;
-height: 100px;
+height: 50px;
 position: sticky;
 position: -webkit-sticky;
-top: 90px
+top: 50px
 z-index: 999
 }
 
