@@ -70,6 +70,26 @@ class Kinase(Base):
                   self.kin_gene, self.kin_organism, self.kin_cellular_location,
                   self.kin_family)
 
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the kinase instance. Ignores objects of classes unrelated to
+        kinases.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, Location):
+                # set cellular location field in kinases table
+                self.kin_cellular_location = class_instance.loc_name
+                # set the kinase <> location relationship
+                self.kin_located = class_instance
+            if isinstance(class_instance, Inhibitor):
+                # add inhibitor to list of kinase inhibitors
+                self.kin_inhibitors.append(class_instance)
+            if isinstance(class_instance, Phosphosite):
+                # add phosphosite to list of kinase targets
+                self.kin_phosphorylates.append(class_instance)
+
 
 class Substrate(Base):
     """
@@ -116,6 +136,18 @@ class Substrate(Base):
                   self.subs_full_name, self.subs_protein_type,
                   self.subs_molec_weight_kd, self.subs_gene,
                   self.subs_chrom_location, self.subs_organism)
+
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the substrate instance. Ignores objects of classes unrelated
+        to substrates.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, Phosphosite):
+                # add phosphosite to list of sites in substrate
+                self.subs_sites.append(class_instance)
 
 
 class Phosphosite(Base):
@@ -185,6 +217,27 @@ class Phosphosite(Base):
                   self.phos_other_interactions, self.phos_bibl_references,
                   self.phos_notes, self.phos_in_substrate)
 
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the phosphosite instance. Ignores objects of classes
+        unrelated to phosphosites.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, Kinase):
+                # add kinase to list of kinases targeting the phosphosite
+                self.phosphorylated_by.append(class_instance)
+            if isinstance(class_instance, Substrate):
+                # set phosphosite in substrate field in phosphosites table
+                self.phos_in_substrate = class_instance.subs_accession
+                # set the phosphosite <> substrate relationship
+                self.site_in_subs = class_instance
+            if isinstance(class_instance, DiseaseAlteration):
+                # add disease-associated phosphosite alteration to list of
+                # alterations associated with phosphosite
+                self.disease_alterations.append(class_instance)
+
 
 class Disease(Base):
     """
@@ -205,6 +258,19 @@ class Disease(Base):
     def __repr__(self):
         return "<Disease(name='%s', notes='%s')>" \
               % (self.dis_name, self.dis_notes)
+
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the disease instance. Ignores objects of classes unrelated to
+        diseases.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, DiseaseAlteration):
+                # add disease-associated phosphosite alteration to list of
+                # alterations associated with disease
+                self.caused_by_alterations.append(class_instance)
 
 
 class DiseaseAlteration(Base):
@@ -245,6 +311,26 @@ class DiseaseAlteration(Base):
               % (self.disalt_disease_name, self.disalt_phosphosite_id,
                  self.disalt_phos_alteration, self.disalt_bibl_references,
                  self.disalt_notes)
+
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the disease alteration instance. Ignores objects of classes
+        unrelated to disease alterations.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, Disease):
+                # set disease name field in disease_alterations table
+                self.disalt_disease_name = class_instance.dis_name
+                # set the disease alteration <> disease relationship
+                self.altered_in_disease = class_instance
+            if isinstance(class_instance, Phosphosite):
+                # set the phosphosite group ID field in the disease_alterations
+                # table
+                self.disalt_phosphosite_id = class_instance.phos_group_id
+                # set the disease alteration <> phosphosite relationship
+                self.altered_phosphosite = class_instance
 
 
 class Inhibitor(Base):
@@ -299,6 +385,18 @@ class Inhibitor(Base):
                   self.inhib_int_chem_id_key, self.inhib_bibl_references,
                   self.inhib_vendor, self.inhib_catalog_number)
 
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the inhibitor instance. Ignores objects of classes unrelated
+        to inhibitors.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, Kinase):
+                # add kinase to list of kinases targeted by inhibitor
+                self.inhib_target_kinases.append(class_instance)
+
 
 class Location(Base):
     """
@@ -320,6 +418,18 @@ class Location(Base):
     def __repr__(self):
         return "<Location(name='%s', figure URL='%s')>" \
                % (self.loc_name, self.loc_image_path)
+
+    def add_relationships(self, class_instances):
+        """
+        Given a list of class instances, populates foreign key and relationship
+        fields of the location instance. Ignores objects of classes unrelated
+        to locations.
+        :param class_instances: list of any class instances (list)
+        """
+        for class_instance in class_instances:
+            if isinstance(class_instance, Kinase):
+                # add kinase to list of kinases in the cellular location
+                self.kin_in_loc.append(class_instance)
 
 
 # # Create database tables/schema
