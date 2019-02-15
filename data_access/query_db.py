@@ -1,6 +1,6 @@
 import os
 from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
-    Inhibitor, Phosphosite, Disease, DiseaseAlteration, Location
+    Inhibitor, Phosphosite, Disease, DiseaseAlteration, CellularLocation
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import sessionmaker, attributes
 import pandas as pd
