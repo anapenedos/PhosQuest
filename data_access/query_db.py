@@ -10,12 +10,12 @@ engine = create_engine(f'sqlite:///{dbpath}')
 Base.metadata.bind = engine
 DBsession = sessionmaker()
 
-#create table dictionary to translate table name for search queries
+# create table dictionary to translate table name for search queries
 tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
                  inhibitor=Inhibitor)
 
-#create field dictionary to give appropriate field name for search  queries
-#accession no in first index, name in second index.
+# create field dictionary to give appropriate field name for search  queries
+# accession no in first index, name in second index.
 #For Phosphosite there is no name so the field phos.site is used
 
 
@@ -43,32 +43,63 @@ headers = {
 }
 
 
-def query_to_dfhtml(query_results, table):
-    """ Function to parse query output to pandas dataframe and
-    create html for website"""
+def query_to_dfhtml(query_results, table, drop_cols):
+    """ Function to parse query output to pandas dataframe for selected columns
+     and create html for website"""
 
-    #get attribute names for this table
+    # get attribute names for this table
     colnames = table.__table__.columns.keys()
     datalist = {}
 
     for col in colnames:
+        if col not in drop_cols: # only parse info for wanted columns
+            if col in headers:
+                # find human friendly column header
+                header = headers[col]
+                datalist[header] = []
+                for item in query_results:
+                    datalist[header].append(getattr(item,col))
 
-        if col in headers:
-            # find human friendly column header
-            header = headers[col]
-            datalist[header] = []
-            for item in query_results:
-                datalist[header].append(getattr(item,col))
+            else:
+                datalist[col] = []
+                # if human friendly version not available
+                for item in query_results:
+                    datalist[col].append(getattr(item, col))
 
         else:
-            datalist[col] = []
-            #if human friendly version not available
-            for item in query_results:
-                datalist[col].append(getattr(item, col))
+            continue
 
     df = pd.DataFrame.from_dict(datalist)
     df = df.to_html(index=False)
     return df
+
+# TODO update this function to create list
+def query_to_list(query_results, table, drop_atrs):
+    """ Function to parse query output to list of lists for selected attributes
+      for website (results <5). Allows to drop some attributes"""
+
+    # get attribute names for this table
+    names = table.__table__.columns.keys()
+    #initialise result list
+    result = []
+   # iterate through query results checking for names and dropped attrs
+    for item in query_results:
+        resultlist = []
+        for name in names:
+            if name not in drop_atrs: #check not dropped
+                if name in headers:
+                    header = headers[name]#translate to human readable
+                    x = (header, getattr(item, name))
+                    resultlist.append(x)
+                else:
+                    x = (name, getattr(item, name))
+                    resultlist.append(x)
+            else:
+                continue # pass over if in drop_attrs
+        result.append(resultlist)
+
+    return  result
+
 
 
 def query_switch(text,type, table, option):
@@ -82,7 +113,8 @@ def query_switch(text,type, table, option):
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,
                                Inhibitor.inhib_full_name]}
-
+    drop_cols = [] # to allow to drop cols if necessary (not implemented
+    # TODO determine if drop-cols needed here
     # find appropriate field to apply and find field object
     if table == 'kinase':
         if option == 'acc_no':
@@ -104,43 +136,36 @@ def query_switch(text,type, table, option):
     else:
         print(" an error has occurred")
 
-
-
-
     #convert table text to table object to apply to query
     table = tabledict[table]
-    #get column names for display
-
 
     #carry out query with exact or like method depending on user choice
     if type == "exact":
-        results = searchexact(text,table, field)
+        results = searchexact(text, table, field)
         if 'No results found' in (results):
-            return results
+            style = 'None'
+            return results, style
         else:
-            results = query_to_dfhtml(results, table)
-            return results
-
+            results = query_to_dfhtml(results, table, drop_cols)
+            style = 'dataframe'
+            return results, style
 
     else:
-        results = searchlike(text,table,field)
-        if 'No results found' in (results):
-            return results
-        else:
-            results = query_to_dfhtml(results, table)
-            return results
+        results = searchlike(text,table, field)
+        if 'No results found' in results:
+            style = 'None'
+            return results, style
 
+        elif len(results) < 4: # if only 3 or less results display as list
+            results = query_to_list(results, table, drop_cols)
+            style = 'list'
+            return results, style
 
-# def allbrowse(table):
-# # #     """ query db and get first item from each table (BROWSE)
-# # #     returns all fields """
-# # #
-# # #     DBsession.bind = engine
-# # #     session = DBsession()
-# # #     query  = session.query(table).paginagete()
-# # #     session.close()
-# # #     browse_data = query_to_df(query,table)
-# # #     return browse_data
+        else: # if more results display as table
+            results = query_to_dfhtml(results, table, drop_cols)
+            style = 'dataframe'
+            return results, style
+
 
 def searchlike(text, table, fieldname):
     """ Test universal LIKE search function for table/field name,
@@ -149,8 +174,8 @@ def searchlike(text, table, fieldname):
     session = DBsession()
     results = session.query(table).filter(fieldname\
                                           .like(text)).all()
-    #check if query has returned results
-    if results != []:
+    # check if query has returned results
+    if results:
         session.close()
         return results
     else:
@@ -163,10 +188,21 @@ def searchexact(text, table, fieldname):
     session = DBsession()
     results = session.query(table).filter(fieldname == text).all()
     # check if query has returned results
-    if results != []:
+    if results:
         session.close()
         return results
 
     else:
         session.close()
         return ['No results found']
+
+    # def allbrowse(table):
+    # # #     """ query db and get first item from each table (BROWSE)
+    # # #     returns all fields """
+    # # #
+    # # #     DBsession.bind = engine
+    # # #     session = DBsession()
+    # # #     query  = session.query(table).paginagete()
+    # # #     session.close()
+    # # #     browse_data = query_to_df(query,table)
+    # # #     return browse_data

@@ -7,9 +7,21 @@
 <H3><b>Search Results </b></H3>
 <hr>
 <br>
-{% if 'No results found' in results %}
+<div class = 'container'></div>
+{% if style == 'None' %}
     <b> Sorry no results found please try again!</b>
-{% else %}
+
+{% elif style == 'list'  %}
+    {% for item in results %}
+        {% for attr in item %}
+<p> <b>{{ attr[0] }}</b> :{{ attr[1] }}</p>
+        {% endfor %}
+    <br>
+    <hr>
+    {% endfor%}
+</div>
+
+{% elif style == 'dataframe' %}
     <div class=results.dataframe>
         {{ results|safe }}
     </div>

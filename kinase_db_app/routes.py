@@ -49,11 +49,11 @@ def search():
         flash(f'You searched for "{search_txt}"\
             in {search_table} {search_option} using {search_type} match',
               'info')
-        ##?add functionality for exact or partial match here.
-        results= query_db.query_switch(search_txt, search_type,
+        # call query switch function to decide which search and display option
+        results, style = query_db.query_switch(search_txt, search_type,
                                                  search_table, search_option)
         return render_template('search_results.html', title="Search results",
-                               results=results)
+                               results=results, style=style)
 
     else:
 
