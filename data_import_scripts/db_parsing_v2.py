@@ -31,6 +31,11 @@ dis_sites_path = os.path.join('db_source_tables', 'PhosphoSitePlus',
                               'Disease-associated_sites')
 dis_sites_source_df = pd.read_table(dis_sites_path,
                                     skiprows=3)
+
+# Change nan to None.
+dis_sites_source_df["ALTERATION"] = dis_sites_source_df["ALTERATION"].replace\
+                                    ({pd.np.nan: None})
+
 # --------------------------------------------------------------------------- #
 
 ### Read "Regulatory_sites" database & convert to dataframe.
@@ -77,8 +82,8 @@ bindingDB_source_df.columns = bindingDB_headers
 bindingDB_source_df.columns = bindingDB_source_df.columns.str.replace(" ", "_")  
 
 # Replace column header for target organism, to something more sensible
-bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_\n\
-                                    Curator_or_DataSource":"ORGANISM"}, 
+bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_"
+                                    "Curator_or_DataSource":"ORGANISM"}, 
                            inplace=True)
 
 # --------------------------------------------------------------------------- #  
