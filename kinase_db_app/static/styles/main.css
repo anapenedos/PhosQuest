@@ -24,18 +24,39 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
-table.dataframe, .dataframe th, .dataframe td {
+table.dataframe, .dataframe td {
   border: 1px solid black;
   border-bottom: 1px solid black;
   border-collapse: collapse;
   text-align:center;
   padding: 5px;
   margin-bottom: 40px;
-  font-size: 0.9em;
+  font-size: 12px;
+  font-weight: bold;
 }
 
-tr:nth-child(odd)	{ background-color#fff;}
+.dataframe th {
+border: 1px solid black;
+border-bottom: 1px solid black;
+border-collapse: collapse;
+text-align:center;
+padding: 5px;
+font-size: 16px;
+font-family: Calibri
+text-align: center;
+font-weight: bold;
+color:#000000;
+background-color: #708090;
+border: 1px solid black;
+height: 100px;
+position: sticky;
+position: -webkit-sticky;
+top: 90px
+z-index: 999
+}
+
+tr:nth-child(odd)	{ background-color #ffffff;}
 tr:nth-child(even)	{ background-color: #dbe4f0;}
-tr:hover            { background-color: # #f6f4d5;}
+tr:hover            { background-color: #f6f4d5;}
 
 

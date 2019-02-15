@@ -368,7 +368,7 @@ def style_df(phospho_df):
     idx_col = range(1, (len(phospho_df)+1)) # Specify range as 1:len(df)+1
     phospho_df.insert(loc=idx, column="Number", value=idx_col) # Insert.
     
-    # Set CSS properties for table header/index in dataframe. 
+    # Set CSS properties for table header/index in dataframe.
     th_props = [
       ('font-size', '16px'),
       ('font-family', 'Calibri'),
@@ -380,7 +380,7 @@ def style_df(phospho_df):
       ('height', '50px'),
       ('position', 'sticky'),
       ('position', '-webkit-sticky'),
-      ('top', '0'),
+      ('top', '50px'),
       ('z-index', '999')
       ]
     
@@ -426,7 +426,7 @@ def style_df(phospho_df):
       .set_precision(2)
       
       # Pass CSS styling to styled table.
-      .set_table_styles(styles)    
+      .set_table_styles(styles)
       
       # Colour cells with 0 in log2 fold column as green.
       .apply(highlight_zero))
