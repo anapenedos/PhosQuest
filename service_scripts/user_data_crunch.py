@@ -406,6 +406,9 @@ def style_df(phospho_df):
            align='mid',                  # Align bars with cells
            color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
                   
+      # Set float precision for data - 3 significant figures. 
+      .set_precision(3)
+      
       # Pass CSS styling to styled table.
       .set_table_styles(styles))    
     
