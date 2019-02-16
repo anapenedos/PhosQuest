@@ -1,5 +1,5 @@
 ##module for user model - user db import from package
-from kinase_db_app import db
+from PhosphoQuest_app import db
 
 
 class User(db.Model):

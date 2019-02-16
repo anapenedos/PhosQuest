@@ -37,15 +37,10 @@
           </button>
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-              <a class="nav-item nav-link" href= "{{ url_for('browse') }}">Browse</a>
-              <a class="nav-item nav-link" href= "{{ url_for('search') }}" >Search</a>
-              <a class="nav-item nav-link" href="{{ url_for('analysis') }}">User Data Analysis</a>
-            </div>
-            <!--Navbar Right Side-->
-            <div class="navbar-nav">
-              <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-              <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+              <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
+              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_db') }}">Browse</a>
+              <a class="nav-item nav-link" href= "{{ url_for('search.search_db') }}" >Search</a>
+              <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
             </div>
           </div>
         </div>
@@ -55,7 +50,7 @@
     <!-- block content from child templates with bootstrap styles-->
     <main role="main" class="container">
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-8">
             <!-- print error messages from form validation-->
             {% with messages = get_flashed_messages(with_categories=true) %}
                {% if messages %}
@@ -68,7 +63,20 @@
             {% endwith %}
             {% block content %}{% endblock %}
         </div>
-
+        <div class="col-md-4">
+          <div class="content-section">
+            <h3>Browse Database</h3>
+            <p class='text-muted'>Categories
+              <ul class="list-group">
+                <li class="list-group-item list-group-item-dark">Kinases</li>
+                <li class="list-group-item list-group-item-dark">Substrates</li>
+                <li class="list-group-item list-group-item-dark">Inhibitors</li>
+                <li class="list-group-item list-group-item-dark">Diseases</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
     </main>
 
 

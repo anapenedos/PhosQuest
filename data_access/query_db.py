@@ -1,8 +1,8 @@
 import os
 from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
     Inhibitor, Phosphosite, Disease, DiseaseAlteration, CellularLocation
-from sqlalchemy import create_engine, inspect
-from sqlalchemy.orm import sessionmaker, attributes
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 import pandas as pd
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
@@ -11,8 +11,8 @@ Base.metadata.bind = engine
 DBsession = sessionmaker()
 
 # create table dictionary to translate table name for search queries
-tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
-                 inhibitor=Inhibitor)
+tabledict = {'kinase':Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
+                 'inhibitor':Inhibitor}
 
 # create field dictionary to give appropriate field name for search  queries
 # accession no in first index, name in second index.
@@ -24,7 +24,7 @@ tabledict = dict(kinase=Kinase, phosphosite=Phosphosite, substrate=Substrate,
 headers = {
     'kin_accession':'Accession no', 'kin_short_name':'Short name',
     'kin_full_name' :'Full name', 'kin_gene':'Gene',
-    'kin_organism':'species', 'kin_cellular_location':'Cellular location',
+    'kin_organism':'Species', 'kin_cellular_location':'Cellular location',
     'kin_family': 'Family', 'subs_accession':'Accession no',
     'subs_short_name':'Short name', 'subs_full_name':'Full name',
     'subs_protein_type':'Protein type',
@@ -76,22 +76,29 @@ def query_switch(text,type, table, option):
     else:
         print(" an error has occurred")
         # TODO create custom error class for logic errors
-    #convert table text to table object to apply to query
+
+    # convert table text to table object to apply to query
     table = tabledict[table]
 
     #carry out query with exact or like method depending on user choice
     if type == "exact":
         results = searchexact(text, table, field)
-        if 'No results found' in (results):
+        if 'No results found' in results:
             style = 'None'
             return results, style
+
+        elif len(results) < 4: # if only 3 or less results display as list
+            results = query_to_list(results, table, drop_cols)
+            style = 'list'
+            return results, style
+
         else:
             results = query_to_dfhtml(results, table, drop_cols)
             style = 'dataframe'
             return results, style
 
     else:
-        results = searchlike(text,table, field)
+        results = searchlike(text, table, field)
         if 'No results found' in results:
             style = 'None'
             return results, style
