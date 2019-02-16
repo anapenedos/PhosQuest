@@ -3,14 +3,14 @@
 ### Import relevant modules
 import pandas as pd
 
-df1 = pd.read_csv('user_usage.csv')
-df2 = pd.read_csv('user_device.csv')
+df1 = pd.read_csv('Test_Inhibitors_MRC.csv')
+df2 = pd.read_csv('Test_Inhibitors_BindingDB.csv')
 
 newdf = pd.merge(df1,
-		df2[['PubChemID', 'platform', 'device']],
-		on='PubChemID')
+		df2[['PubChem CID', 'UniProt (SwissProt) Primary ID of Target Chain']],
+		on='PubChem CID')
 
-newdf.to_csv('merge.csv')
+newdf.to_csv('test.csv')
 
 
 
