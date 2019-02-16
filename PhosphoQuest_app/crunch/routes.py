@@ -12,6 +12,7 @@ crunch = Blueprint('crunch', __name__)
 def analysis():
     """Create upload and analysis route"""
     form = UploadForm()
+
      #if form validates (correct file types) save file in temp dir
     if form.validate_on_submit():
         try:
@@ -19,16 +20,15 @@ def analysis():
             filename =  secure_filename(f.filename)
             #run all analyses.
             all_data = userdata_display.run_all(f)
+
             #selector for type of report (test version)
             if form.select.data == 'full':
                 table = user_data_crunch.style_df(all_data['full_sty_sort'])
-                # temporary test display bokeh df
-                #table = userdata_display.bokeh_df(all_data['full_sty_sort']))
 
                 flash(f'File {filename} successfully analysed', 'success')
                 return render_template('results.html',
                             title='All results',
-                                    table=table )
+                                    table=table)
 
             else:
 

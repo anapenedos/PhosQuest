@@ -1,0 +1,12 @@
+<!--inherits layout from layout.html-->
+{% extends "layout.html" %}
+{% block content %}
+<H2> Browse by:</H2>
+<br>
+{% for item in links %}
+    <H3><a href="{{url_for('browse.browse_cat', category=item)}}"> {{item}}</a></H3>
+    <br>
+{% endfor %}
+
+
+{% endblock content %}

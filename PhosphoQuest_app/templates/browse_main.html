@@ -1,0 +1,13 @@
+<!--inherits layout from layout.html-->
+{% extends "layout.html" %}
+{% block content %}
+<H2> Choose browse category</H2>
+<br>
+<H3><a href="{{url_for('browse.browse_cat', category='kinase')}}">Kinases</a></H3>
+<br>
+<H3><a href="{{url_for('browse.browse_cat', category='substrate')}}">Substrates</a></H3>
+<br>
+<H3><a href="{{url_for('browse.browse_cat', category='inhibitor')}}">Inhibitors</a></H3>
+
+{% endblock content %}
+
