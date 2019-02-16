@@ -32,9 +32,13 @@ dis_sites_path = os.path.join('db_source_tables', 'PhosphoSitePlus',
 dis_sites_source_df = pd.read_table(dis_sites_path,
                                     skiprows=3)
 
+# Remove any rows that have no value in either DISEASE or SITE_GRP_ID
+dis_sites_source_df.dropna(subset=['DISEASE', 'SITE_GRP_ID'],
+                           inplace=True)
+
 # Change nan to None.
 dis_sites_source_df["ALTERATION"] = dis_sites_source_df["ALTERATION"].replace\
-                                    ({pd.np.nan: None})
+                                    ({pd.np.nan: 'unknown'})
 
 # --------------------------------------------------------------------------- #
 
