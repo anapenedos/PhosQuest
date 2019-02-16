@@ -76,20 +76,20 @@ class Kinase(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the kinase instance. Ignores objects of classes unrelated to
         kinases.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, CellularLocation):
-                # set cellular location field in kinases table
-                self.kin_cellular_location = class_instance.loc_name
-                # set the kinase <> location relationship
-                self.kin_located = class_instance
-            if isinstance(class_instance, Inhibitor):
-                # add inhibitor to list of kinase inhibitors
-                self.kin_inhibitors.append(class_instance)
-            if isinstance(class_instance, Phosphosite):
-                # add phosphosite to list of kinase targets
-                self.kin_phosphorylates.append(class_instance)
+        if CellularLocation in class_instances:
+            cell_loc_instance = class_instances[CellularLocation]
+            # set cellular location field in kinases table
+            self.kin_cellular_location = cell_loc_instance.loc_name
+            # set the kinase <> location relationship
+            self.kin_located = cell_loc_instance
+        if Inhibitor in class_instances:
+            # add inhibitor to list of kinase inhibitors
+            self.kin_inhibitors.append(class_instances[Inhibitor])
+        if Phosphosite in class_instances:
+            # add phosphosite to list of kinase targets
+            self.kin_phosphorylates.append(class_instances[Phosphosite])
 
 
 class Substrate(Base):
@@ -143,12 +143,11 @@ class Substrate(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the substrate instance. Ignores objects of classes unrelated
         to substrates.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, Phosphosite):
-                # add phosphosite to list of sites in substrate
-                self.subs_sites.append(class_instance)
+        if Phosphosite in class_instances:
+            # add phosphosite to list of sites in substrate
+            self.subs_sites.append(class_instances[Phosphosite])
 
 
 class Phosphosite(Base):
@@ -223,21 +222,22 @@ class Phosphosite(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the phosphosite instance. Ignores objects of classes
         unrelated to phosphosites.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, Kinase):
-                # add kinase to list of kinases targeting the phosphosite
-                self.phosphorylated_by.append(class_instance)
-            if isinstance(class_instance, Substrate):
-                # set phosphosite in substrate field in phosphosites table
-                self.phos_in_substrate = class_instance.subs_accession
-                # set the phosphosite <> substrate relationship
-                self.site_in_subs = class_instance
-            if isinstance(class_instance, DiseaseAlteration):
-                # add disease-associated phosphosite alteration to list of
-                # alterations associated with phosphosite
-                self.disease_alterations.append(class_instance)
+        if Kinase in class_instances:
+            # add kinase to list of kinases targeting the phosphosite
+            self.phosphorylated_by.append(class_instances[Kinase])
+        if Substrate in class_instances:
+            subs_instance = class_instances[Substrate]
+            # set phosphosite in substrate field in phosphosites table
+            self.phos_in_substrate = subs_instance.subs_accession
+            # set the phosphosite <> substrate relationship
+            self.site_in_subs = subs_instance
+        if DiseaseAlteration in class_instances:
+            # add disease-associated phosphosite alteration to list of
+            # alterations associated with phosphosite
+            self.disease_alterations.append(
+                class_instances[DiseaseAlteration])
 
 
 class Disease(Base):
@@ -265,13 +265,13 @@ class Disease(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the disease instance. Ignores objects of classes unrelated to
         diseases.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, DiseaseAlteration):
-                # add disease-associated phosphosite alteration to list of
-                # alterations associated with disease
-                self.caused_by_alterations.append(class_instance)
+        if DiseaseAlteration in class_instances:
+            # add disease-associated phosphosite alteration to list of
+            # alterations associated with disease
+            self.caused_by_alterations.append(
+                class_instances[DiseaseAlteration])
 
 
 class DiseaseAlteration(Base):
@@ -318,20 +318,21 @@ class DiseaseAlteration(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the disease alteration instance. Ignores objects of classes
         unrelated to disease alterations.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, Disease):
-                # set disease name field in disease_alterations table
-                self.disalt_disease_name = class_instance.dis_name
-                # set the disease alteration <> disease relationship
-                self.altered_in_disease = class_instance
-            if isinstance(class_instance, Phosphosite):
-                # set the phosphosite group ID field in the disease_alterations
-                # table
-                self.disalt_phosphosite_id = class_instance.phos_group_id
-                # set the disease alteration <> phosphosite relationship
-                self.altered_phosphosite = class_instance
+        if Disease in class_instances:
+            dis_instance = class_instances[Disease]
+            # set disease name field in disease_alterations table
+            self.disalt_disease_name = dis_instance.dis_name
+            # set the disease alteration <> disease relationship
+            self.altered_in_disease = dis_instance
+        if Phosphosite in class_instances:
+            phos_instance = class_instances[Phosphosite]
+            # set the phosphosite group ID field in the disease_alterations
+            # table
+            self.disalt_phosphosite_id = phos_instance.phos_group_id
+            # set the disease alteration <> phosphosite relationship
+            self.altered_phosphosite = phos_instance
 
 
 class Inhibitor(Base):
@@ -391,12 +392,11 @@ class Inhibitor(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the inhibitor instance. Ignores objects of classes unrelated
         to inhibitors.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, Kinase):
-                # add kinase to list of kinases targeted by inhibitor
-                self.inhib_target_kinases.append(class_instance)
+        if Kinase in class_instances:
+            # add kinase to list of kinases targeted by inhibitor
+            self.inhib_target_kinases.append(class_instances[Kinase])
 
 
 class CellularLocation(Base):
@@ -425,12 +425,11 @@ class CellularLocation(Base):
         Given a list of class instances, populates foreign key and relationship
         fields of the location instance. Ignores objects of classes unrelated
         to locations.
-        :param class_instances: list of any class instances (list)
+        :param class_instances: dictionary mapping Class: class_instance (dict)
         """
-        for class_instance in class_instances:
-            if isinstance(class_instance, Kinase):
-                # add kinase to list of kinases in the cellular location
-                self.kin_in_loc.append(class_instance)
+        if Kinase in class_instances:
+            # add kinase to list of kinases in the cellular location
+            self.kin_in_loc.append(class_instances[Kinase])
 
 
 # # Create database tables/schema
