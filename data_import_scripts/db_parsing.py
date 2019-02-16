@@ -96,6 +96,12 @@ bindingDB_source_df.columns = bindingDB_source_df.columns.str.replace(" ", "_")
 bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_"
                                     "Curator_or_DataSource":"ORGANISM"}, 
                            inplace=True)
+# Remove lines without PubChem CID
+bindingDB_source_df = \
+    bindingDB_source_df[bindingDB_source_df.PubChem_CID != '']
+# set PubChem CID to integer
+bindingDB_source_df[['PubChem_CID']] = \
+    bindingDB_source_df[['PubChem_CID']].astype(int)
 
 # --------------------------------------------------------------------------- #  
 
