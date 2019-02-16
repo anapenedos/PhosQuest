@@ -1,56 +1,77 @@
-##############################################################################
-### Script for importing, filtering & parsing phospho and inhibitor tables ###
-##############################################################################
+### Script for importing, filtering & parsing phospho and inhibitor tables.
 
-##-------------------------------------------------------------------------------------------------------------------------##
+# --------------------------------------------------------------------------- #
 
-# Import package "pandas" into environment as pd
-# Import packages "csv" into environment
+### Import packages into environment.
 import pandas as pd
 import csv
 import os.path
 
-##-------------------------------------------------------------------------------------------------------------------------##
+# --------------------------------------------------------------------------- #
 
-################################################
-### Read databases and convert to dataframes ###
-################################################
-
-### Read "Kinase_Substrate_Data" source database and assign to dataframe variable ###
+### Read "Kinase_Substrate_Data" database & convert to data frame.
 kin_sub_path = os.path.join('db_source_tables', 'PhosphoSitePlus',
                             'Kinase_Substrate_Dataset')
 kin_sub_source_df = pd.read_table(kin_sub_path,
-                                  skiprows=3)  # Skip first 3 rows of file
-                                               # PhosphoSitePlus DBs contain 3 line info headers
-
-### Read "Phosphorylation_site_dataset" source database and assign to dataframe variable ###
+                                  skiprows=3)  # Skip first 3 rows of file.
+                                               # PhosphoSitePlus DBs contain
+                                               # 3 line info headers.
+# --------------------------------------------------------------------------- #
+                                               
+### Read "Phosphorylation_site_dataset" database & convert to data frame.
 phos_sites_path = os.path.join('db_source_tables', 'PhosphoSitePlus',
                                'Phosphorylation_site_dataset')
 phos_sites_source_df = pd.read_table(phos_sites_path,
                                      skiprows=3)
 
-### Read "Disease-associated_sites" source database and assign to dataframe variable ###
+# --------------------------------------------------------------------------- #
+
+### Read "Disease-associated_sites" database & convert to data frame.
 dis_sites_path = os.path.join('db_source_tables', 'PhosphoSitePlus',
                               'Disease-associated_sites')
 dis_sites_source_df = pd.read_table(dis_sites_path,
                                     skiprows=3)
 
-### Read "Regulatory_sites" source database and assign to dataframe variable ###
+# Remove any rows that have no value in either DISEASE or SITE_GRP_ID
+dis_sites_source_df.dropna(subset=['DISEASE', 'SITE_GRP_ID'],
+                           inplace=True)
+
+# Change nan in 'ALTERATION' to 'unknown'.
+dis_sites_source_df["ALTERATION"] = dis_sites_source_df["ALTERATION"].replace\
+                                    ({pd.np.nan: 'unknown'})
+# Change dtype in 'PMIDs' and 'SITE_GRP_ID' to integer
+dis_sites_source_df[['PMIDs', 'SITE_GRP_ID']] = \
+    dis_sites_source_df[['PMIDs', 'SITE_GRP_ID']].astype(int)
+
+# --------------------------------------------------------------------------- #
+
+### Read "Regulatory_sites" database & convert to dataframe.
 reg_sites_path = os.path.join('db_source_tables', 'PhosphoSitePlus',
                               'Regulatory_sites')
-with open(reg_sites_path) as rsdb:  # Open regulatory sites db
-    rsdb_tbl = []                        # Empty list to append rows from db
-    rd = csv.reader(rsdb,                # Create reader object with db data
-                    delimiter="\t")      # Specify table separator
-    for row in rd:                       # Iterate through rows in reader object
-        rsdb_tbl.append(row)             # Append rows to empty list
-    
-reg_sites_source_df = pd.DataFrame(rsdb_tbl[3:])  # Transform db list object to dataframe from row 4
-reg_sites_headers = reg_sites_source_df.iloc[0]   # Define first row as header
-reg_sites_source_df = reg_sites_source_df[1:]     # Define data as table less the header row
-reg_sites_source_df.columns = reg_sites_headers   # Define header row as the column headers
 
-### Read "BindingDB_BindingDB_inhibition" database and assign to variable ###
+with open(reg_sites_path) as rsdb:  # Open regulatory sites db.
+    rsdb_tbl = []                   # Empty list to append rows from db.
+    rd = csv.reader(rsdb,           # Create reader object with db data.
+                    delimiter="\t") # Specify table separator.
+    for row in rd:                  # Iterate through rows in reader object.
+        rsdb_tbl.append(row)        # Append rows to empty list.
+
+# Transform db list object to dataframe from row 4.    
+reg_sites_source_df = pd.DataFrame(rsdb_tbl[3:])  
+# Define first row as header.
+reg_sites_headers = reg_sites_source_df.iloc[0] 
+# Define data as table less the header row.  
+reg_sites_source_df = reg_sites_source_df[1:]  
+# Define header row as the column headers.  
+reg_sites_source_df.columns = reg_sites_headers
+
+# Change dtype in 'SITE_GRP_ID' to integer
+reg_sites_source_df[['SITE_GRP_ID']] = \
+    reg_sites_source_df[['SITE_GRP_ID']].astype(int)
+
+# --------------------------------------------------------------------------- #
+
+### Read "BindingDB_BindingDB_inhibition" database & convert to dataframe.
 bindingDB_path = os.path.join('db_source_tables', 'BindingDB',
                               'BindingDB_BindingDB_Inhibition.tsv')
 with open(bindingDB_path, encoding="Latin-1") as bdb:
@@ -59,108 +80,62 @@ with open(bindingDB_path, encoding="Latin-1") as bdb:
                     delimiter="\t")
     for row in rd:
         bdb_tbl.append(row)
-    
-bindingDB_source_df = pd.DataFrame(bdb_tbl)      
-bindingDB_headers = bindingDB_source_df.iloc[0]  
-bindingDB_source_df = bindingDB_source_df[1:]    
-bindingDB_source_df.columns = bindingDB_headers
 
-# Replace headers spaces with underscore
+# Transform db list object to dataframe.    
+bindingDB_source_df = pd.DataFrame(bdb_tbl)  
+# Define first row as header.    
+bindingDB_headers = bindingDB_source_df.iloc[0]  
+# Define data as table less the header row. 
+bindingDB_source_df = bindingDB_source_df[1:] 
+# Define header row as the column headers.    
+bindingDB_source_df.columns = bindingDB_headers
+# Replace header spaces with underscore
 bindingDB_source_df.columns = bindingDB_source_df.columns.str.replace(" ", "_")  
 
-# Replace column header for target organism to something more sensible
-bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_Curator_or_DataSource":"ORGANISM"}, 
+# Replace column header for target organism, to something more sensible
+bindingDB_source_df.rename(columns={"Target_Source_Organism_According_to_"
+                                    "Curator_or_DataSource":"ORGANISM"}, 
                            inplace=True)
-  
 
-### Read "kinase_inhibitor_list_2019-01-14T19-38-48" MRC source database and assign to variable ###
+# --------------------------------------------------------------------------- #  
+
+### Read MRC inhibitor database & convert to data frame.
 mrc_inhib_path = os.path.join('db_source_tables', 'MRC_curated_DB',
                               'kinase_inhibitor_list_2019-01-14T19-38-48.csv')
 mrc_inhib_source = pd.read_csv(mrc_inhib_path)
 
-##-------------------------------------------------------------------------------------------------------------------------##
+# Parse rows that have entries in "Action" field
+mrc_inhib_source = mrc_inhib_source[mrc_inhib_source["Action"].notnull()]
+# Parse rows that have entries in "PubChem CID" field
+mrc_inhib_source = mrc_inhib_source[mrc_inhib_source["PubChem CID"].notnull()]
+# Change dtype in 'PubChem CID' to integer
+mrc_inhib_source[['PubChem CID']] = \
+    mrc_inhib_source[['PubChem CID']].astype(int)
+# Change dtype of 'MW' to float
+mrc_inhib_source[['MW']] = mrc_inhib_source[['MW']].astype(float)
 
-#################################################################
-### Filter tables for human entries only and pass to variable ###
-#################################################################
+# --------------------------------------------------------------------------- # 
+
+### Filter tables for human entries only and pass to variable.
 
 # Parse "Kinase_Substrate_Dataset" db human entries and pass to variable
-kin_sub_human = kin_sub_source_df[(kin_sub_source_df.KIN_ORGANISM == "human") & (kin_sub_source_df.SUB_ORGANISM == "human")]
+kin_sub_human = kin_sub_source_df[(kin_sub_source_df.KIN_ORGANISM == "human") & 
+                                  (kin_sub_source_df.SUB_ORGANISM == "human")]
 
 # Parse "Phosphorylation_site_dataset" db human entries and pass to variable
-phos_sites_human = phos_sites_source_df[(phos_sites_source_df.ORGANISM == "human")]
+phos_sites_human = phos_sites_source_df[(phos_sites_source_df.ORGANISM==\
+                                         "human")]
 
 # Parse "Disease-associated_sites" db human entries and pass to variable
-dis_sites_human = dis_sites_source_df[(dis_sites_source_df.ORGANISM == "human")]
+dis_sites_human = dis_sites_source_df[(dis_sites_source_df.ORGANISM==\
+                                       "human")]
 
 # Parse "Regulatory_sites" db human entries and pass to variable
-reg_sites_human = reg_sites_source_df[(reg_sites_source_df.ORGANISM == "human")]
+reg_sites_human = reg_sites_source_df[(reg_sites_source_df.ORGANISM==\
+                                       "human")]
 
 # Parse "BindingDB" inhibitor database human entries and pass to variable
-bindingDB_human = bindingDB_source_df[(bindingDB_source_df.ORGANISM == "Homo sapiens")]
+bindingDB_human = bindingDB_source_df[(bindingDB_source_df.ORGANISM==\
+                                       "Homo sapiens")]
 
-##-------------------------------------------------------------------------------------------------------------------------##
-
-####################################################################################
-### Extract max length of strings in database dataframe columns - for sqlalchemy ###
-####################################################################################
-
-### KINASE/SUBSTRATE DATAFRAME ###
-
-# # Kinase accession number
-# kin_acc_num_len = int(kin_sub_human["KIN_ACC_ID"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Kinase name
-# kin_name_len = int(kin_sub_human["KINASE"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Kinase gene
-# kin_gene_len = int(kin_sub_human["GENE"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate accession number
-# subs_acc_num_len = int(kin_sub_human["SUB_ACC_ID"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate name
-# subs_name_len = int(kin_sub_human["SUBSTRATE"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate gene
-# subs_gene_len = int(kin_sub_human["SUB_GENE"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate modified residue
-# subs_mod_res_len = int(kin_sub_human["SUB_MOD_RSD"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate domain
-# subs_domain_len = int(kin_sub_human["DOMAIN"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate site motif +/- 7 amino acid residues
-# subs_motif_len = int(kin_sub_human["SITE_+/-7_AA"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Substrate Cell Signalling Technology antibody cat#
-# subs_ab_len = int(kin_sub_human["CST_CAT#"].str.encode(encoding='utf-8').str.len().max())
-#
-# ### PHOSPHO SITES DATAFRAME ###
-#
-# # Phospho site group ID
-# phos_categ_id_len = int(phos_sites_human["SITE_GRP_ID"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Phospho site
-# phos_site_len = int(phos_sites_human["MOD_RSD"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Human chromosome location
-# phos_genomic_loc_len = int(phos_sites_human["HU_CHR_LOC"].str.encode(encoding='utf-8').str.len().max())
-#
-# ### MRC INHIBITOR DATABASE ###
-#
-# # Inhibitor ID
-# # ok who wants a go? I can't work it out...grrrhhh
-#
-# # Molecular formula
-# inhib_chem_struct_len = int(mrc_inhib_source["Brutto"].str.encode(encoding='utf-8').str.len().max())
-#
-# # Inhibitor name
-# inhib_name_len = int(mrc_inhib_source["Inhibitor"].str.encode(encoding='utf-8').str.len().max())
-
-##-------------------------------------------------------------------------------------------------------------------------##
-
-
-                      
-                                      
+# --------------------------------------------------------------------------- # 

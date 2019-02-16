@@ -10,7 +10,7 @@ from data_access.sqlalchemy_declarative import Base, Kinase, Substrate, \
     Phosphosite, Disease, DiseaseAlteration, Inhibitor, CellularLocation, \
     kinases_inhibitors_table, kinases_phosphosites_table
 # data import data frames
-from data_import_scripts.db_parsing_v2 import kin_sub_human, \
+from data_import_scripts.db_parsing import kin_sub_human, \
     phos_sites_human, reg_sites_human, dis_sites_human, mrc_inhib_source
 # dataframe headings to class attribute dictionaries
 from data_import_scripts.dataframes_to_attributes \
