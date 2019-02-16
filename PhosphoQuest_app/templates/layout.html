@@ -68,9 +68,12 @@
             <h3>Browse Database</h3>
             <p class='text-muted'>Categories
               <ul class="list-group">
-                <li class="list-group-item list-group-item-dark">Kinases</li>
-                <li class="list-group-item list-group-item-dark">Substrates</li>
-                <li class="list-group-item list-group-item-dark">Inhibitors</li>
+                <li class="list-group-item list-group-item-dark">
+                    <a href = {{url_for('browse.browse_cat', category="kinase")}}>Kinases</a></li>
+                <li class="list-group-item list-group-item-dark">
+                    <a href = {{url_for('browse.browse_cat', category="substrate")}}>Substrates</a></li>
+                <li class="list-group-item list-group-item-dark">
+                    <a href = {{url_for('browse.browse_cat', category="inhibitor")}}>Inhibitors</a></li>
                 <li class="list-group-item list-group-item-dark">Diseases</li>
               </ul>
             </p>
