@@ -3,11 +3,21 @@
 {% block content %}
 <H2> Choose browse category</H2>
 <br>
-<H3><a href="{{url_for('browse.browse_cat', category='kinase')}}">Kinases</a></H3>
-<br>
-<H3><a href="{{url_for('browse.browse_cat', category='substrate')}}">Substrates</a></H3>
-<br>
-<H3><a href="{{url_for('browse.browse_cat', category='inhibitor')}}">Inhibitors</a></H3>
+<p class="lead">
+    <a class="btn btn-info btn-block btn-lg"
+       href="{{url_for('browse.browse_cat', category='kinase')}}" role="button">
+        Kinases</a>
+</p>
+<p class="lead">
+    <a class="btn btn-info btn-block btn-lg"
+       href="{{url_for('browse.browse_cat', category='substrate')}}" role="button">
+        Substrates</a>
+</p>
+<p class="lead">
+    <a class="btn btn-info btn-block btn-lg"
+       href="{{url_for('browse.browse_cat', category='Inhibitors')}}" role="button">
+        Inhibitors</a>
+</p>
 
 {% endblock content %}
 
