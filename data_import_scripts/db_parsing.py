@@ -163,6 +163,12 @@ def bdb_inhib_import(path):
                           "Curator_or_DataSource":"ORGANISM"}, 
                            inplace=True)
     
+    # Remove lines without PubChem CID
+    db_df = db_df[db_df.PubChem_CID != '']
+    
+    # set PubChem CID to integer
+    db_df[['PubChem_CID']] = db_df[['PubChem_CID']].astype(int)
+    
     # Parse db human entries and pass to variable.
     db_human = db_df[(db_df.ORGANISM == "Homo sapiens")]
 

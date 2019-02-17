@@ -30,7 +30,7 @@
 <body>
 <!--add header bar with bootstrap classes-->
     <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <nav class="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
         <div class="container">
           <a class="navbar-brand mr-4" href="/">PhosphoQuest</a>
           <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -41,14 +41,9 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_db') }}">Browse</a>
+              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
               <a class="nav-item nav-link" href= "{{ url_for('search.search_db') }}" >Search</a>
               <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
-            </div>
-            <!--Navbar Right Side-->
-            <div class="navbar-nav">
-              <!--a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
-              <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a-->
             </div>
           </div>
         </div>

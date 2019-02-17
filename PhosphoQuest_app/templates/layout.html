@@ -27,7 +27,7 @@
 <body>
 <!--add header bar with bootstrap classes-->
 <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
+      <nav class="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
         <div class="container">
           <a class="navbar-brand mr-4" href="/">PhosphoQuest </a>
           <button class="navbar-toggler" type="button" data-toggle="collapse"
@@ -38,7 +38,7 @@
           <div class="collapse navbar-collapse" id="navbarToggle">
             <div class="navbar-nav mr-auto">
               <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_db') }}">Browse</a>
+              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
               <a class="nav-item nav-link" href= "{{ url_for('search.search_db') }}" >Search</a>
               <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
             </div>
@@ -68,15 +68,21 @@
             <h3>Browse Database</h3>
             <p class='text-muted'>Categories
               <ul class="list-group">
-                <li class="list-group-item list-group-item-dark">Kinases</li>
-                <li class="list-group-item list-group-item-dark">Substrates</li>
-                <li class="list-group-item list-group-item-dark">Inhibitors</li>
-                <li class="list-group-item list-group-item-dark">Diseases</li>
+                <li class="list-group-item list-group-item-dark">
+                    <a class="navside-item navside-link"
+                            href = {{url_for('browse.browse_cat', category="kinase")}}>Kinases</a></li>
+                <li class="list-group-item list-group-item-dark">
+                    <a class="navside-item navside-link"
+                            href = {{url_for('browse.browse_cat', category="substrate")}}>Substrates</a></li>
+                <li class="list-group-item list-group-item-dark">
+                    <a class="navside-item navside-link"
+                            href = {{url_for('browse.browse_cat', category="inhibitor")}}>Inhibitors</a></li>
+                <li class="list-group-item list-group-item-dark"
+              <a class="navside-item navside-link">Diseases</li></a>
               </ul>
             </p>
           </div>
-        </div>
-      </div>
+        </div>      </div>
     </main>
 
 

@@ -4,23 +4,29 @@ from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import DataTable, TableColumn
 
 def run_all(file):
+    global progress
     """Function to run all crunch analyses"""
     styn, sty = user_data_crunch.create_filtered_dfs(file)
+    progress = 20
 
     corrected_p = user_data_crunch.correct_pvalue(sty)
+    progress = 30
 
     full_sty_sort, parsed_sty_sort =\
         user_data_crunch.table_sort_parse(corrected_p)
+    progress = 40
 
     #collate extracted data as datalist
     a,b,c,d = user_data_crunch.data_extract(full_sty_sort, styn)
 
     datalist = [a,b,c,d]
+    progress = 50
 
         #This can change depending on what is needed for display in route
     all_data = {'styn':styn, 'sty':sty, 'corrected_p':corrected_p,
         'full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
         'datalist':datalist}
+    progress = 60
 
 
     #return all outputs and datalist html tables

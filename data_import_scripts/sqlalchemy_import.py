@@ -61,7 +61,12 @@ def import_data_from_data_frame(df, df_to_class_dict):
     # from the db
     # 2. populate instance class attributes from data frame data
     # 3. generate relationships between instances of different classes
+    num_rows = len(df)
+    processing_row = 1
     for index, row in df.iterrows():
+        # if processing_row % 1000 == 0:
+        #     print('Processing row %i of %i rows in data frame'
+        #           % (processing_row, num_rows))
         # open a SQLite session
         session = DBSession()
 
@@ -122,26 +127,17 @@ def import_data_from_data_frame(df, df_to_class_dict):
         if len(classes_in_df) > 1:
             for class_instance in class_instances.values():
                 class_instance.add_relationships(class_instances)
-            #
-            # # TODO make relationship set up universal
-            # # add relationship fields
-            # kinase_in_row = class_instances[Kinase]
-            # phosphosite_in_row = class_instances[Phosphosite]
-            # substrate_in_row = class_instances[Substrate]
-            # # kinase phosphorylates relationship
-            # kinase_in_row.kin_phosphorylates.append(phosphosite_in_row)
-            # # substrate field in phosphosite table
-            # phosphosite_in_row.phos_in_substrate = substrate_in_row.subs_accession
-            # # phosphosite belongs to substrate relationship
-            # phosphosite_in_row.site_in_subs = substrate_in_row
+        # commit the new/updated objects to the DB
         session.commit()
         session.close()
+        processing_row += 1
+    # print('Completed processing of the data frame %s' % df)
 
 
 # import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
 # import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
-# import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
-import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
+import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
+# import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
 # import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
 
 

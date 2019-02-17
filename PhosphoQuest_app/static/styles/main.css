@@ -8,8 +8,8 @@ h1, h2, h3, h4, h5, h6 {
   color: #444444;
 }
 
-.bg-steel {
-  background-color: #5f788a;
+.bg-blue {
+  background-color: #3c6090;
 }
 
 .site-header .navbar-nav .nav-link {
@@ -23,6 +23,14 @@ h1, h2, h3, h4, h5, h6 {
 .site-header .navbar-nav .nav-link.active {
   font-weight: 500;
 }
+
+.navside-dark .navside-nav .navside-link {
+    font-weight: 500;
+    color: #ffffff;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 
 table.dataframe, .dataframe td {
   border: 1px solid black;
