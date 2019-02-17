@@ -380,7 +380,7 @@ def style_df(phospho_df):
       ('height', '50px'),
       ('position', 'sticky'),
       ('position', '-webkit-sticky'),
-      ('top', '50px'),
+      ('top', '0px'), #should be 50 for app
       ('z-index', '999')
       ]
     
@@ -400,10 +400,11 @@ def style_df(phospho_df):
     
     # Define function to ascertain minimum value in log2 fold column,
     # and highlight as green.
-    def highlight_zero(s):
+    def highlight_zero(val):
         """highlight the minimum in a series green. """
-        is_zero = s == 0
-        return ['background-color: #d65f5f' if v else '' for v in is_zero]
+        is_zero = val == 0
+        color = ['#5fba7d' if phospho_df.iloc[:, 4]==0 else '#d65f5f']
+        return [color if val else '' for val in is_zero]
     
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
@@ -429,14 +430,15 @@ def style_df(phospho_df):
       .set_table_styles(styles)
       
       # Colour cells with 0 in log2 fold column as green.
-      .apply(highlight_zero))
+      .apply(highlight_zero, 
+             subset=["Log2 fold change - condition over control"]))
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
-    #with open("style_df_rename.html","w") as fp:
-        #fp.write(html)
+    with open("style_df_rename.html","w") as fp:
+        fp.write(html)
 
-    return html
+    #return html
 
 # --------------------------------------------------------------------------- #
 
@@ -444,7 +446,7 @@ def style_df(phospho_df):
 if __name__ == "__main__":
 
     #set up runs for testing functions
-    file = 'AZ20.tsv'
+    file = phos_sites_path = os.path.join('user_data', 'AZ20.tsv')
 
     styn, sty = create_filtered_dfs(file)
 
