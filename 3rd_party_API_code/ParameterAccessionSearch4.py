@@ -5,6 +5,7 @@
 
 import io
 import pandas as pd
+import re
 
 ### Import modules
 import urllib.request
@@ -53,5 +54,8 @@ response = urllib.request.urlopen(request)
    #print(page)
 
 df = pd.read_table(response)
+
+df['Subcellular location2'] = df['Subcellular location [CC]'].str.extract('([^SUBCELLULAR LOCATION: ].+(?={))', expand=True)
+
 df.to_csv('output4.csv')
 
