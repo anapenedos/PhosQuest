@@ -18,7 +18,8 @@ def kin_sub_import(path):
     path_var = path.split(",")
     
     # Define path to source data-base.
-    # Note "*" before path triggers unpacking of list.
+    # Note: "*" before path triggers unpacking of list, to a single
+    # string of the correct format to pass to "os.path.join".
     db_path = os.path.join(*path_var)
     
     # Read data-base and pass to data frame.
@@ -42,7 +43,7 @@ def phos_site_import(path):
     path_var = path.split(",")
     
     # Define path to source data-base.
-    # Note "*" before path triggers unpacking of list, to a single
+    # Note: "*" before path triggers unpacking of list, to a single
     # string of the correct format to pass to "os.path.join".
     db_path = os.path.join(*path_var)
     
@@ -65,7 +66,7 @@ def dis_site_import(path):
     path_var = path.split(",")
     
     # Define path to source data-base.
-    # Note "*" before path triggers unpacking of list, to a single
+    # Note: "*" before path triggers unpacking of list, to a single
     # string of the correct format to pass to "os.path.join".
     db_path = os.path.join(*path_var)
     
@@ -97,7 +98,7 @@ def reg_site_import(path):
     path_var = path.split(",")
     
     # Define path to source data-base.
-    # Note "*" before path triggers unpacking of list, to a single
+    # Note: "*" before path triggers unpacking of list, to a single
     # string of the correct format to pass to "os.path.join".
     db_path = os.path.join(*path_var)
     
@@ -122,8 +123,17 @@ def reg_site_import(path):
                                                                       
     # Parse db human entries and pass to variable.
     db_human = db_df[(db_df.ORGANISM == "human")]
+    
+    # Parse sites with only phospho as modification.
+    # Note - column "MOD-RSD" entries with extension to string = "-p".
+    # Regex - parse lines that end with "-p".
+    db_human_phos = \
+        db_human[db_human.iloc[:, 7].str.contains(r"-p$", regex=True)]
+        
+    # Remove "-p" extension to entries.
+    db_human_phos.iloc[:, 7] = db_human_phos.iloc[:, 7].str.replace("-p", "")
 
-    return db_human 
+    return db_human_phos
 
 # --------------------------------------------------------------------------- #
 
@@ -136,7 +146,7 @@ def bdb_inhib_import(path):
     path_var = path.split(",")
     
     # Define path to source data-base.
-    # Note "*" before path triggers unpacking of list, to a single
+    # Note: "*" before path triggers unpacking of list, to a single
     # string of the correct format to pass to "os.path.join".
     db_path = os.path.join(*path_var)
     
@@ -185,7 +195,7 @@ def mrc_inhib_import(path):
     path_var = path.split(",")
     
     # Define path to source data-base.
-    # Note "*" before path triggers unpacking of list, to a single
+    # Note: "*" before path triggers unpacking of list, to a single
     # string of the correct format to pass to "os.path.join".
     db_path = os.path.join(*path_var)
     
