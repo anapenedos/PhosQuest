@@ -18,6 +18,7 @@ from PhosphoQuest_app.main.routes import main
 from PhosphoQuest_app.browse.routes import browse
 from PhosphoQuest_app.search.routes import search
 from PhosphoQuest_app.crunch.routes import crunch
+from PhosphoQuest_app.errors.handlers import errors
 
 # register blueprints with app
 #app.register_blueprint(users)
@@ -25,4 +26,6 @@ app.register_blueprint(main)
 app.register_blueprint(browse)
 app.register_blueprint(search)
 app.register_blueprint(crunch)
+app.register_blueprint(errors)
+
 
