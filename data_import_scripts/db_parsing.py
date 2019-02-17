@@ -158,7 +158,7 @@ def bdb_inhib_import(path):
     # Replace header spaces with underscore
     db_df.columns = db_df.columns.str.replace(" ", "_")  
 
-    # Replace column header for target organism, to something more sensible
+    # Replace column header for target organism, to something more sensible.
     db_df.rename(columns={"Target_Source_Organism_According_to_"
                           "Curator_or_DataSource":"ORGANISM"}, 
                            inplace=True)
