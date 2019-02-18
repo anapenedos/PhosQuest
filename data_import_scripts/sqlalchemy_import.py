@@ -7,20 +7,19 @@ from sqlalchemy.inspection import inspect
 # Project imports
 # classes and join tables
 from data_access.sqlalchemy_declarative import Base, Kinase, Substrate, \
-    Phosphosite, Disease, DiseaseAlteration, Inhibitor, CellularLocation, \
-    kinases_inhibitors_table, kinases_phosphosites_table
+    Phosphosite, Disease, DiseaseAlteration, Inhibitor, CellularLocation
 # data import data frames
 from data_import_scripts.db_parsing import kin_sub_human, \
-    phos_sites_human, reg_sites_human, dis_sites_human, mrc_inhib_source
+    phos_sites_human, reg_sites_human, dis_sites_human, mrc_inhib_source, \
+    bindingDB_human
 # dataframe headings to class attribute dictionaries
 from data_import_scripts.dataframes_to_attributes \
     import kin_sub_human_to_class, phos_sites_human_to_class, \
     reg_sites_human_to_class, dis_sites_human_to_class, \
-    mrc_inhib_source_to_class
+    mrc_inhib_source_to_class, bindingDB_human_to_class
+from data_import_scripts.data_frame_editing import split_multi_value_rows_in_df
 
 
-# TODO solve issue of multi tables to df heading in dict
-# TODO correct dict format
 def import_data_from_data_frame(df, df_to_class_dict):
     """
     Takes in data frame storing kinase substrate info and populates relevant
@@ -61,8 +60,7 @@ def import_data_from_data_frame(df, df_to_class_dict):
     # from the db
     # 2. populate instance class attributes from data frame data
     # 3. generate relationships between instances of different classes
-    num_rows = len(df)
-    processing_row = 1
+    undefined_values = [None, '', ' ', 'nan', 'NaN']
     for index, row in df.iterrows():
         # if processing_row % 1000 == 0:
         #     print('Processing row %i of %i rows in data frame'
@@ -78,16 +76,12 @@ def import_data_from_data_frame(df, df_to_class_dict):
             # df heading corresponds to class and class attribute
             class_name = class_match[0]
             class_attr = class_match[1]
-            # if the df heading contains a primary key, add key value to dict
-            if class_attr in classes_keys[class_name]:
-                # append the new (key_attr, key_value) tuple to the
-                # new_table_keys dict entry for the class if class in dict
-                if class_name in new_table_keys:
-                    new_table_keys[class_name][class_attr] = row[df_heading]
-                # add class and its first value to new_table_keys dict if
-                # class not in dict
-                else:
-                    new_table_keys[class_name] = {class_attr: row[df_heading]}  # TODO look at setdefault
+            # if the row contains a non-null value and the df heading contains
+            # a primary key, add key value to dict
+            if (class_attr in classes_keys[class_name]) \
+                    and (row[df_heading] not in undefined_values):
+                new_values = new_table_keys.setdefault(class_name, {})
+                new_values[class_attr] = row[df_heading]
 
         # check if records already exist in tables and obtain class instances
         class_instances = {}  # {Class: class_instance, ...}
@@ -120,7 +114,7 @@ def import_data_from_data_frame(df, df_to_class_dict):
                 class_attr = class_match[1]
                 if class_name == instance_class_name:
                     attr = getattr(class_instance, class_attr, None)
-                    if (attr in [None, '', ' ', 'nan', 'NaN']):
+                    if attr in undefined_values:
                         setattr(class_instance, class_attr, row[df_heading])
 
         # if more than one class in the data frame, set up relationships
@@ -130,46 +124,11 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # commit the new/updated objects to the DB
         session.commit()
         session.close()
-        processing_row += 1
-    # print('Completed processing of the data frame %s' % df)
 
 
 # import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
-# import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
+import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
 import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
 # import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
 # import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
-
-
-# pd DF.to_sql
-# if needed,
-# class.attr.primary_key boolean
-# If the model class is User and there are many primary keys,
-# >>> from sqlalchemy.inspection import inspect
-# >>> [key.name for key in inspect(User).primary_key]
-# ['id', 'name']
-
-##############################
-### SQLite useful commands ###
-##############################
-
-#  to get into database
-# from giardello folder in terminal
-# `sqlite3 database/PhosphoQuest.db`
-
-# to show table headers
-# `.header on`
-
-# to how entries in columns
-# `.mode column`
-
-# to show all entries in a TABLE
-# `SELECT * FROM TABLE;`
-
-# to sort results by COLUMN
-# `SELECT * FROM TABLE ORDER BY COLUMN;`
-
-# to count all entries in a TABLE
-# `SELECT COUNT(*) FROM TABLE;`
-
-
+# import_data_from_data_frame(bindingDB_human, bindingDB_human_to_class)

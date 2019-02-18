@@ -82,15 +82,19 @@ mrc_inhib_source_to_class = {
     'Inhibitor'        : (Inhibitor, 'inhib_short_name'),
     'Brutto'           : (Inhibitor, 'inhib_brutto'),
     'MW'               : (Inhibitor, 'inhib_molec_weight'),
-    'Action'           : (Kinase,    'kin_short_name'),
-    'Reference'        : (Inhibitor, 'inhib_bibl_references'),
-    'Reference 2'      : (Inhibitor, 'inhib_bibl_references'),
     'Commercial Vendor': (Inhibitor, 'inhib_vendor'),
     'CAS'              : (Inhibitor, 'inhib_catalog_number'),
     'InChI'            : (Inhibitor, 'inhib_int_chem_id'),
     'InChI Key'        : (Inhibitor, 'inhib_int_chem_id_key'),
     'PubChem CID'      : (Inhibitor, 'inhib_pubchem_cid'),
     'SMILES'           : (Inhibitor, 'inhib_smile')
+}
+
+bindingDB_human_to_class = {
+    'PubChem_CID':
+        (Inhibitor, 'inhib_pubchem_cid'),
+    'UniProt_(SwissProt)_Primary_ID_of_Target_Chain':
+        (Kinase, 'kin_accession')
 }
 
 """
