@@ -356,6 +356,7 @@ def heat_map(phospho_df,prefix):
 def style_df(phospho_df):
     """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
     and render/export as html. """
+    # Parse subset of significant phospho hits.
     phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
                              phospho_df.columns[1],   # Phospho_site_ID.
                              phospho_df.columns[4],   # Fold_cont_over_max.
@@ -368,7 +369,8 @@ def style_df(phospho_df):
     idx_col = range(1, (len(phospho_df)+1)) # Specify range as 1:len(df)+1
     phospho_df.insert(loc=idx, column="Number", value=idx_col) # Insert.
     
-    # Set CSS properties for table header/index in dataframe.
+    # Set CSS properties for pandas.style object.
+    # CSS properties for table header/index in dataframe.
     th_props = [
       ('font-size', '16px'),
       ('font-family', 'Calibri'),
@@ -380,11 +382,11 @@ def style_df(phospho_df):
       ('height', '50px'),
       ('position', 'sticky'),
       ('position', '-webkit-sticky'),
-      ('top', '50px'), #should be 50 for app
+      ('top', '50px'),
       ('z-index', '999')
       ]
     
-    # Set CSS properties for table data in dataframe.
+    # CSS properties for table data in dataframe.
     td_props = [
       ('font-size', '12px'),
       ('border', '1px solid black'),
@@ -398,40 +400,48 @@ def style_df(phospho_df):
       dict(selector="td", props=td_props)
       ]
     
-    # Define function to ascertain minimum value in log2 fold column,
-    # and highlight as green.
-
-#    def highlight_zero(val):
-#        """highlight the minimum in a series green. """
-#        is_zero = val == 0
-#        color = ['#5fba7d' if phospho_df.iloc[:, 4]==0 else '#d65f5f']
-#        return [color if val else '' for val in is_zero]
+    # ----------------------------------------------------------------------- # 
+    ### Sub-functions to ascertain unique phospho-hits, 
+    ### and differentially colour log2 fold chnage columns.
 
     def colour_cond_uniques(phospho_df):
-        """ Highlight with green, log2 fold column cells that correspond 
-        to unique hits in control. """
+        """ Function to block fill with green, Log2 fold column cells that
+        correspond to unique hits in control. """
+        # Define colour for filling cells.
         col1 = "background-color: #5fba7d"
         col2 = ""
-        mask1 = phospho_df["Fold control over max"]==0 
-       
-        df =  pd.DataFrame(col2, index=phospho_df.index, columns=phospho_df.columns)
-        df.loc[mask1, "Log2 fold change - condition over control"] = col1
+        # Define boolean mask array. Pre-requisite for indexing a data frame,
+        # that matches boolean criteria. 
+        mask = phospho_df["Fold control over max"]==0 
+        # Data frame matching index & and columns of "phospho_df", filled
+        # with empty strings.
+        df =  pd.DataFrame(col2, index=phospho_df.index, 
+                           columns=phospho_df.columns)
+        # Index df by booelan array and apply color to log2 fold cells,
+        # with matching criteria.
+        df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
     
     def colour_cont_uniques(phospho_df):
-        """ Highlight with red, log2 fold column cells that correspond 
-        to unique hits in condition. """
+        """ Function to block fill with red, Log2 fold column cells that
+        correspond to unique hits in condition. """
+        # Define colour for filling cells.
         col1 = "background-color: #d65f5f"
         col2 = ""
-        mask1 = phospho_df["Fold condition over max"]==0 
-       
-        df =  pd.DataFrame(col2, index=phospho_df.index, columns=phospho_df.columns)
-        df.loc[mask1, "Log2 fold change - condition over control"] = col1
+        # Define boolean mask array. Pre-requisite for indexing a data frame,
+        # that matches boolean criteria.
+        mask = phospho_df["Fold condition over max"]==0 
+        # Data frame matching index & and columns of "phospho_df", filled
+        # with empty strings.
+        df =  pd.DataFrame(col2, index=phospho_df.index, 
+                           columns=phospho_df.columns)
+        # Index df by booelan array and apply color to log2 fold cells,
+        # with matching criteria.
+        df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
     
-    #def zero_to_string(phospho_df):
+    # ----------------------------------------------------------------------- # 
         
-    
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
       # Use "background_gradient" method to apply heatmap to table
@@ -453,18 +463,12 @@ def style_df(phospho_df):
       .set_precision(2)
       
       # Pass CSS styling to styled table.
-      .set_table_styles(styles))
-      
-
-      # Colour cells with 0 in log2 fold column as green.
-#      .apply(highlight_zero, 
-#             subset=["Log2 fold change - condition over control"]))
+      .set_table_styles(styles)
 
       # Colour cells with 0 in control log2 fold column as green,
       # or red if cells with 0 in condition log2 fold column.
       .apply(colour_cond_uniques, axis=None)
       .apply(colour_cont_uniques, axis=None))
-
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
