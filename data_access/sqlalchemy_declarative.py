@@ -374,18 +374,17 @@ class Inhibitor(Base):
                                         back_populates='kin_inhibitors')
 
     def __repr__(self):
-        return "<Inhibitor(inhibitor ID='%s', short name='%s', " \
+        return "<Inhibitor(PubChem ID='%s', short name='%s', " \
                           "full name='%s', brutto='%s', " \
-                          "molec. weight (g/mol)='%s', " \
-                          "chemical structure='%s', SMILE='%s', InChI='%s', " \
-                          "InChI key='%s', references='%s', vendor='%s', " \
-                          "catalog#='%s')>" \
+                          "molec. weight (g/mol)='%s', SMILE='%s', " \
+                          "InChI='%s', InChI key='%s', references='%s', " \
+                          "vendor='%s', catalog#='%s')>" \
                % (self.inhib_pubchem_cid, self.inhib_short_name,
                   self.inhib_full_name, self.inhib_brutto,
-                  self.inhib_molec_weight, self.inhib_chem_structure,
-                  self.inhib_smile, self.inhib_int_chem_id,
-                  self.inhib_int_chem_id_key, self.inhib_bibl_references,
-                  self.inhib_vendor, self.inhib_catalog_number)
+                  self.inhib_molec_weight, self.inhib_smile,
+                  self.inhib_int_chem_id, self.inhib_int_chem_id_key,
+                  self.inhib_bibl_references, self.inhib_vendor,
+                  self.inhib_catalog_number)
 
     def add_relationships(self, class_instances):
         """

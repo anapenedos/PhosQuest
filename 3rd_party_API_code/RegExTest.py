@@ -6,5 +6,5 @@ example = {'Subcellular location [CC]': ['SUBCELLULAR LOCATION: Mitochondrion in
 dftest = pd.DataFrame(example, columns = ['Subcellular location [CC]'])
 dftest
 
-dftest['Subcellular location2'] = dftest['Subcellular location [CC]'].str.extract('(SUBCELLULAR LOCATION: .+(?={))', expand=True)
+dftest['Subcellular location2'] = dftest['Subcellular location [CC]'].str.extract('([^SUBCELLULAR LOCATION: ].+(?={))', expand=True)
 dftest['Subcellular location2']

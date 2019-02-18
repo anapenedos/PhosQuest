@@ -400,11 +400,37 @@ def style_df(phospho_df):
     
     # Define function to ascertain minimum value in log2 fold column,
     # and highlight as green.
+
 #    def highlight_zero(val):
 #        """highlight the minimum in a series green. """
 #        is_zero = val == 0
 #        color = ['#5fba7d' if phospho_df.iloc[:, 4]==0 else '#d65f5f']
 #        return [color if val else '' for val in is_zero]
+
+    def colour_cond_uniques(phospho_df):
+        """ Highlight with green, log2 fold column cells that correspond 
+        to unique hits in control. """
+        col1 = "background-color: #5fba7d"
+        col2 = ""
+        mask1 = phospho_df["Fold control over max"]==0 
+       
+        df =  pd.DataFrame(col2, index=phospho_df.index, columns=phospho_df.columns)
+        df.loc[mask1, "Log2 fold change - condition over control"] = col1
+        return df
+    
+    def colour_cont_uniques(phospho_df):
+        """ Highlight with red, log2 fold column cells that correspond 
+        to unique hits in condition. """
+        col1 = "background-color: #d65f5f"
+        col2 = ""
+        mask1 = phospho_df["Fold condition over max"]==0 
+       
+        df =  pd.DataFrame(col2, index=phospho_df.index, columns=phospho_df.columns)
+        df.loc[mask1, "Log2 fold change - condition over control"] = col1
+        return df
+    
+    #def zero_to_string(phospho_df):
+        
     
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
@@ -429,9 +455,16 @@ def style_df(phospho_df):
       # Pass CSS styling to styled table.
       .set_table_styles(styles))
       
+
       # Colour cells with 0 in log2 fold column as green.
 #      .apply(highlight_zero, 
 #             subset=["Log2 fold change - condition over control"]))
+
+      # Colour cells with 0 in control log2 fold column as green,
+      # or red if cells with 0 in condition log2 fold column.
+      .apply(colour_cond_uniques, axis=None)
+      .apply(colour_cont_uniques, axis=None))
+
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
