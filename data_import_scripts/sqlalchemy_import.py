@@ -5,19 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.inspection import inspect
 
 # Project imports
-# classes and join tables
-from data_access.sqlalchemy_declarative import Base, Kinase, Substrate, \
-    Phosphosite, Disease, DiseaseAlteration, Inhibitor, CellularLocation
-# data import data frames
-from data_import_scripts.db_parsing import kin_sub_human, \
-    phos_sites_human, reg_sites_human, dis_sites_human, mrc_inhib_source, \
-    bindingDB_human
-# dataframe headings to class attribute dictionaries
-from data_import_scripts.dataframes_to_attributes \
-    import kin_sub_human_to_class, phos_sites_human_to_class, \
-    reg_sites_human_to_class, dis_sites_human_to_class, \
-    mrc_inhib_source_to_class, bindingDB_human_to_class
-from data_import_scripts.data_frame_editing import split_multi_value_rows_in_df
+# Base SQLalchemy class
+from data_access.sqlalchemy_declarative import Base
 
 
 def import_data_from_data_frame(df, df_to_class_dict):
@@ -124,11 +113,3 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # commit the new/updated objects to the DB
         session.commit()
         session.close()
-
-
-# import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
-import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
-import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
-# import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
-# import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
-# import_data_from_data_frame(bindingDB_human, bindingDB_human_to_class)

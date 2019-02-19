@@ -1,8 +1,6 @@
-from sqlalchemy import create_engine, \
-                       ForeignKey, Table, Column, Integer, String, Float
+from sqlalchemy import ForeignKey, Table, Column, Integer, String, Float
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
-import os
 
 
 # initiates a base sqlalchemy class that handles python<>SQLite "translation"
@@ -429,13 +427,3 @@ class CellularLocation(Base):
         if Kinase in class_instances:
             # add kinase to list of kinases in the cellular location
             self.kin_in_loc.append(class_instances[Kinase])
-
-
-# # Create database tables/schema
-# # Create engine that stores data in the local directory's
-# # kinases_test.db file.
-# # The echo flag sets up SQLAlchemy logging
-# db_path = os.path.join('database', 'PhosphoQuest.db')
-# engine = create_engine('sqlite:///' + db_path, echo=True)
-# # Create all tables
-# Base.metadata.create_all(engine)
