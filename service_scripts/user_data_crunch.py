@@ -440,6 +440,16 @@ def style_df(phospho_df):
         df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
     
+    def zero_to_string(phospho_df):
+        """ Function to convert zeros in log2 fold change column to string. """
+        # Define boolean mask array. Pre-requisite for indexing a data frame,
+        # that matches boolean criteria.
+        mask = phospho_df["Log2 fold change - condition over control"]!=0 
+        phospho_df.iloc[:,4].where(mask, np.nan, inplace=True)
+        phospho_df.iloc[:,4] = phospho_df.iloc[:,4].replace(np.nan,
+                                                   "Test", regex=True)
+        
+        return phospho_df
     # ----------------------------------------------------------------------- # 
         
     # Pass data frame fields to multiple style methods.
@@ -469,6 +479,7 @@ def style_df(phospho_df):
       # or red if cells with 0 in condition log2 fold column.
       .apply(colour_cond_uniques, axis=None)
       .apply(colour_cont_uniques, axis=None))
+      #.applymap(zero_to_string))
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
@@ -507,3 +518,28 @@ if __name__ == "__main__":
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
 
 # --------------------------------------------------------------------------- #
+    
+#test_df = parsed_sty_sort[[parsed_sty_sort.columns[0],   # Substrate.
+#                           parsed_sty_sort.columns[1],   # Phospho_site_ID.
+#                           parsed_sty_sort.columns[4],   # Fold_cont_over_max.
+#                           parsed_sty_sort.columns[5],   # Fold_cond_over_max.
+#                           parsed_sty_sort.columns[9],   # Log2 fold change.
+#                           parsed_sty_sort.columns[13]]] # Corrected p-value.
+#
+#
+#mask = test_df["Log2 fold change - condition over control"]!=0 
+#test_df.iloc[:,4].where(mask, np.nan, inplace=True)
+#test_df.iloc[:,4] = test_df.iloc[:,4].replace(np.nan, "Test", regex=True)
+#
+#def zero_to_string(test_df):
+#        """ Function to convert zeros in log2 fold change column to string. """
+#        
+#       
+#        # Define boolean mask array. Pre-requisite for indexing a data frame,
+#        # that matches boolean criteria.
+#        mask = test_df["Log2 fold change - condition over control"]!=0 
+#        test_df.iloc[:,4].where(mask, np.nan, inplace=True)
+#        test_df.iloc[:,4] = test_df.iloc[:,4].replace(np.nan,
+#                                                   "Test", regex=True)
+#
+#zero_to_string(test_df)
