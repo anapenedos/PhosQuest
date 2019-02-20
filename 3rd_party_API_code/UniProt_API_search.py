@@ -11,6 +11,7 @@ import pandas as pd
 import urllib.request
 import urllib.parse
 
+
 # --------------------------------------------------------------------------- #
 
 ### UniProt API data access form uniprot website.
