@@ -401,6 +401,7 @@ def style_df(phospho_df):
       ]
     
     # ----------------------------------------------------------------------- # 
+    
     ### Sub-functions to ascertain unique phospho-hits, 
     ### and differentially colour and coerce log2 fold change columns.
 
@@ -443,7 +444,7 @@ def style_df(phospho_df):
     def hide_zero_condition(phospho_df):
         """ Function to hide zero value in log2 fold column for
         condition only hits. """
-        # Define colour for filling cells.
+        # Define colour of printed values.
         col1 = "color: #d65f5f"
         col2 = ""
         # Define boolean mask array. Pre-requisite for indexing a data frame,
@@ -461,7 +462,7 @@ def style_df(phospho_df):
     def hide_zero_control(phospho_df):
         """ Function to hide zero value in log2 fold column for
         control only hits. """
-        # Define colour for filling cells.
+        # Define colour of printed values.
         col1 = "color: #5fba7d"
         col2 = ""
         # Define boolean mask array. Pre-requisite for indexing a data frame,
