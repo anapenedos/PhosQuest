@@ -3,10 +3,19 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.inspection import inspect
+from sqlalchemy.interfaces import PoolListener
+
 
 # Project imports
 # Base SQLalchemy class
 from data_access.sqlalchemy_declarative import Base
+
+
+class MyListener(PoolListener):
+    def connect(self, dbapi_con, con_record):
+        dbapi_con.execute('pragma journal_mode=OFF')
+        dbapi_con.execute('PRAGMA synchronous=OFF')
+        dbapi_con.execute('PRAGMA cache_size=100000')
 
 
 def import_data_from_data_frame(df, df_to_class_dict):
@@ -20,7 +29,8 @@ def import_data_from_data_frame(df, df_to_class_dict):
     """
     # Create engine that stores data to database\<file_name>.db
     db_path = os.path.join('database', 'PhosphoQuest.db')
-    engine = create_engine('sqlite:///' + db_path)
+    engine = create_engine('sqlite:///' + db_path, echo=False,
+                           listeners=[MyListener()])
     # Bind the engine to the metadata of the base class so that the
     # classes can be accessed through a DBSession instance
     Base.metadata.bind = engine
