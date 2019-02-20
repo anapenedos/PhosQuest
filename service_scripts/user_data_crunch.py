@@ -445,8 +445,8 @@ def style_df(phospho_df):
         # Define boolean mask array. Pre-requisite for indexing a data frame,
         # that matches boolean criteria.
         mask = phospho_df["Log2 fold change - condition over control"]!=0 
-        phospho_df.iloc[:,4].where(mask, np.nan, inplace=True)
-        phospho_df.iloc[:,4] = phospho_df.iloc[:,4].replace(np.nan,
+        phospho_df.iloc[:,5].where(mask, np.nan, inplace=True)
+        phospho_df.iloc[:,5] = phospho_df.iloc[:,5].replace(np.nan,
                                                    "Test", regex=True)
         
         return phospho_df
@@ -479,7 +479,8 @@ def style_df(phospho_df):
       # or red if cells with 0 in condition log2 fold column.
       .apply(colour_cond_uniques, axis=None)
       .apply(colour_cont_uniques, axis=None))
-      #.applymap(zero_to_string))
+      #.apply(zero_to_string, subset=phospho_df.iloc[:,5]))
+      
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
@@ -531,15 +532,32 @@ if __name__ == "__main__":
 #test_df.iloc[:,4].where(mask, np.nan, inplace=True)
 #test_df.iloc[:,4] = test_df.iloc[:,4].replace(np.nan, "Test", regex=True)
 #
-#def zero_to_string(test_df):
+#def zero_to_string(df):
 #        """ Function to convert zeros in log2 fold change column to string. """
 #        
 #       
 #        # Define boolean mask array. Pre-requisite for indexing a data frame,
 #        # that matches boolean criteria.
-#        mask = test_df["Log2 fold change - condition over control"]!=0 
-#        test_df.iloc[:,4].where(mask, np.nan, inplace=True)
-#        test_df.iloc[:,4] = test_df.iloc[:,4].replace(np.nan,
-#                                                   "Test", regex=True)
+#        mask = df["Log2 fold change - condition over control"]!=0 
+#        df.iloc[:,4].where(mask, np.nan, inplace=True)
+#        df.iloc[:,4] = df.iloc[:,4].replace(np.nan,"Test", regex=True)
 #
 #zero_to_string(test_df)
+#
+#test_df["Log2 fold change - condition over control"] = pd.to_numeric(test_df["Log2 fold change - condition over control"], errors="Ignore")
+#test_df["Log2 fold change - condition over control"].dtype.kind
+#
+#df = pd.DataFrame(np.random.randn(24).reshape(6, 4))
+#
+## pass multiple style methods to same  data frame
+#styled_df = (df.style
+#             .background_gradient(subset=[0, 1], # background_gradient method
+#                                  low=0, high=0.5,
+#                                  cmap="YlGnBu")
+#             .bar(subset=[2], align='mid',       # bar method
+#                  color=['#d65f5f', '#5fba7d']))
+#
+## Export "styled_df" to html
+#html = styled_df.hide_index().render()
+#with open("html_c.html","w") as fp:
+#   fp.write(html)
