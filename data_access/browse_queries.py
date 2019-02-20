@@ -11,8 +11,8 @@ engine = create_engine(f'sqlite:///{dbpath}')
 Base.metadata.bind = engine
 DBsession = sessionmaker()
 
-def browse_switch(category):
-    """Function to give intermediate level browse results with clicky links"""
+def browse_subcat(category):
+    """Function to give subcategories results """
     # TODO finish switch function work out categories for substrates/inhibitors
     tabledict = {'Kinase': [Kinase, {'Family':Kinase.kin_family,
                         'Cellular_Location': Kinase.kin_cellular_location}]
@@ -21,15 +21,15 @@ def browse_switch(category):
                  #'Inhibitor': Inhibitor}
 
     table, field = category.split("-")
+    #get database field for query
+    #dbtable = tabledict[table][0]
+    dbfield = tabledict[table][1][field]
+    session = DBsession()
+    dbfield = Kinase.kin_gene
 
-    table = tabledict[table][0]
-    field = tabledict[table][1][field]
-
-    #run query for all results from table and field name
-    results = session.query(table).filter(fieldname == field ).all()
-    #create table with individual results for category with links
-    table = Kinase_results(results)
-    return(table)
+    #run query for all distinct reuslts from table and field name
+    subcats = session.query(dbfield.distinct())
+    return(subcats)
 
 
 def browse_link(link):
