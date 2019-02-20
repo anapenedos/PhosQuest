@@ -4,14 +4,16 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.inspection import inspect
 from sqlalchemy.interfaces import PoolListener
-
-
-# Project imports
-# Base SQLalchemy class
 from data_access.sqlalchemy_declarative import Base
+from time import gmtime, strftime
+from datetime import datetime
 
 
 class MyListener(PoolListener):
+    """
+    Class defining session execution in SQLite. Allows OS management of
+    writing to disk operations.
+    """
     def connect(self, dbapi_con, con_record):
         dbapi_con.execute('pragma journal_mode=OFF')
         dbapi_con.execute('PRAGMA synchronous=OFF')
@@ -27,21 +29,16 @@ def import_data_from_data_frame(df, df_to_class_dict):
     :param df_to_class_dict: data frame heading to class & attribute (dict)
                              {'DF header': (Class, 'class_attribute')}
     """
-    # Create engine that stores data to database\<file_name>.db
-    db_path = os.path.join('database', 'PhosphoQuest.db')
-    engine = create_engine('sqlite:///' + db_path, echo=False,
-                           listeners=[MyListener()])
-    # Bind the engine to the metadata of the base class so that the
-    # classes can be accessed through a DBSession instance
-    Base.metadata.bind = engine
-    # DB session to connect to DB and keep any changes in a "staging zone"
-    DBSession = sessionmaker(bind=engine)
-
-    # get classes in data frame
+    start_time = datetime.now()
+    print('Started processing data frame\n%s\n'
+          'Current time: %s)'
+          % (df.head(3), start_time.strftime("%Y-%m-%d %H:%M:%S")))
+    # get classes in data frame from dict function argument
     classes_in_df = set()
-    for df_heading, class_match in df_to_class_dict.items():
-        class_name = class_match[0]
-        classes_in_df.add(class_name)
+    for df_heading, class_matches in df_to_class_dict.items():
+        for class_match in class_matches:
+            class_name = class_match[0]
+            classes_in_df.add(class_name)
 
     # get classes primary keys attributes
     classes_keys = {}  # {Class: ['key_attr_1', 'key_attr_2'], ...}
@@ -53,17 +50,37 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # primary keys
         classes_keys[class_in_df] = keys_of_class
 
+    # define special type of values that are treated differently
+    undefined_values = [None, '', ' ', 'nan', 'NaN']
+
+    # set up a row counter
+    processed_rows = 0
+    total_records = len(df)
+
+    # Create engine that stores data to database\<file_name>.db
+    db_path = os.path.join('database', 'PhosphoQuest.db')
+    # defines engine as SQLite, uses listeners to implement faster import
+    # (record writing to disk is managed by the OS and hence can occur
+    # simultaneously with data processing
+    engine = create_engine('sqlite:///' + db_path, echo=False,
+                           listeners=[MyListener()])
+    # Bind the engine to the metadata of the base class so that the
+    # classes can be accessed through a DBSession instance
+    Base.metadata.bind = engine
+    # DB session to connect to DB and keep any changes in a "staging zone"
+    DBSession = sessionmaker(bind=engine)
+
     # iterate through the data frame rows (of the data frame containing data to
     # import) to:
     # 1. set up new instances of classes or retrieve existing instances
     # from the db
     # 2. populate instance class attributes from data frame data
     # 3. generate relationships between instances of different classes
-    undefined_values = [None, '', ' ', 'nan', 'NaN']
     for index, row in df.iterrows():
-        # if processing_row % 1000 == 0:
-        #     print('Processing row %i of %i rows in data frame'
-        #           % (processing_row, num_rows))
+        # Issue print statement every 1000 records
+        if processed_rows % 1000 == 0:
+            print('Processing row %i of %i rows in data frame'
+                  % (processed_rows, total_records))
         # open a SQLite session
         session = DBSession()
 
@@ -71,16 +88,17 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # dictionary of class to primary key attributes and key values tuples
         new_table_keys = {}  # {class: {key_attr: key_value, ...}, ...}
         # iterate through dict mapping df_heading: (Class, class_attr)
-        for df_heading, class_match in df_to_class_dict.items():
-            # df heading corresponds to class and class attribute
-            class_name = class_match[0]
-            class_attr = class_match[1]
-            # if the row contains a non-null value and the df heading contains
-            # a primary key, add key value to dict
-            if (class_attr in classes_keys[class_name]) \
-                    and (row[df_heading] not in undefined_values):
-                new_values = new_table_keys.setdefault(class_name, {})
-                new_values[class_attr] = row[df_heading]
+        for df_heading, class_matches in df_to_class_dict.items():
+            for class_match in class_matches:
+                # df heading corresponds to class and class attribute
+                class_name = class_match[0]
+                class_attr = class_match[1]
+                # if the row contains a non-null value and the df heading
+                # contains a primary key, add key value to dict
+                if (class_attr in classes_keys[class_name]) \
+                        and (row[df_heading] not in undefined_values):
+                    new_values = new_table_keys.setdefault(class_name, {})
+                    new_values[class_attr] = row[df_heading]
 
         # check if records already exist in tables and obtain class instances
         class_instances = {}  # {Class: class_instance, ...}
@@ -91,7 +109,7 @@ def import_data_from_data_frame(df, df_to_class_dict):
             for key_attr, key_value in keys_info.items():
                 query_res = query_res.filter(
                     getattr(class_name, key_attr) == key_value)
-            # given query_res was filtered by all primary keys in table, it
+            # given query_res was filtered on all primary keys in table, it
             # should now list a single instance, which can be obtained with
             # .first
             query_res = query_res.first()
@@ -108,13 +126,18 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # get remaining attributes for each instance
         for instance_class_name, class_instance in class_instances.items():
             # get the class attributes
-            for df_heading, class_match in df_to_class_dict.items():
-                class_name = class_match[0]
-                class_attr = class_match[1]
-                if class_name == instance_class_name:
-                    attr = getattr(class_instance, class_attr, None)
-                    if attr in undefined_values:
-                        setattr(class_instance, class_attr, row[df_heading])
+            for df_heading, class_matches in df_to_class_dict.items():
+                for class_match in class_matches:
+                    class_name = class_match[0]
+                    class_attr = class_match[1]
+                    if class_name == instance_class_name:
+                        attr = getattr(class_instance, class_attr, None)
+                        # if the existing instance attr is not defined, set it
+                        # to the value in the data frame
+                        if attr in undefined_values:
+                            setattr(class_instance,
+                                    class_attr,
+                                    row[df_heading])
 
         # if more than one class in the data frame, set up relationships
         if len(classes_in_df) > 1:
@@ -123,3 +146,13 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # commit the new/updated objects to the DB
         session.commit()
         session.close()
+
+        # update row counter
+        processed_rows += 1
+    end_time = datetime.now()
+    print('Completed processing %i records in data frame\n%s\n'
+          'Current time: %s\n'
+          'Time elapsed: %s'
+          % (total_records, df.head(3),
+             end_time.strftime("%d-%m-%Y %H:%M:%S"),
+             (end_time - start_time).strftime("%H:%M:%S")))

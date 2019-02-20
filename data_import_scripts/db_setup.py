@@ -72,30 +72,12 @@ mrc_inhib_source = mrc_inhib_import()
 # --------------------------------------------------------------------------- #
 
 # Import data from data frames to SQLite database
-print('Starting kinase/phosphosite data import. This may take some minutes.')
 import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
-print('Completed kinase/phosphosite data set import.')
-
-print('Starting phosphosite/substrate data import. This may take a couple of '
-      'hours.')
 import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
-print('Completed phosphosite/substrate data set import.')
-
-print('Starting regulatory sites data import. This may take some minutes.')
 import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
-print('Completed regulatory sites data set import.')
-
-print('Starting disease alterations data import. This may take some minutes.')
 import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
-print('Completed disease alterations data set import.')
-
-print('Starting MRC inhibitors data import. This may take some minutes.')
 import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
-print('Completed MRC inhibitors data set import.')
-
-print('Starting BindingDB inhibitors data import. This may take some minutes.')
 import_data_from_data_frame(bindingDB_human, bindingDB_human_to_class)
-print('Completed BindingDB inhibitors data set import.')
 
 # --------------------------------------------------------------------------- #
 
