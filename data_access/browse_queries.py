@@ -25,11 +25,16 @@ def browse_subcat(category):
     #dbtable = tabledict[table][0]
     dbfield = tabledict[table][1][field]
     session = DBsession()
-    dbfield = Kinase.kin_gene
 
+    #___TEMPORARY FORCE TO GENE FOR DISPLAY PURPOSES~~~~
+    dbfield = Kinase.kin_gene
+    subcats = []
     #run query for all distinct reuslts from table and field name
-    subcats = session.query(dbfield.distinct())
-    return(subcats)
+    s = session.query(dbfield.distinct()).all()
+    # for item in s:
+    #     subcats.append(item[0])
+    print(type(s))
+    return s
 
 
 def browse_link(link):

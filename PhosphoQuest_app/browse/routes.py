@@ -28,18 +28,18 @@ def browse_cat(category):
                       'Inhibitor-category3']
     }
 
-    if category in categories:
+    if category in categories: # if this is the first specific category level
         links = categories[category]
 
         return render_template('browse_cat.html', title="Browse", links=links,
-                               cat="cat")
+                               cat="cat", category=category)
 
 
-    else:
+    else: # if this is the subcategory level (requiring query)
 
-        subcats = browse_queries.browse_subcat(category)
+        links = browse_queries.browse_subcat(category)
         return render_template('browse_cat.html', title="Browse",
-                               links=subcats, cat="subcat")
+                               links=links, cat="subcat",category=category)
 
 
 
