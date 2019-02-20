@@ -1,4 +1,5 @@
-import re
+### Test area for regular expression functionality.
+
 import pandas as pd
 
 example = {'Subcellular location [CC]': ['SUBCELLULAR LOCATION: Mitochondrion inner membrane {ECO:0000256|RuleBase:RU000369]}']}
