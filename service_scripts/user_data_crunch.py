@@ -402,7 +402,7 @@ def style_df(phospho_df):
     
     # ----------------------------------------------------------------------- # 
     ### Sub-functions to ascertain unique phospho-hits, 
-    ### and differentially colour log2 fold chnage columns.
+    ### and differentially colour and coerce log2 fold change columns.
 
     def colour_cond_uniques(phospho_df):
         """ Function to block fill with green, Log2 fold column cells that
@@ -440,16 +440,52 @@ def style_df(phospho_df):
         df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
     
+    def hide_zero_condition(phospho_df):
+        """ Function to block fill with red, Log2 fold column cells that
+        correspond to unique hits in condition. """
+        # Define colour for filling cells.
+        col1 = "color: #d65f5f"
+        col2 = ""
+        # Define boolean mask array. Pre-requisite for indexing a data frame,
+        # that matches boolean criteria.
+        mask = phospho_df["Fold condition over max"]==0 
+        # Data frame matching index & and columns of "phospho_df", filled
+        # with empty strings.
+        df =  pd.DataFrame(col2, index=phospho_df.index, 
+                           columns=phospho_df.columns)
+        # Index df by booelan array and apply color to log2 fold cells,
+        # with matching criteria.
+        df.loc[mask, "Log2 fold change - condition over control"] = col1
+        return df
+    
+    def hide_zero_control(phospho_df):
+        """ Function to block fill with red, Log2 fold column cells that
+        correspond to unique hits in condition. """
+        # Define colour for filling cells.
+        col1 = "color: #5fba7d"
+        col2 = ""
+        # Define boolean mask array. Pre-requisite for indexing a data frame,
+        # that matches boolean criteria.
+        mask = phospho_df["Fold control over max"]==0 
+        # Data frame matching index & and columns of "phospho_df", filled
+        # with empty strings.
+        df =  pd.DataFrame(col2, index=phospho_df.index, 
+                           columns=phospho_df.columns)
+        # Index df by booelan array and apply color to log2 fold cells,
+        # with matching criteria.
+        df.loc[mask, "Log2 fold change - condition over control"] = col1
+        return df
+        
     def zero_to_string(phospho_df):
         """ Function to convert zeros in log2 fold change column to string. """
         # Define boolean mask array. Pre-requisite for indexing a data frame,
         # that matches boolean criteria.
-        mask = phospho_df["Log2 fold change - condition over control"]!=0 
-        phospho_df.iloc[:,5].where(mask, np.nan, inplace=True)
-        phospho_df.iloc[:,5] = phospho_df.iloc[:,5].replace(np.nan,
-                                                   "Test", regex=True)
+        mask = phospho_df["Log2 fold change - condition over control"]==0 
+#        phospho_df.iloc[:,5].where(mask, np.nan, inplace=True)
+#        phospho_df.iloc[:,5] = phospho_df.iloc[:,5].replace(np.nan,
+#                                               "Test", regex=True)
         
-        return phospho_df
+        return mask
     # ----------------------------------------------------------------------- # 
         
     # Pass data frame fields to multiple style methods.
@@ -478,8 +514,11 @@ def style_df(phospho_df):
       # Colour cells with 0 in control log2 fold column as green,
       # or red if cells with 0 in condition log2 fold column.
       .apply(colour_cond_uniques, axis=None)
-      .apply(colour_cont_uniques, axis=None))
-      #.apply(zero_to_string, subset=phospho_df.iloc[:,5]))
+      .apply(colour_cont_uniques, axis=None)
+      .apply(hide_zero_condition, axis=None)
+      .apply(hide_zero_control, axis=None))
+      #.where(zero_to_string, "TEST", "", subset=phospho_df.iloc[:, 5]))
+      #.apply(zero_to_string, axis=1, subset=phospho_df.iloc[:,5]))
       
     
     # Render table as html and export to wkdir.
