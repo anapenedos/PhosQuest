@@ -10,7 +10,7 @@ from .api_import import get_kinase_info
 kinase_accession_list = get_kinase_info()
 
 args = {kinase_accession_list}
-url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/224,624113/property/IUPACName/csv".format(urllib.urlencode(args))
+url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/property/IUPACName/csv".format(urllib.urlencode(args))
 
 ### Select the specific accession number to search from
 url_csv = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/property/IUPACName/csv'
