@@ -13,7 +13,7 @@ args = {kinase_accession_list}
 url = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/property/IUPACName/csv".format(urllib.urlencode(args))
 
 ### Select the specific accession number to search from
-url_csv = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{}/property/IUPACName/csv'
+url_csv = 'url'
 
 df = pd.read_csv(url_csv)
 #df.to_csv('output5.csv')
