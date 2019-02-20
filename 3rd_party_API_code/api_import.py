@@ -18,10 +18,6 @@ def get_kinase_info(accession_number_list):
         api_query_accessions = api_query_accessions + ' ' + accession
 
 
-    ### Generic version
-    # x = urllib.request.urlopen('https://www.google.co.uk')
-    # print(x.read())
-
     # The default base URL
     url = 'https://www.uniprot.org/uploadlists/'
 
@@ -43,24 +39,14 @@ def get_kinase_info(accession_number_list):
     # This code requests the URL and and data (which has already been encoded above)
     request = urllib.request.Request(url, data)
 
-    ### The two lines of code below are to overcome some websites that do not want programs or python (i.e. not real users) to come and take data from their website (they basically only want real users). Thus you will usually get blocked. A way around this is to denote a User-Agent which is basically telling the website being searched that we are a human.
-
-    # This code sets the "contact" variable which is used in the next code
-    contact = ""  # Please set a contact email address here to help us debug in case of problems (see https://www.uniprot.org/help/privacy). I am not sure you need an email as it worked for both with and withouut"
-
-    # This code tells the API we are a human (I am not sure this is needed, as it worked without)
-    request.add_header('User-Agent', 'Python %s' % contact)
-
     # This code opens the URL with paramters
     response = urllib.request.urlopen(request)
 
-    # This code reads the details with a limit defined (not sure if this is bytes???)
-    # page = response.read(200000)
-
-    # Print the data (we can also output this as a text file)
-    # print(page)
-
     df = pd.read_table(response)
+
+    df['Subcellular location55'] = df['Subcellular location [CC]'].astype(str)
+    df['Subcellular location55'] = df['Subcellular location55'].str.extract('(?<=SUBCELLULAR LOCATION: )(.*?)(?={)', expand=True)
+
     # df.to_csv('output4.csv')
 
     return df # columns: Accession, location, family, full protein name
