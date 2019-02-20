@@ -59,9 +59,9 @@ def create_filtered_dfs(datafile):
 
     # Calculate "fold conditions over max" values and append to new columns.
     # "df.divide" used to divide individual elements in a column by a variable.
-    ud_df4_sty_valid["Fold control over max"] =\
+    ud_df4_sty_valid["Fold control intensity over maximum"] =\
                     ud_df4_sty_valid.iloc[:, 1].divide(condition_max, axis=0)
-    ud_df4_sty_valid["Fold condition over max"] =\
+    ud_df4_sty_valid["Fold condition intensity over maximum"] =\
                     ud_df4_sty_valid.iloc[:, 2].divide(condition_max, axis=0)
 
     # Take log10 of control & condition intensities and pass to new columns.
@@ -412,7 +412,7 @@ def style_df(phospho_df):
         col2 = ""
         # Define boolean mask array. Pre-requisite for indexing a data frame,
         # that matches boolean criteria. 
-        mask = phospho_df["Fold control over max"]==0 
+        mask = phospho_df["Fold control intensity over maximum"]==0 
         # Data frame matching index & and columns of "phospho_df", filled
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
@@ -430,7 +430,7 @@ def style_df(phospho_df):
         col2 = ""
         # Define boolean mask array. Pre-requisite for indexing a data frame,
         # that matches boolean criteria.
-        mask = phospho_df["Fold condition over max"]==0 
+        mask = phospho_df["Fold condition intensity over maximum"]==0 
         # Data frame matching index & and columns of "phospho_df", filled
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
@@ -441,14 +441,14 @@ def style_df(phospho_df):
         return df
     
     def hide_zero_condition(phospho_df):
-        """ Function to block fill with red, Log2 fold column cells that
-        correspond to unique hits in condition. """
+        """ Function to hide zero value in log2 fold column for
+        condition only hits. """
         # Define colour for filling cells.
         col1 = "color: #d65f5f"
         col2 = ""
         # Define boolean mask array. Pre-requisite for indexing a data frame,
         # that matches boolean criteria.
-        mask = phospho_df["Fold condition over max"]==0 
+        mask = phospho_df["Fold condition intensity over maximum"]==0 
         # Data frame matching index & and columns of "phospho_df", filled
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
@@ -459,14 +459,14 @@ def style_df(phospho_df):
         return df
     
     def hide_zero_control(phospho_df):
-        """ Function to block fill with red, Log2 fold column cells that
-        correspond to unique hits in condition. """
+        """ Function to hide zero value in log2 fold column for
+        control only hits. """
         # Define colour for filling cells.
         col1 = "color: #5fba7d"
         col2 = ""
         # Define boolean mask array. Pre-requisite for indexing a data frame,
         # that matches boolean criteria.
-        mask = phospho_df["Fold control over max"]==0 
+        mask = phospho_df["Fold control intensity over maximum"]==0 
         # Data frame matching index & and columns of "phospho_df", filled
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
@@ -476,24 +476,14 @@ def style_df(phospho_df):
         df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
         
-    def zero_to_string(phospho_df):
-        """ Function to convert zeros in log2 fold change column to string. """
-        # Define boolean mask array. Pre-requisite for indexing a data frame,
-        # that matches boolean criteria.
-        mask = phospho_df["Log2 fold change - condition over control"]==0 
-#        phospho_df.iloc[:,5].where(mask, np.nan, inplace=True)
-#        phospho_df.iloc[:,5] = phospho_df.iloc[:,5].replace(np.nan,
-#                                               "Test", regex=True)
-        
-        return mask
     # ----------------------------------------------------------------------- # 
         
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
       # Use "background_gradient" method to apply heatmap to table
       # fold control & condition intensity over max values.                    
-      .background_gradient(subset=["Fold control over max", 
-                                  "Fold condition over max"], 
+      .background_gradient(subset=["Fold control intensity over maximum", 
+                                   "Fold condition intensity over maximum"], 
                            cmap="YlGnBu",   # Choose colour-map.
                            low=0, high=0.5) # Set color range .
                                             # Set "high" arg to low value. 
@@ -516,10 +506,7 @@ def style_df(phospho_df):
       .apply(colour_cond_uniques, axis=None)
       .apply(colour_cont_uniques, axis=None)
       .apply(hide_zero_condition, axis=None)
-      .apply(hide_zero_control, axis=None))
-      #.where(zero_to_string, "TEST", "", subset=phospho_df.iloc[:, 5]))
-      #.apply(zero_to_string, axis=1, subset=phospho_df.iloc[:,5]))
-      
+      .apply(hide_zero_control, axis=None))      
     
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
@@ -558,45 +545,3 @@ if __name__ == "__main__":
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
 
 # --------------------------------------------------------------------------- #
-    
-#test_df = parsed_sty_sort[[parsed_sty_sort.columns[0],   # Substrate.
-#                           parsed_sty_sort.columns[1],   # Phospho_site_ID.
-#                           parsed_sty_sort.columns[4],   # Fold_cont_over_max.
-#                           parsed_sty_sort.columns[5],   # Fold_cond_over_max.
-#                           parsed_sty_sort.columns[9],   # Log2 fold change.
-#                           parsed_sty_sort.columns[13]]] # Corrected p-value.
-#
-#
-#mask = test_df["Log2 fold change - condition over control"]!=0 
-#test_df.iloc[:,4].where(mask, np.nan, inplace=True)
-#test_df.iloc[:,4] = test_df.iloc[:,4].replace(np.nan, "Test", regex=True)
-#
-#def zero_to_string(df):
-#        """ Function to convert zeros in log2 fold change column to string. """
-#        
-#       
-#        # Define boolean mask array. Pre-requisite for indexing a data frame,
-#        # that matches boolean criteria.
-#        mask = df["Log2 fold change - condition over control"]!=0 
-#        df.iloc[:,4].where(mask, np.nan, inplace=True)
-#        df.iloc[:,4] = df.iloc[:,4].replace(np.nan,"Test", regex=True)
-#
-#zero_to_string(test_df)
-#
-#test_df["Log2 fold change - condition over control"] = pd.to_numeric(test_df["Log2 fold change - condition over control"], errors="Ignore")
-#test_df["Log2 fold change - condition over control"].dtype.kind
-#
-#df = pd.DataFrame(np.random.randn(24).reshape(6, 4))
-#
-## pass multiple style methods to same  data frame
-#styled_df = (df.style
-#             .background_gradient(subset=[0, 1], # background_gradient method
-#                                  low=0, high=0.5,
-#                                  cmap="YlGnBu")
-#             .bar(subset=[2], align='mid',       # bar method
-#                  color=['#d65f5f', '#5fba7d']))
-#
-## Export "styled_df" to html
-#html = styled_df.hide_index().render()
-#with open("html_c.html","w") as fp:
-#   fp.write(html)
