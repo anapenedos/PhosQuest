@@ -37,7 +37,8 @@ response = urllib.request.urlopen(request)
 
 df = pd.read_table(response)
 
-df['Subcellular location55'] = df['Subcellular location [CC]'].str.extract('(?<=SUBCELLULAR LOCATION: )(.*)(?={)', expand=True)
+df['Subcellular location55'] = df['Subcellular location [CC]'].astype(str)
+df['Subcellular location55'] = df['Subcellular location55'].str.extract('(?<=SUBCELLULAR LOCATION: )(.*?)(?={)', expand=True)
 
 df.to_csv('output4.csv')
 
