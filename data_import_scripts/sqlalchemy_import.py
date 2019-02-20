@@ -5,8 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.inspection import inspect
 from sqlalchemy.interfaces import PoolListener
 from data_access.sqlalchemy_declarative import Base
-from time import gmtime, strftime
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class MyListener(PoolListener):
@@ -150,9 +149,10 @@ def import_data_from_data_frame(df, df_to_class_dict):
         # update row counter
         processed_rows += 1
     end_time = datetime.now()
+    elapsed_time = end_time - start_time
     print('Completed processing %i records in data frame\n%s\n'
           'Current time: %s\n'
-          'Time elapsed: %s'
+          'Time elapsed: %s\n'
           % (total_records, df.head(3),
              end_time.strftime("%d-%m-%Y %H:%M:%S"),
-             (end_time - start_time).strftime("%H:%M:%S")))
+             timedelta(days=elapsed_time.days, seconds=elapsed_time.seconds)))
