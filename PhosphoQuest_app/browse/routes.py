@@ -1,4 +1,6 @@
 from flask import render_template, Blueprint
+from data_access import browse_queries
+
 
 browse = Blueprint('browse', __name__)
 
@@ -35,3 +37,16 @@ def browse_cat(category):
         # TODO make  error page for if someone manually types a subcategory
         # go back to main browse categories if not in dict
         return render_template('browse_main.html', title="Browse")
+
+
+@browse.route("/browse_table/<category>")
+def browse_table(category):
+    """ route to create details"""
+    table = browse_queries.browse_switch(category)
+    return render_template('browse_cats.html', title="Browse", table=table)
+
+@browse.route("/browse_detail/<link>")
+def browse_detail(link):
+    """ route to create details"""
+    table = browse_queries(link)
+    return render_template('browse_cats.html', title="Browse")

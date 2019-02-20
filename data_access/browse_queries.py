@@ -1,14 +1,41 @@
 import os
 from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
-    Inhibitor, Phosphosite, Disease, DiseaseAlteration, CellularLocation
+    Inhibitor
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from data_access.display_tables import Kinase_results
 
-import pandas as pd
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
 
 Base.metadata.bind = engine
 DBsession = sessionmaker()
+
+def browse_switch(category):
+    """Function to give intermediate level browse results with clicky links"""
+    # TODO finish switch function work out categories for substrates/inhibitors
+    tabledict = {'Kinase': [Kinase, {'Family':Kinase.kin_family,
+                        'Cellular_Location': Kinase.kin_cellular_location}]
+                 }
+                 #'Substrate': [Substrate,
+                 #'Inhibitor': Inhibitor}
+
+    table, field = category.split("-")
+
+    table = tabledict[table][0]
+    field = tabledict[table][1][field]
+
+    #run query for all results from table and field name
+    results = session.query(table).filter(fieldname == field ).all()
+    #create table with individual results for category with links
+    table = Kinase_results(results)
+    return(table)
+
+
+def browse_link(link):
+    """ function to take link and display results"""
+    #will split link and query for matches in appropriate table
+    pass
 
 def searchexact(text, table, fieldname):
     """ Test universal exact search function for table/field name"""
@@ -23,36 +50,68 @@ def searchexact(text, table, fieldname):
         session.close()
         return ['No results found']
 
-def query_to_dfhtml(query_results, table, drop_cols):
-    """ Function to parse query output to pandas dataframe for selected columns
-     and create html for website"""
+def kin_detail(text):
+    """function to do something with kinase url thing
+     and show individual item."""
 
-    # get attribute names for this table
-    colnames = table.__table__.columns.keys()
-    datalist = {}
+    results = searchexact(text, Kinase, Kinase.kin_accession)
 
-    for col in colnames:
-        if col not in drop_cols:  # only parse info for wanted columns
-            if col in headers:
-                # find human friendly column header
-                header = headers[col]
-                datalist[header] = []
-                for item in query_results:
-                    datalist[header].append(getattr(item, col))
+    return results
 
-            else:
-                datalist[col] = []
-                # if human friendly version not available
-                for item in query_results:
-                    datalist[col].append(getattr(item, col))
+def sub_detail(text):
+    """function to do something with kinase url thing
+     and show individual item."""
 
-        else:
-            continue
+    results = searchexact(text, Substrate, Substrate.subs_accession)
 
-    df = pd.DataFrame.from_dict(datalist)
-    df = df.to_html(index=False)
-    return df
+    return results
 
+
+def inh_detail(text):
+    """function to do something with kinase url thing
+     and show individual item."""
+
+    results = searchexact(text, Inhibitor, Inhibitor.inhib_pubchem_cid)
+
+    return results
+
+#
+# def query_to_dfhtml(query_results, table, link_col = None, drop_cols = None):
+#     """ Function to parse query output to pandas dataframe for selected columns
+#      and create html for website. Link Col and drop cols are optional"""
+#
+#     # get attribute names for this table
+#     colnames = table.__table__.columns.keys()
+#     datalist = {}
+#
+#     for col in colnames:
+#         if col not in drop_cols:
+#         # only parse info for wanted columns
+#             if col in headers:
+#                 # find human friendly column header
+#                 header = headers[col]
+#                 datalist[header] = []
+#                 for item in query_results:
+#                     datalist[header].append(getattr(item, col))
+#
+#             else:
+#                 datalist[col] = []
+#                 # if human friendly version not available
+#                 for item in query_results:
+#                     datalist[col].append(getattr(item, col))
+#
+#         else:
+#             continue
+#
+#     df = pd.DataFrame.from_dict(datalist)
+#
+#     if link_col != None:
+#         link_col2 = headers[link_col]# translate link col
+#         df[link_col2] = df[link_col2].apply(
+#             lambda x: '<a href="{{url_for(f"/browse_detail/{link_col}">\
+#                         link_col2</a>')
+#     df = df.to_html(index=False)
+#     return df
 
 def query_to_list(query_results, table, drop_atrs):
     """ Function to parse query output to list of lists for selected attributes
@@ -80,14 +139,3 @@ def query_to_list(query_results, table, drop_atrs):
 
     return result
 
-
-    # def allbrowse(table):
-    # # #     """ query db and get first item from each table (BROWSE)
-    # # #     returns all fields """
-    # # #
-    # # #     DBsession.bind = engine
-    # # #     session = DBsession()
-    # # #     query  = session.query(table).paginagete()
-    # # #     session.close()
-    # # #     browse_data = query_to_df(query,table)
-    # # #     return browse_data

@@ -6,7 +6,7 @@
 {% for item in links %}
 <p class="lead">
     <a class="btn btn-info btn-block btn-lg"
-       href=""{{url_for('browse.browse_cat', category=item)}}"" role="button">
+       href="{{url_for('browse.browse_table', category=item)}}" role="button">
         {{ item }}</a>
 </p>
 {% endfor %}

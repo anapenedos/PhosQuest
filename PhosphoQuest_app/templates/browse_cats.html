@@ -1,0 +1,11 @@
+<<!--inherits layout from layout.html-->
+{% extends "layout_no_sidebar.html" %}
+{% block content %}
+
+<br>
+<!--This code adds entries from query -->
+<H3><b> Results </b></H3>
+    {{ table|safe }}
+</div>
+{% endif %}
+{% endblock content %}

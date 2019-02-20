@@ -22,7 +22,6 @@ def search_db():
         flash(f'You searched for "{search_txt}"\
             in {search_table} {search_option} using {search_type} match',
               'info')
-        print(search_table)
         # call query switch function to decide which search and display option
         results, style = query_db.query_switch(search_txt, search_type,
                                                  search_table, search_option)
@@ -31,3 +30,6 @@ def search_db():
     else:
 
         return render_template('search.html', title="Search", form=form)
+
+
+

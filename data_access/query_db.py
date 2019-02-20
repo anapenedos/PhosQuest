@@ -11,7 +11,7 @@ Base.metadata.bind = engine
 DBsession = sessionmaker()
 
 # create table dictionary to translate table name for search queries
-tabledict = {'kinase':Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
+tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
                  'inhibitor':Inhibitor}
 
 # create field dictionary to give appropriate field name for search  queries
@@ -201,13 +201,3 @@ def query_to_list(query_results, table, drop_atrs):
     return result
 
 
-    # def allbrowse(table):
-    # # #     """ query db and get first item from each table (BROWSE)
-    # # #     returns all fields """
-    # # #
-    # # #     DBsession.bind = engine
-    # # #     session = DBsession()
-    # # #     query  = session.query(table).paginagete()
-    # # #     session.close()
-    # # #     browse_data = query_to_df(query,table)
-    # # #     return browse_data
