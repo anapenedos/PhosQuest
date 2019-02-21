@@ -14,11 +14,13 @@
     {% endfor %}
 
 {% elif cat == "subcat" %}
+ {% set link = '' %}
     {% for item in links %}
+        {% set link = category + '-' + item[0] %}
         <p class="lead">
             <a class="btn btn-info btn-block btn-sml"
-               href="{{url_for('browse.browse_cat', category=item)}}" role="button">
-                {{ item[0] }}</a>
+               href="{{url_for('browse.browse_cat', category=link)}}" role="button">
+                {{ item }}</a>
         </p>
     {% endfor %}
 

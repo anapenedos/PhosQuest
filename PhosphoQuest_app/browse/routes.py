@@ -38,6 +38,7 @@ def browse_cat(category):
     else: # if this is the subcategory level (requiring query)
 
         links = browse_queries.browse_subcat(category)
+        print(links)
         return render_template('browse_cat.html', title="Browse",
                                links=links, cat="subcat",category=category)
 

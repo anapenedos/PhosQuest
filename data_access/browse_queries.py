@@ -13,7 +13,7 @@ DBsession = sessionmaker()
 
 def browse_subcat(category):
     """Function to give subcategories results """
-    # TODO finish switch function work out categories for substrates/inhibitors
+    # TODO finish categories for substrates/inhibitors
     tabledict = {'Kinase': [Kinase, {'Family':Kinase.kin_family,
                         'Cellular_Location': Kinase.kin_cellular_location}]
                  }
@@ -28,19 +28,17 @@ def browse_subcat(category):
 
     #___TEMPORARY FORCE TO GENE FOR DISPLAY PURPOSES~~~~
     dbfield = Kinase.kin_gene
-    subcats = []
-    #run query for all distinct reuslts from table and field name
-    s = session.query(dbfield.distinct()).all()
-    # for item in s:
-    #     subcats.append(item[0])
-    print(type(s))
-    return s
+    # run query for all distinct reuslts from table and field name
+    subcats = session.query(dbfield.distinct()).all()
+
+    links =[subcat[0] for subcat in subcats if subcat[0] != None]
+
+    return links
 
 
-def browse_link(link):
-    """ function to take link and display results"""
-    #will split link and query for matches in appropriate table
-    pass
+def browse_table(subcategory):
+    """ function to take subcategory and display results as table"""
+
 
 def searchexact(text, table, fieldname):
     """ Test universal exact search function for table/field name"""
