@@ -38,21 +38,20 @@ def browse_cat(category):
     else: # if this is the subcategory level (requiring query)
 
         links = browse_queries.browse_subcat(category)
-        print(links)
         return render_template('browse_cat.html', title="Browse",
                                links=links, cat="subcat",category=category)
 
 
+@browse.route("/browse_table/<subcategory>")
+def browse_table(subcategory):
+    """ route to create table format for browse results in subcategory"""
+    table = browse_queries.browse_table(subcategory)
+    return render_template('browse_table.html', title=subcategory, table=table)
 
 
-@browse.route("/browse_table/<category>")
-def browse_table(category):
+
+@browse.route("/browse_detail/<text>")
+def browse_detail(text):
     """ route to create details"""
-    table = browse_queries.browse_switch(category)
-    return render_template('browse_cats.html', title="Browse", table=table)
 
-@browse.route("/browse_detail/<link>")
-def browse_detail(link):
-    """ route to create details"""
-    table = browse_queries(link)
     return render_template('browse_cats.html', title="Browse")

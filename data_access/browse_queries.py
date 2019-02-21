@@ -3,7 +3,7 @@ from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
     Inhibitor
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from data_access.display_tables import Kinase_results
+from data_access.display_tables import Kinase_results, Substrate_results
 
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
@@ -11,14 +11,18 @@ engine = create_engine(f'sqlite:///{dbpath}')
 Base.metadata.bind = engine
 DBsession = sessionmaker()
 
+# TODO finish categories for substrates/inhibitors
+tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
+                    'Cellular_Location': Kinase.kin_cellular_location}]
+             }
+
+
+# 'Substrate': [Substrate,
+# 'Inhibitor': Inhibitor}
+
+
 def browse_subcat(category):
     """Function to give subcategories results """
-    # TODO finish categories for substrates/inhibitors
-    tabledict = {'Kinase': [Kinase, {'Family':Kinase.kin_family,
-                        'Cellular_Location': Kinase.kin_cellular_location}]
-                 }
-                 #'Substrate': [Substrate,
-                 #'Inhibitor': Inhibitor}
 
     table, field = category.split("-")
     #get database field for query
@@ -37,20 +41,43 @@ def browse_subcat(category):
 
 
 def browse_table(subcategory):
-    """ function to take subcategory and display results as table"""
+    """ function to take subcategory and display results as flask_table"""
+    table, field, text = subcategory.split("-")
+    #get database field for query
+    dbtable = tabledict[table][0]
+    dbfield = tabledict[table][1][field]
 
+    # *************force to gene for now**************
+    dbfield = Kinase.kin_gene
+
+
+    # run query for all distinct reuslts from table and field name
+    results = searchexact(text, dbtable, dbfield)
+    #find table format for output
+    if results != ['No Results Found']:
+        if table == 'Kinase':
+            out_table = Kinase_results(items=results)
+        elif table =='Substrate':
+            #out_table =Substrate_results(results)
+            pass
+        elif table == 'Inhibitor':
+            pass
+
+    else:
+        pass
+
+    return out_table
 
 def searchexact(text, table, fieldname):
     """ Test universal exact search function for table/field name"""
     session = DBsession()
     results = session.query(table).filter(fieldname == text).all()
+    session.close()
     # check if query has returned results
     if results:
-        session.close()
         return results
 
     else:
-        session.close()
         return ['No results found']
 
 def kin_detail(text):
