@@ -418,7 +418,7 @@ def style_df(phospho_df):
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
                            columns=phospho_df.columns)
-        # Index df by booelan array and apply color to log2 fold cells,
+        # Index df by boolean array and apply color to log2 fold cells,
         # with matching criteria.
         df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
@@ -436,7 +436,7 @@ def style_df(phospho_df):
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
                            columns=phospho_df.columns)
-        # Index df by booelan array and apply color to log2 fold cells,
+        # Index df by boolean array and apply color to log2 fold cells,
         # with matching criteria.
         df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
@@ -454,7 +454,7 @@ def style_df(phospho_df):
         # with empty strings.
         df =  pd.DataFrame(col2, index=phospho_df.index, 
                            columns=phospho_df.columns)
-        # Index df by booelan array and apply color to log2 fold cells,
+        # Index df by boolean array and apply color to log2 fold cells,
         # with matching criteria.
         df.loc[mask, "Log2 fold change - condition over control"] = col1
         return df
@@ -478,7 +478,6 @@ def style_df(phospho_df):
         return df
         
     # ----------------------------------------------------------------------- # 
-        
     # Pass data frame fields to multiple style methods.
     styled_phospho_df = (phospho_df.style
       # Use "background_gradient" method to apply heatmap to table
@@ -495,20 +494,27 @@ def style_df(phospho_df):
       .bar(subset=["Log2 fold change - condition over control"], 
            align='mid',                  # Align bars with cells
            color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
-                  
+      
       # Set float precision for data - 2 significant figures. 
       .set_precision(2)
       
-      # Pass CSS styling to styled table.
+       # Pass CSS styling to styled table.
       .set_table_styles(styles)
-
+      
       # Colour cells with 0 in control log2 fold column as green,
       # or red if cells with 0 in condition log2 fold column.
       .apply(colour_cond_uniques, axis=None)
       .apply(colour_cont_uniques, axis=None)
       .apply(hide_zero_condition, axis=None)
-      .apply(hide_zero_control, axis=None))      
-    
+      .apply(hide_zero_control, axis=None))
+#      .to_excel("styled_signif_hits.xlsx", 
+#                                                    engine="openpyxl", 
+#                                                    index=False))
+      
+      # Export table to csv.
+      
+      
+    # styled_phospho_df.to_excel('styled.xlsx', engine='openpyxl')
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
     #with open("style_df_rename.html","w") as fp:
