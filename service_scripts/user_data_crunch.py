@@ -19,6 +19,10 @@ def create_filtered_dfs(datafile):
     with further analysis. """
     # Read user_data and assign to dataframe variable.
     ud_df_orig = pd.read_table(datafile)
+    
+    # Rename "Substrate" column to "Substrate (gene name)".
+    ud_df_orig.rename(columns={"Substrate": "Substrate (gene name)"}, 
+                               inplace=True)
 
     # Subset source df by the first 6 columns.
     # Note: last index should be +1 bigger than number of fields.
@@ -383,7 +387,9 @@ def style_df(phospho_df):
       ('position', 'sticky'),
       ('position', '-webkit-sticky'),
       ('top', '50px'),
-      ('z-index', '999')
+      ('z-index', '999'),
+      ('padding', '5px'),
+      ('background-clip', 'padding-box')
       ]
     
     # CSS properties for table data in dataframe.
@@ -392,6 +398,7 @@ def style_df(phospho_df):
       ('border', '1px solid black'),
       ('text-align', 'center'),
       ('font-weight', 'bold'),
+      ('background-clip', 'border-box')
       ]
     
     # Set table styles.
@@ -507,14 +514,7 @@ def style_df(phospho_df):
       .apply(colour_cont_uniques, axis=None)
       .apply(hide_zero_condition, axis=None)
       .apply(hide_zero_control, axis=None))
-#      .to_excel("styled_signif_hits.xlsx", 
-#                                                    engine="openpyxl", 
-#                                                    index=False))
-      
-      # Export table to csv.
-      
-      
-    # styled_phospho_df.to_excel('styled.xlsx', engine='openpyxl')
+
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
     #with open("style_df_rename.html","w") as fp:
