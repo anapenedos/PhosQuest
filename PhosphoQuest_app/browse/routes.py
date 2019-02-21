@@ -48,10 +48,17 @@ def browse_table(subcategory):
     table = browse_queries.browse_table(subcategory)
     return render_template('browse_table.html', title=subcategory, table=table)
 
+# TODO write specific detail routes as table link does NOT contain table info
 
-
-@browse.route("/browse_detail/<text>")
-def browse_detail(text):
+@browse.route("/kin_detail/<text>")
+def kin_detail(text):
     """ route to create details"""
+# add funciton to search for other info here
+    return render_template('404_error.html', title="Browse")
 
-    return render_template('browse_cats.html', title="Browse")
+@browse.route("/sub_detail/<text>")
+def sub_detail(text):
+   """ route to create details"""
+   # add funciton to search for other info here
+   return render_template('404_error.html', title="Browse")
+

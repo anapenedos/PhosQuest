@@ -10,7 +10,7 @@ class Kinase_results(Table):
     kin_organism = Col('Species')
     kin_cellular_location = Col('Cellular location')
     kin_family = Col('Family')
-    detail = LinkCol('Detail', 'browse.browse_detail',
+    detail = LinkCol('Detail', 'browse.kin_detail',
                          url_kwargs=dict(text='kin_accession'))
 
 class Substrate_results(Table):
@@ -23,5 +23,5 @@ class Substrate_results(Table):
     subs_gene = Col('Gene')
     subs_chrom_location = Col('Chromosome location')
     subs_organism = Col('Species')
-    detail = LinkCol('Detail', 'browse.detail',
-                         url_kwargs=dict(text='sub_accession'))
+    detail = LinkCol('Detail', 'browse.sub_detail',
+                     url_kwargs=dict(text='subs_accession'))

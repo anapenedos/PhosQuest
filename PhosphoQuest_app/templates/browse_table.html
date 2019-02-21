@@ -4,8 +4,10 @@
 
 <br>
 <!--This code adds entries from query -->
-<H3><b> Results </b></H3>
-    {{ table | safe}}
+<H3><b> Browse {{ title }}</b></H3>
+<br>
+<div class="table">
+    {{ table}}
 </div>
 
 {% endblock content %}
