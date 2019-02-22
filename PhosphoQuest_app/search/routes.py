@@ -1,5 +1,5 @@
 from flask import flash, render_template, Blueprint
-from data_access import query_db
+import query_db
 from PhosphoQuest_app.search.forms import SearchForm
 
 search = Blueprint('search', __name__)
@@ -24,7 +24,7 @@ def search_db():
               'info')
         # call query switch function to decide which search and display option
         results, style = query_db.query_switch(search_txt, search_type,
-                                                 search_table, search_option)
+                                               search_table, search_option)
         return render_template('search_results.html', title="Search results",
                                results=results, style=style)
     else:

@@ -1,19 +1,12 @@
 from flask import render_template, Blueprint
-from data_access import browse_queries
-
+import browse_queries
 
 browse = Blueprint('browse', __name__)
-
-
-# TODO work on the browse pages
-# route for browse page with browse template
-
 
 @browse.route("/browse")
 def browse_main():
     """render template with browse data and title for browse page"""
     return render_template('browse_main.html', title="Browse")
-
 
 @browse.route("/browse/<category>")
 def browse_cat(category):
@@ -33,7 +26,6 @@ def browse_cat(category):
 
         return render_template('browse_cat.html', title="Browse", links=links,
                                cat="cat", category=category)
-
 
     else: # if this is the subcategory level (requiring query)
 
