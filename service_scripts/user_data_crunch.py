@@ -389,7 +389,10 @@ def style_df(phospho_df):
       ('top', '50px'),
       ('z-index', '999'),
       ('padding', '5px'),
-      ('background-clip', 'padding-box')
+      ('background-clip', 'padding-box') # Required for firefox rendering of 
+                                         # of borders on table headers. Header
+                                         # background obscures bordering, hence
+                                         # application of clipping.
       ]
     
     # CSS properties for table data in dataframe.
@@ -398,7 +401,8 @@ def style_df(phospho_df):
       ('border', '1px solid black'),
       ('text-align', 'center'),
       ('font-weight', 'bold'),
-      ('background-clip', 'border-box')
+      ('background-clip', 'border-box') # Required for chrome to counter border
+                                        # clipping applied to table headers.
       ]
     
     # Set table styles.
