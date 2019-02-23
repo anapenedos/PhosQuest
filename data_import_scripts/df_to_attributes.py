@@ -99,6 +99,12 @@ bindingDB_human_to_class = {
         [(Kinase, 'kin_accession')]
 }
 
+uniprot_to_class = {
+    'Entry'                 : [(Kinase, 'kin_accession')],
+    'Subcellular location55': [(Kinase, 'kin_cellular_location')],
+    'Protein name'          : [(Kinase, 'kin_full_name')]
+}
+
 """
 Class attributes
 ################

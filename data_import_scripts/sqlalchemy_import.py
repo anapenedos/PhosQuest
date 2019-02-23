@@ -26,12 +26,12 @@ def import_data_from_data_frame(df, df_to_class_dict):
 
     :param df: pandas data frame from PhosphositePlus import (df)
     :param df_to_class_dict: data frame heading to class & attribute (dict)
-                             {'DF header': (Class, 'class_attribute')}
+                             {'DF header': [(Class, 'class_attribute')]}
     """
     start_time = datetime.now()
     print('Started processing data frame\n%s\n'
           'Current time: %s)'
-          % (df.head(3), start_time.strftime("%Y-%m-%d %H:%M:%S")))
+          % (df.head(3), start_time.strftime("%d-%m-%Y %H:%M:%S")))
     # get classes in data frame from dict function argument
     classes_in_df = set()
     for df_heading, class_matches in df_to_class_dict.items():
