@@ -4,7 +4,7 @@ from sqlalchemy_declarative import Base, Kinase, Substrate,\
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from display_tables import Kinase_results
-
+from query_db import headers
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
 
@@ -24,14 +24,14 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
 def browse_subcat(category):
     """Function to give subcategories results """
 
-    table, field = category.split("-")
+    table, field = category.split("~")
     #get database field for query
     #dbtable = tabledict[table][0]
     dbfield = tabledict[table][1][field]
     session = DBsession()
 
-    #___TEMPORARY FORCE TO GENE FOR DISPLAY PURPOSES~~~~
-    dbfield = Kinase.kin_gene
+    # #___TEMPORARY FORCE TO GENE FOR DISPLAY PURPOSES~~~~
+    # dbfield = Kinase.kin_gene
     # run query for all distinct reuslts from table and field name
     subcats = session.query(dbfield.distinct()).all()
 
@@ -42,13 +42,13 @@ def browse_subcat(category):
 
 def browse_table(subcategory):
     """ function to take subcategory and display results as flask_table"""
-    table, field, text = subcategory.split("-")
+    table, field, text = subcategory.split("~")
     #get database field for query
     dbtable = tabledict[table][0]
     dbfield = tabledict[table][1][field]
 
-    # *************force to gene for now**************
-    dbfield = Kinase.kin_gene
+    # # *************force to gene for now**************
+    # dbfield = Kinase.kin_gene
 
 
     # run query for all distinct reuslts from table and field name
@@ -83,9 +83,10 @@ def searchexact(text, table, fieldname):
 def kin_detail(text):
     """function to do something with kinase url thing
      and show individual item."""
-
+    # TODO update - decide what detail to show
     results = searchexact(text, Kinase, Kinase.kin_accession)
-
+    print(results)
+    results = query_to_list(results, Kinase)
     return results
 
 def sub_detail(text):
@@ -105,45 +106,9 @@ def inh_detail(text):
 
     return results
 
-#
-# def query_to_dfhtml(query_results, table, link_col = None, drop_cols = None):
-#     """ Function to parse query output to pandas dataframe for selected columns
-#      and create html for website. Link Col and drop cols are optional"""
-#
-#     # get attribute names for this table
-#     colnames = table.__table__.columns.keys()
-#     datalist = {}
-#
-#     for col in colnames:
-#         if col not in drop_cols:
-#         # only parse info for wanted columns
-#             if col in headers:
-#                 # find human friendly column header
-#                 header = headers[col]
-#                 datalist[header] = []
-#                 for item in query_results:
-#                     datalist[header].append(getattr(item, col))
-#
-#             else:
-#                 datalist[col] = []
-#                 # if human friendly version not available
-#                 for item in query_results:
-#                     datalist[col].append(getattr(item, col))
-#
-#         else:
-#             continue
-#
-#     df = pd.DataFrame.from_dict(datalist)
-#
-#     if link_col != None:
-#         link_col2 = headers[link_col]# translate link col
-#         df[link_col2] = df[link_col2].apply(
-#             lambda x: '<a href="{{url_for(f"/browse_detail/{link_col}">\
-#                         link_col2</a>')
-#     df = df.to_html(index=False)
-#     return df
 
-def query_to_list(query_results, table, drop_atrs):
+
+def query_to_list(query_results, table):
     """ Function to parse query output to list of lists for selected attributes
       for website (results <4). Allows to drop some attributes"""
 
@@ -155,16 +120,15 @@ def query_to_list(query_results, table, drop_atrs):
     for item in query_results:
         resultlist = []
         for name in names:
-            if name not in drop_atrs:  # check not dropped
-                if name in headers:
-                    header = headers[name]  # translate to human readable
-                    x = (header, getattr(item, name))
-                    resultlist.append(x)
-                else:
-                    x = (name, getattr(item, name))
-                    resultlist.append(x)
+
+            if name in headers:
+                header = headers[name]  # translate to human readable
+                x = (header, getattr(item, name))
+                resultlist.append(x)
             else:
-                continue  # pass over if in drop_attrs
+                x = (name, getattr(item, name))
+                resultlist.append(x)
+
         result.append(resultlist)
 
     return result

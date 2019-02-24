@@ -16,7 +16,7 @@
 {% elif cat == "subcat" %}
  {% set link = '' %}
     {% for item in links %}
-        {% set link = category + '-' + item %}
+        {% set link = category + '~' + item %}
         <p class="lead">
             <a class="btn btn-info btn-block btn-sml"
                href="{{url_for('browse.browse_table', subcategory=link)}}" role="button">

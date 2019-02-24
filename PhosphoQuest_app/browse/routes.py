@@ -14,11 +14,11 @@ def browse_cat(category):
     # category dict to look up sub categories for browse.
     # TODO decide on categories for display
     categories = {
-        'Kinase': ['Kinase-Family', 'Kinase-Cellular_Location'],
-        'Substrate': ['Substrate-category1', 'Substrate-category2',
-                      'Substrate-category3'],
-        'Inhibitor': ['Inhibitor-category1', 'Inhibitor-category2',
-                      'Inhibitor-category3']
+        'Kinase': ['Kinase~Family', 'Kinase~Cellular_Location'],
+        'Substrate': ['Substrate~category1', 'Substrate~category2',
+                      'Substrate~category3'],
+        'Inhibitor': ['Inhibitor~category1', 'Inhibitor~category2',
+                      'Inhibitor~category3']
     }
 
     if category in categories: # if this is the first specific category level
@@ -44,9 +44,12 @@ def browse_table(subcategory):
 
 @browse.route("/kin_detail/<text>")
 def kin_detail(text):
-    """ route to create details"""
-# add funciton to search for other info here
-    return render_template('404_error.html', title="Browse")
+    """ route to create details from browse"""
+    # add function to search for other info her""
+
+    results = browse_queries.kin_detail(text)
+    return render_template('search_results.html', title="Browse",style="None",
+                           results=results)
 
 @browse.route("/sub_detail/<text>")
 def sub_detail(text):
