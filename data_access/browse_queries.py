@@ -4,7 +4,7 @@ from sqlalchemy_declarative import Base, Kinase, Substrate,\
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from display_tables import Kinase_results
-from query_db import headers
+from data_access.query_db import headers
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
 
@@ -85,8 +85,6 @@ def kin_detail(text):
      and show individual item."""
     # TODO update - decide what detail to show
     results = searchexact(text, Kinase, Kinase.kin_accession)
-    print(results)
-    results = query_to_list(results, Kinase)
     return results
 
 def sub_detail(text):
