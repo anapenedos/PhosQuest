@@ -11,7 +11,14 @@ crunch = Blueprint('crunch', __name__)
 # route for upload page with file handling method
 @crunch.route('/analysis',methods=['GET', 'POST'])
 def analysis():
-    """Create upload and analysis route"""
+    """ Upload and analysis Route : run all analyses in crunch script.
+    Produces all date dictionary, with datalist of dataframes for piecharts
+    and further display
+    all_data contains {'styn', 'sty', 'corrected_p','full_sty_sort':,
+    'parsed_sty_sort','datalist'}
+
+    datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq,
+    prot_freq]"""
     form = UploadForm()
 
      #if form validates (correct file types) save file in temp dir
@@ -19,7 +26,8 @@ def analysis():
         try:
             f = form.data_file.data
             filename =  secure_filename(f.filename)
-            #run all analyses.
+
+
             all_data = userdata_display.run_all(f)
 
             #selector for type of report (test version)

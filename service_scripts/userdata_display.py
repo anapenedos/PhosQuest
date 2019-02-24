@@ -25,7 +25,14 @@ def run_all(file):
         'full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
         'datalist':datalist}
 
+    """ Upload and analysis Route : run all analyses in crunch script.
+    Produces all date dictionary, with datalist of dataframes for piecharts
+    and further display
+    all_data contains {'styn', 'sty', 'corrected_p','full_sty_sort':,
+    'parsed_sty_sort','datalist'}
 
+    datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq,
+    prot_freq]"""
     #return all outputs and datalist html tables
     return(all_data)
 
