@@ -43,13 +43,10 @@ def browse_subcat(category):
 def browse_table(subcategory):
     """ function to take subcategory and display results as flask_table"""
     table, field, text = subcategory.split("~")
+
     #get database field for query
     dbtable = tabledict[table][0]
     dbfield = tabledict[table][1][field]
-
-    # # *************force to gene for now**************
-    # dbfield = Kinase.kin_gene
-
 
     # run query for all distinct reuslts from table and field name
     results = searchexact(text, dbtable, dbfield)
@@ -85,6 +82,7 @@ def kin_detail(text):
      and show individual item."""
     # TODO update - decide what detail to show
     results = searchexact(text, Kinase, Kinase.kin_accession)
+    results= query_to_list(results, Kinase)
     return results
 
 def sub_detail(text):

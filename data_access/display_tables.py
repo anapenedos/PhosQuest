@@ -4,12 +4,12 @@ from flask_table import Table, Col, LinkCol
 class Kinase_results(Table):
     """create Kinase results table format"""
     kin_accession = Col('Accession no')
-    kin_short_name = Col('Short name')
+    #kin_short_name = Col('Short name')
     kin_full_name = Col('Full name')
     kin_gene = Col('Gene')
-    kin_organism = Col('Species')
-    kin_cellular_location = Col('Cellular location')
-    kin_family = Col('Family')
+    #kin_organism = Col('Species')
+    #kin_cellular_location = Col('Cellular location')
+    #kin_family = Col('Family')
     detail = LinkCol('Detail', 'browse.kin_detail',
                          url_kwargs=dict(text='kin_accession'))
 

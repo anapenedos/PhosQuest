@@ -48,7 +48,8 @@ def kin_detail(text):
     # add function to search for other info her""
 
     results = browse_queries.kin_detail(text)
-    return render_template('search_results.html', title="Browse",style="None",
+
+    return render_template('search_results.html', title="Browse",style="list",
                            results=results)
 
 @browse.route("/sub_detail/<text>")
