@@ -1,5 +1,6 @@
 from flask import flash, render_template, Blueprint
-from service_scripts import userdata_display, user_data_crunch
+from PhosphoQuest_app.service_scripts import user_data_crunch
+from PhosphoQuest_app.service_scripts import userdata_display
 from werkzeug.utils import secure_filename
 import traceback
 

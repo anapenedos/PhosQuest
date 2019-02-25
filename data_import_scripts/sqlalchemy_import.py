@@ -4,7 +4,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.inspection import inspect
 from sqlalchemy.interfaces import PoolListener
-from sqlalchemy_declarative import Base
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base
 from datetime import datetime, timedelta
 
 

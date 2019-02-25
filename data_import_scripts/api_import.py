@@ -10,7 +10,7 @@ import urllib.request
 import urllib.parse
 
 # project-specific imports
-from data_access.sqlalchemy_declarative import Base
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base
 
 # =========================================================================== #
 

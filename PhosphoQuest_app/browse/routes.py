@@ -1,6 +1,5 @@
 from flask import render_template, Blueprint
-import data_access.browse_queries
-
+from PhosphoQuest_app.data_access import browse_queries
 browse = Blueprint('browse', __name__)
 
 @browse.route("/browse")
@@ -15,8 +14,8 @@ def browse_cat(category):
     # TODO decide on categories for display
     categories = {
         'Kinase': ['Kinase~Family', 'Kinase~Cellular_Location'],
-        'Substrate': ['Substrate~category1', 'Substrate~category2',
-                      'Substrate~category3'],
+        'Substrate': ['Substrate~Protein_Type',
+                      'Substrate~Chromosome_Location'],
         'Inhibitor': ['Inhibitor~category1', 'Inhibitor~category2',
                       'Inhibitor~category3']
     }
@@ -40,21 +39,23 @@ def browse_table(subcategory):
     table = browse_queries.browse_table(subcategory)
     return render_template('browse_table.html', title=subcategory, table=table)
 
-# TODO write specific detail routes as table link does NOT contain table info
-
+# TODO write specific detail routes
+# TODO write specific template for browse detail page.
 @browse.route("/kin_detail/<text>")
 def kin_detail(text):
     """ route to create details from browse"""
     # add function to search for other info her""
 
-    results = browse_queries.kin_detail(text)
+    results = browse_queries.browse_detail(text, 'Kinase')
 
-    return render_template('search_results.html', title="Browse",style="list",
+    return render_template('search_results.html', title="Browse", style="list",
                            results=results)
 
 @browse.route("/sub_detail/<text>")
 def sub_detail(text):
    """ route to create details"""
-   # add funciton to search for other info here
-   return render_template('404_error.html', title="Browse")
+   results = browse_queries.browse_detail(text, 'Substrate')
+
+   return render_template('search_results.html', title="Browse", style="list",
+                          results=results, dbtable='Substrate')
 
