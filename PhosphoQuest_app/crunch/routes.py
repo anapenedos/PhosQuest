@@ -33,7 +33,8 @@ def analysis():
 
             #selector for type of report (test version)
             if form.select.data == 'full':
-                table = user_data_crunch.style_df(all_data['full_sty_sort'])
+                table = all_data['full_sty_sort']
+                table = table.to_html()
 
                 flash(f'File {filename} successfully analysed', 'success')
                 return render_template('results.html',
