@@ -218,7 +218,6 @@ def data_extract(filtered_df, styn):
                         "Number of non-phospho sites": non_phos_num,
                         "% Enrichment": phos_perc_enrich}
     
-    
     # Pass dictionary to dataframe object.
     data_group_1 = pd.DataFrame.from_dict(enrich_data_dict, 
                                           orient='index') # Keys as rows.
