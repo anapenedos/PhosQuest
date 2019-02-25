@@ -24,36 +24,49 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
        }
 # 'Inhibitor': Inhibitor}
 
+# dictionary to force subcategories for cellular location
+location_cats = ['Acrosome', 'Axon', 'Caveola','Cell cortex', 'Cell junction',
+                 'Cell projection', 'Centriole', 'Centromere', 'Chromosome',
+                 'Cilium', 'Cytoplasm', 'Cytoskeleton', 'Cytosol', 'Dendrite',
+                 'Endoplasmic reticulum', 'Endosome', 'Extracellular',
+                 'Golgi apparatus', 'Lysosome', 'Melanosome', 'Microsome',
+                 'Midbody', 'Mitochondrion', 'Nucleus', 'Perinuclear',
+                 'PML body', 'Ruffle', 'Sarcolemma', 'Secreted',
+                 'Secretory vesicle', 'Spindle', 'Synapse']
+
 def browse_subcat(category):
     """Function to give subcategories results """
-
     table, field = category.split("~")
     #get database field for query
     dbfield = tabledict[table][1][field]
-    session = DBsession()
 
-    # #___TEMPORARY FORCE TO GENE FOR DISPLAY PURPOSES~~~~
-    # dbfield = Kinase.kin_gene
+    if table == 'Kinase' and field == 'Cellular_Location':
+        return location_cats
+
     # run query for all distinct reuslts from table and field name
-    subcats = session.query(dbfield.distinct()).all()
+    else:
+        session = DBsession()
+        subcats = session.query(dbfield.distinct()).all()
+        links =[subcat[0] for subcat in subcats if subcat[0] != None]
+        print(links)
 
-    links =[subcat[0] for subcat in subcats if subcat[0] != None]
+        return links
 
-    return links
 
 
 def browse_table(subcategory):
     """ function to take subcategory and display results as flask_table"""
     table, field, text = subcategory.split("~")
-
     #get database field for query
     dbtable = tabledict[table][0]
     dbfield = tabledict[table][1][field]
+    print(text, dbtable, dbfield)
 
     # run query for all distinct reuslts from table and field name
-    results = searchexact(text, dbtable, dbfield)
+    results = searchlike(text, dbtable, dbfield)
+    print(results)
     #find table format for output
-    if results != ['No Results Found']:
+    if 'No Results Found' not in results:
         if table == 'Kinase':
             out_table = Kinase_first_results(items=results)
 
@@ -65,9 +78,25 @@ def browse_table(subcategory):
             pass
 
     else:
-        pass
+        return results
+
+
 
     return out_table
+
+def searchlike(text, table, fieldname):
+    """ Test universal exact search function for table/field name"""
+    text = '%' + text + '%'
+    session = DBsession()
+    results = session.query(table).filter(fieldname\
+                                          .like(text)).all()
+    session.close()
+    # check if query has returned results
+    if results:
+        return results
+
+    else:
+        return ['No results found']
 
 def searchexact(text, table, fieldname):
     """ Test universal exact search function for table/field name"""
