@@ -1,5 +1,5 @@
 from flask import flash, render_template, Blueprint
-from data_access import query_db
+from PhosphoQuest_app.data_access import query_db
 from PhosphoQuest_app.search.forms import SearchForm
 
 search = Blueprint('search', __name__)

@@ -1,5 +1,5 @@
 """scripts to format subsets of crunched data for display"""
-from service_scripts import user_data_crunch
+from PhosphoQuest_app.service_scripts import user_data_crunch
 
 
 def run_all(file):

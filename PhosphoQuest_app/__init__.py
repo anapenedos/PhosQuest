@@ -1,6 +1,4 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask_bcrypt import Bcrypt
 
 # create instance of FLASK class. __name__ is name of module.
 app = Flask(__name__)

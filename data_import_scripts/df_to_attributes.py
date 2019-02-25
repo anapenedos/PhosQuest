@@ -1,6 +1,6 @@
 # import classes
-from sqlalchemy_declarative import Kinase, Substrate, \
-    Phosphosite, Disease, DiseaseAlteration, Inhibitor
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
+    Substrate, Phosphosite, Disease, DiseaseAlteration, Inhibitor
 
 # Dictionaries mapping 'DF header' : ('Class', 'class_attribute') #
 ###################################################################
