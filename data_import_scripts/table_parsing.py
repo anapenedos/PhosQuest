@@ -61,9 +61,18 @@ def dis_site_parser(db_path):
 
     # Split lines with multiple disease into multiple lines
     db_human_tidy = split_multi_value_rows_in_df(db_human, 'DISEASE', ';')
+    
+    # Parse sites with only phospho as modification.
+    # Note - column "MOD-RSD" entries with extension to string = "-p".
+    # Regex - parse lines that end with "-p".
+    db_human_phos = \
+        db_human_tidy[db_human_tidy.iloc[:, 10].str.\
+                      contains(r"-p$", regex=True)]
+        
+    # Remove "-p" extension to entries.
+    db_human_phos.iloc[:, 10] = db_human_phos.iloc[:, 10].str.replace("-p", "")
 
-    return db_human_tidy
-
+    return db_human_phos
 
 # --------------------------------------------------------------------------- #
     
@@ -201,7 +210,6 @@ def dis_sites_import():
                      "PhosphoSitePlus",
                      "Disease-associated_sites"))
     return dis_sites_human
-
 
 def reg_sites_import():
     """

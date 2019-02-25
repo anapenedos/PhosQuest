@@ -1,6 +1,6 @@
 import os
-from sqlalchemy_declarative import Base, Kinase, Substrate,\
-    Inhibitor, Phosphosite
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
+    Substrate, Inhibitor, Phosphosite
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import pandas as pd
