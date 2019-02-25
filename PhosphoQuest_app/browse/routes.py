@@ -1,5 +1,5 @@
 from flask import render_template, Blueprint
-import browse_queries
+import data_access.browse_queries
 
 browse = Blueprint('browse', __name__)
 

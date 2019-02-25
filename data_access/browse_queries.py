@@ -1,9 +1,9 @@
 import os
-from sqlalchemy_declarative import Base, Kinase, Substrate,\
+from data_access.sqlalchemy_declarative import Base, Kinase, Substrate,\
     Inhibitor
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from display_tables import Kinase_results
+from data_access.display_tables import Kinase_results
 from data_access.query_db import headers
 dbpath = os.path.join('database', 'PhosphoQuest.db')
 engine = create_engine(f'sqlite:///{dbpath}')
