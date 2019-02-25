@@ -14,13 +14,18 @@ Sets up DB PhosphoQuest.db in database directory.
 # python library imports
 import os
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 # --------------------------------------------------------------------------- #
 # project imports
 # import the base class
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
+    Inhibitor
 
 # import PhosphoSitePlus, MRC Inhibitor and BindingDB file parsers
+from data_import_scripts.table_parsing import kin_sub_import, \
+    phos_sites_import, dis_sites_import, reg_sites_import, bdb_inhib_import, \
+    mrc_inhib_import
 
 # import data frame import to database function
 from data_import_scripts.sqlalchemy_import import import_data_from_data_frame
@@ -29,8 +34,10 @@ from data_import_scripts.sqlalchemy_import import import_data_from_data_frame
 from data_import_scripts.api_import import get_uniprot_api_data
 
 # import data frame heading: (Class, 'class_attribute') dictionaries
-from data_import_scripts.df_to_attributes \
-    import uniprot_to_class
+from data_import_scripts.df_to_attributes import kin_sub_human_to_class, \
+    phos_sites_human_to_class, reg_sites_human_to_class, \
+    dis_sites_human_to_class, mrc_inhib_source_to_class, \
+    bindingDB_human_to_class, uniprot_to_class
 
 # =========================================================================== #
 
