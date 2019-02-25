@@ -52,53 +52,53 @@ Base.metadata.create_all(engine)
 
 # --------------------------------------------------------------------------- #
 
-# ### Call functions for data files (in db_source_data) import
-#
-# # Human kinase/substrate db as data frame.
-# kin_sub_human = kin_sub_import()
-#
-# # Human phospho-site db as data frame.
-# phos_sites_human = phos_sites_import()
-#
-# # Human disease-site db as data frame.
-# dis_sites_human = dis_sites_import()
-#
-# # Human regulatory-site db as data frame.
-# reg_sites_human = reg_sites_import()
-#
-# # Human BindingDB as data frame.
-# bindingDB_human = bdb_inhib_import()
-#
-# # MRC inhibitor as data frame
-# mrc_inhib_source = mrc_inhib_import()
-#
-# # --------------------------------------------------------------------------- #
-#
-# # Import data from data frames to SQLite database
-# import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
-# import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
-# import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
-# import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
-# import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
-# import_data_from_data_frame(bindingDB_human, bindingDB_human_to_class)
-#
-# # --------------------------------------------------------------------------- #
-#
-# # Manual data curating
-# # Inhibitor InChI key stored in InChI field as well
-#
-# # DB session to connect to DB and keep any changes in a "staging zone"
-# DBSession = sessionmaker(bind=engine)
-# # open a SQLite session
-# session = DBSession()
-# inh_to_correct = session.query(Inhibitor).filter(
-#     Inhibitor.inhib_pubchem_cid == 9549284).first()
-# inh_to_correct.inhib_int_chem_id = 'InChI=1S/C16H12F3N3S/c17-16(18,' \
-#                                    '19)14-4-2-1-3-12(14)13(9-20)15(22)' \
-#                                    '23-11-7-5-10(21)6-8-11/h1-8H,21-22H2/' \
-#                                    'b15-13+'
-# session.commit()
-# session.close()
+### Call functions for data files (in db_source_data) import
+
+# Human kinase/substrate db as data frame.
+kin_sub_human = kin_sub_import()
+
+# Human phospho-site db as data frame.
+phos_sites_human = phos_sites_import()
+
+# Human disease-site db as data frame.
+dis_sites_human = dis_sites_import()
+
+# Human regulatory-site db as data frame.
+reg_sites_human = reg_sites_import()
+
+# Human BindingDB as data frame.
+bindingDB_human = bdb_inhib_import()
+
+# MRC inhibitor as data frame
+mrc_inhib_source = mrc_inhib_import()
+
+# --------------------------------------------------------------------------- #
+
+# Import data from data frames to SQLite database
+import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
+import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
+import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
+import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
+import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
+import_data_from_data_frame(bindingDB_human, bindingDB_human_to_class)
+
+# --------------------------------------------------------------------------- #
+
+# Manual data curating
+# Inhibitor InChI key stored in InChI field as well
+
+# DB session to connect to DB and keep any changes in a "staging zone"
+DBSession = sessionmaker(bind=engine)
+# open a SQLite session
+session = DBSession()
+inh_to_correct = session.query(Inhibitor).filter(
+    Inhibitor.inhib_pubchem_cid == 9549284).first()
+inh_to_correct.inhib_int_chem_id = 'InChI=1S/C16H12F3N3S/c17-16(18,' \
+                                   '19)14-4-2-1-3-12(14)13(9-20)15(22)' \
+                                   '23-11-7-5-10(21)6-8-11/h1-8H,21-22H2/' \
+                                   'b15-13+'
+session.commit()
+session.close()
 
 # --------------------------------------------------------------------------- #
 
