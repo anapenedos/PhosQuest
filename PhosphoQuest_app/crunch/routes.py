@@ -34,28 +34,20 @@ def analysis():
             csvdf= all_data['full_sty_sort']
 
             csv = userdata_display.create_csv(csvdf, filename)
-            #selector for type of report (test version)
-            if form.select.data == 'full':
-                #output for full data
-                table = all_data['full_sty_sort']
-                table = table.to_html()
 
-                flash(f'File {filename} successfully analysed', 'success')
-                return render_template('results.html',
-                            title='All results', table=table, csv=csv)
+            #output for significant hits
+            table = user_data_crunch.\
+                     style_df(all_data['parsed_sty_sort'])
 
-            else:
-                #output for significant hits
-                table = user_data_crunch.\
-                         style_df(all_data['parsed_sty_sort'])
+            flash(f'File {filename} successfully analysed', 'success')
 
-                flash(f'File {filename} successfully analysed', 'success')
-                #temporary display of phos enrich
-                phos_enrich = all_data['datalist'][0]
-                phos_enrich=phos_enrich.to_html()
-                return render_template('results.html',
-                    title='All data', table=table, phos_enrich=phos_enrich,
-                                       csv=csv)
+            #temporary display of phos enrich
+            phos_enrich = all_data['datalist'][0]
+            phos_enrich=phos_enrich.to_html()
+
+            return render_template('results.html',
+                title='All data', table=table, phos_enrich=phos_enrich,
+                                   csv=csv)
 
         except Exception:
             #catch any file exception with traceback to help debugging
