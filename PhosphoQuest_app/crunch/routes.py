@@ -68,13 +68,10 @@ def analysis():
 @crunch.route('/download_analysis/<csv>',methods=['GET', 'POST'])
 def download_analysis(csv):
     """App route to download data analysis csv."""
-    #form required only for exception when upload rendered
-    form = UploadForm()
+    # form required only for exception when upload rendered
 
-    if not csv:
-       return "No file"
 
-    else:
+    try:
         tempdir = os.path.join('user_data', 'temp')
         file = os.path.join(tempdir, csv)
 
@@ -82,3 +79,6 @@ def download_analysis(csv):
                      mimetype='text/csv',
                      attachment_filename=csv,
                      as_attachment=True)
+    except:
+        #TODO update to file handling error page
+        return render_template('404_error.html')
