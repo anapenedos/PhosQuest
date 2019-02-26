@@ -531,7 +531,9 @@ def style_df(phospho_df):
 if __name__ == "__main__":
 
     #set up runs for testing functions
-    file = phos_sites_path = os.path.join('user_data', 'AZ20.tsv')
+    file = phos_sites_path = os.path.join('PhosphoQuest_app', 
+                                          'user_data', 
+                                          'AZ20.tsv')
 
     styn, sty = create_filtered_dfs(file)
 
@@ -557,10 +559,9 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------- #
 #### Testing query/join code for db info extraction.
 #from sqlalchemy import create_engine
-#from sqlalchemy.orm import sessionmaker
-#from sqlalchemy.orm import Load, load_only
+#from sqlalchemy.orm import sessionmaker, Load, load_only
 #from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
-#    Substrate, Inhibitor, Phosphosite
+#     Substrate, Inhibitor, Phosphosite
 #import os
 #import pandas as pd
 #
@@ -600,3 +601,20 @@ if __name__ == "__main__":
 ## Remove "-p" extension to entries.
 #phos_subs_subset_df.iloc[:, 1] = \
 #        phos_subs_subset_df.iloc[:, 1].str.replace("-p", "")
+#
+## Add column to full phos_sites table of concatenated substrate and site id.
+#phos_subs_subset_df["phos_site_ID"] = phos_subs_subset_df.iloc[:, 3].\
+#                                      astype(str)+"_"+\
+#                                      phos_subs_subset_df.iloc[:, 1]
+#                               
+## Add column to signif phos_sites table of concatenated substrate and site id.
+#full_sty_sort["phos_site_ID"] = full_sty_sort.iloc[:, 0].astype(str)+"_"+\
+#                                full_sty_sort.iloc[:, 1]
+#                                 
+## Check if "phos_site_ID" in user data present in db.
+## Boolean value returned to new column in full data-set.                                 
+#full_sty_sort["Substrate & site in DB"] = full_sty_sort.iloc[:, 22].\
+#                                          isin(phos_subs_subset_df.iloc[:, 4])
+#                            
+## Compute number of IDs that match to db.     
+#ID_match_sum = sum(full_sty_sort.iloc[:, 23])
