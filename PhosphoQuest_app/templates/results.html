@@ -87,15 +87,17 @@
       <div id="analysis-2">
           <p>This could be lovely piecharts etc</p>
           <hr>
-          <img src={{url_for('static', filename='test_piechart.png')}}>
-          <br>
-          {{ phos_enrich|safe }}
+          <div class = "row">
+          <div class="col-md-8">
+              <img src={{url_for('static', filename='test_piechart.png')}}> </div>
+          <div class="col-md-4">{{ phos_enrich|safe }}</div>
+          </div>
 
       </div>
       <div id="analysis-3">
           <H4>Download your analysed data:</H4>
             <p class="lead">
-                <a class="btn btn-info btn-sml"
+                <a class="btn btn-warning btn-sml"
                   href="{{url_for('crunch.download_analysis',
                              csv=csv)}}" role="button"> {{ csv }}</a>
             </p>
