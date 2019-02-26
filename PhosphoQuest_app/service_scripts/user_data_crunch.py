@@ -555,3 +555,48 @@ if __name__ == "__main__":
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
 
 # --------------------------------------------------------------------------- #
+#### Testing query/join code for db info extraction.
+#from sqlalchemy import create_engine
+#from sqlalchemy.orm import sessionmaker
+#from sqlalchemy.orm import Load, load_only
+#from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
+#    Substrate, Inhibitor, Phosphosite
+#import os
+#import pandas as pd
+#
+## Define path variable to the PhosphoQuest data-base.
+#dbpath = os.path.join('database', 'PhosphoQuest.db')
+## Define instance of engine which represents interface to the database.
+#engine = create_engine(f'sqlite:///{dbpath}')
+## Define session class object - ORM "handle" to the data-base.
+#Session = sessionmaker()
+## Connect engine to the Session object.
+#Session.configure(bind=engine)
+## Instantiate a Session - converse with data-base.
+#s = Session()
+## Create join query using ORM sqlalchemy language.
+## Query 2 db class objects - "Phosphosite" & "Substrate".
+## Link "Substrate" table by "join" method.
+## Specify subset of join table to load.
+#phos_subs_query = s.query(Phosphosite, Substrate).\
+#                          join(Substrate).\
+#                          options(Load(Phosphosite).\
+#                                  load_only("phos_modified_residue"),
+#                                  Load(Substrate).\
+#                                  load_only("subs_gene"))
+#
+## Pass ORM join-query subset to dataframe                     
+#phos_subs_subset_df = pd.read_sql(phos_subs_query.\
+#                                  statement,\
+#                                  phos_subs_query.session.bind)
+#
+## Parse dataframe for only phosphosites.
+## Parse sites with only phospho as modification.
+## Regex - parse lines that end with "-p".
+#phos_subs_subset_df = \
+#        phos_subs_subset_df[phos_subs_subset_df.iloc[:, 1].str.\
+#                            contains(r"-p$", regex=True)]
+#
+## Remove "-p" extension to entries.
+#phos_subs_subset_df.iloc[:, 1] = \
+#        phos_subs_subset_df.iloc[:, 1].str.replace("-p", "")
