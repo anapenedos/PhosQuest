@@ -93,9 +93,12 @@
 
       </div>
       <div id="analysis-3">
-    This could be some more lovely things like a downloadable pdf
-
-
+          <H4>Download your analysed data:</H4>
+            <p class="lead">
+                <a class="btn btn-info btn-sml"
+                  href="{{url_for('crunch.download_analysis',
+                             csv=csv)}}" role="button"> {{ csv }}</a>
+            </p>
 
       </div>
     </div>

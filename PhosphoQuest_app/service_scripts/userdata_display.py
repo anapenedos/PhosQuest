@@ -1,6 +1,7 @@
 """scripts to format subsets of crunched data for display"""
 from PhosphoQuest_app.service_scripts import user_data_crunch
-
+import os
+from datetime import datetime
 
 def run_all(file):
 
@@ -35,4 +36,15 @@ def run_all(file):
     #return all outputs and datalist html tables
     return(all_data)
 
+# TODO create temporary file delete method
 
+def create_csv(dataframe, filename):
+    """ function to create full  dataframe as csv"""
+    tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
+    time= str(datetime.now()) # get time now
+    # get last 6 digits (milliseconds) as unique no for download
+    id = time[-6:]
+    outname = f"{filename}_analysed_{id}.csv"
+    #SAVE FILE
+    dataframe.to_csv(os.path.join(tempdir,outname))
+    return outname
