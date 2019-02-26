@@ -41,10 +41,11 @@ def run_all(file):
 def create_csv(dataframe, filename):
     """ function to create full  dataframe as csv"""
     tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
-    time= str(datetime.now()) # get time now
-    # get last 6 digits (milliseconds) as unique no for download
-    id = time[-6:]
-    outname = f"{filename}_analysed_{id}.csv"
+    time = str(datetime.now()) # get time now
+    # get date last 2 digits (milliseconds) as unique no for download
+    id = time[-3:]
+    date= time[:10]
+    outname = f"{date}-{filename}_analysed_id{id}.csv"
     #SAVE FILE
     dataframe.to_csv(os.path.join(tempdir,outname))
     return outname
