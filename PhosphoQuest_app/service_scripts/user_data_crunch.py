@@ -34,7 +34,7 @@ def create_filtered_dfs(datafile):
     # pass to variable. Note: "df.iloc" function used to specify column indices
     # instead of column names. Allows for  different field names.
     ud_df1_quant = ud_df_orig[(ud_df_orig.iloc[:, 1] > 0) |\
-                            (ud_df_orig.iloc[:, 2] > 0)]
+                              (ud_df_orig.iloc[:, 2] > 0)]
 
     # Copy phospho-site id from "Substrate" field and append to new column.
     ud_df1_quant["Phospho site ID"] = ud_df1_quant.iloc[:, 0].\
@@ -561,7 +561,7 @@ if __name__ == "__main__":
 #from sqlalchemy import create_engine
 #from sqlalchemy.orm import sessionmaker, Load, load_only
 #from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
-#     Substrate, Inhibitor, Phosphosite
+#     Substrate, Inhibitor, Phosphosite, kinases_phosphosites_table
 #import os
 #import pandas as pd
 #
@@ -576,36 +576,55 @@ if __name__ == "__main__":
 ## Instantiate a Session - converse with data-base.
 #s = Session()
 ## Create join query using ORM sqlalchemy language.
-## Query 2 db class objects - "Phosphosite" & "Substrate".
-## Link "Substrate" table by "join" method.
-## Specify subset of join table to load.
-#phos_subs_query = s.query(Phosphosite, Substrate).\
-#                          join(Substrate).\
-#                          options(Load(Phosphosite).\
-#                                  load_only("phos_modified_residue"),
-#                                  Load(Substrate).\
-#                                  load_only("subs_gene"))
+## Query 3 db class objects - "Substrate", "Phosphosite" & "Kinase".
+## Join in logical succession according to schema!
+## Specify subset of join tables to load.
+#subs_phos_kin_query = s.query(Substrate, Phosphosite, Kinase).\
+#                              join(Phosphosite).\
+#                              join(kinases_phosphosites_table).\
+#                              join(Kinase).\
+#                              options(Load(Substrate).\
+#                                      load_only("subs_gene"),
+#                                      Load(Phosphosite).\
+#                                      load_only("phos_modified_residue"),
+#                                      Load(Kinase).\
+#                                      load_only("kin_gene"))
+#
+## Query 2 db class objects - "Substrate" & "Phosphosite".
+## Join in logical succession according to schema!
+## Specify subset of join tables to load.
+#subs_phos_query = s.query(Substrate, Phosphosite).\
+#                              join(Phosphosite).\
+#                              options(Load(Substrate).\
+#                                      load_only("subs_gene"),
+#                                      Load(Phosphosite).\
+#                                      load_only("phos_modified_residue"))
 #
 ## Pass ORM join-query subset to dataframe                     
-#phos_subs_subset_df = pd.read_sql(phos_subs_query.\
+#subs_phos_subset_df = pd.read_sql(subs_phos_query.\
 #                                  statement,\
-#                                  phos_subs_query.session.bind)
+#                                  subs_phos_query.session.bind)
+#
+## Pass ORM join-query subset to dataframe                     
+#subs_phos_kin_subset_df = pd.read_sql(subs_phos_kin_query.\
+#                                      statement,\
+#                                      subs_phos_kin_query.session.bind)
 #
 ## Parse dataframe for only phosphosites.
 ## Parse sites with only phospho as modification.
 ## Regex - parse lines that end with "-p".
-#phos_subs_subset_df = \
-#        phos_subs_subset_df[phos_subs_subset_df.iloc[:, 1].str.\
+#subs_phos_subset_df = \
+#        subs_phos_subset_df[subs_phos_subset_df.iloc[:, 3].str.\
 #                            contains(r"-p$", regex=True)]
 #
 ## Remove "-p" extension to entries.
-#phos_subs_subset_df.iloc[:, 1] = \
-#        phos_subs_subset_df.iloc[:, 1].str.replace("-p", "")
+#subs_phos_subset_df.iloc[:, 3] = \
+#        subs_phos_subset_df.iloc[:, 3].str.replace("-p", "")
 #
 ## Add column to full phos_sites table of concatenated substrate and site id.
-#phos_subs_subset_df["phos_site_ID"] = phos_subs_subset_df.iloc[:, 3].\
+#subs_phos_subset_df["phos_site_ID"] = subs_phos_subset_df.iloc[:, 1].\
 #                                      astype(str)+"_"+\
-#                                      phos_subs_subset_df.iloc[:, 1]
+#                                      subs_phos_subset_df.iloc[:, 3]
 #                               
 ## Add column to signif phos_sites table of concatenated substrate and site id.
 #full_sty_sort["phos_site_ID"] = full_sty_sort.iloc[:, 0].astype(str)+"_"+\
@@ -614,7 +633,7 @@ if __name__ == "__main__":
 ## Check if "phos_site_ID" in user data present in db.
 ## Boolean value returned to new column in full data-set.                                 
 #full_sty_sort["Substrate & site in DB"] = full_sty_sort.iloc[:, 22].\
-#                                          isin(phos_subs_subset_df.iloc[:, 4])
+#                                          isin(subs_phos_subset_df.iloc[:, 4])
 #                            
 ## Compute number of IDs that match to db.     
 #ID_match_sum = sum(full_sty_sort.iloc[:, 23])
