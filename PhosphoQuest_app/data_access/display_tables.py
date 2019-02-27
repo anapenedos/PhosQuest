@@ -11,7 +11,8 @@ class Kinase_full_results(Table):
     kin_cellular_location = Col('Cellular location')
     kin_family = Col('Family')
     detail = LinkCol('Detail', 'browse.kin_detail',
-                         url_kwargs=dict(text='kin_accession'))
+                         url_kwargs=dict(text='kin_accession'),
+                     anchor_attrs={'target':'_blank'} )
 
 class Kinase_first_results(Table):
     """create Kinase results part info table format"""
@@ -19,7 +20,8 @@ class Kinase_first_results(Table):
     kin_full_name = Col('Full name')
     kin_gene = Col('Gene')
     detail = LinkCol('Detail', 'browse.kin_detail',
-                         url_kwargs=dict(text='kin_accession'))
+                         url_kwargs=dict(text='kin_accession'),
+                     anchor_attrs={'target':'_blank'})
 
 class Substrate_full_results(Table):
     """create Substrates full info results table format"""

@@ -2,7 +2,6 @@ from flask import flash, render_template, Blueprint, send_file
 from PhosphoQuest_app.service_scripts import user_data_crunch
 from PhosphoQuest_app.service_scripts import userdata_display
 from werkzeug.utils import secure_filename
-import traceback
 
 from PhosphoQuest_app.crunch.forms import UploadForm
 import os
@@ -60,9 +59,6 @@ def analysis():
 @crunch.route('/download_analysis/<csv>',methods=['GET', 'POST'])
 def download_analysis(csv):
     """App route to download data analysis csv."""
-    # form required only for exception when upload rendered
-
-
     try:
         tempdir = os.path.join('user_data', 'temp')
         file = os.path.join(tempdir, csv)

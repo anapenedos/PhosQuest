@@ -5,12 +5,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
     Substrate_first_results
-from PhosphoQuest_app.data_access.query_db import headers
-dbpath = os.path.join('database', 'PhosphoQuest.db')
-engine = create_engine(f'sqlite:///{dbpath}')
-
-Base.metadata.bind = engine
-DBsession = sessionmaker()
+from PhosphoQuest_app.data_access.query_db import headers, create_sqlsession,\
+        searchlike, searchexact
 
 # TODO finish categories for substrates/inhibitors#
 tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
@@ -45,7 +41,7 @@ def browse_subcat(category):
 
     # run query for all distinct reuslts from table and field name
     else:
-        session = DBsession()
+        session = create_sqlsession()
         subcats = session.query(dbfield.distinct()).all()
         links =[subcat[0] for subcat in subcats if subcat[0] != None]
         print(links)
@@ -71,7 +67,6 @@ def browse_table(subcategory):
             out_table = Kinase_first_results(items=results)
 
         elif table =='Substrate':
-            #out_table =Substrate_results(results)
             out_table = Substrate_first_results(items=results)
 
         elif table == 'Inhibitor':
@@ -79,36 +74,8 @@ def browse_table(subcategory):
 
     else:
         return results
-
-
-
     return out_table
 
-def searchlike(text, table, fieldname):
-    """ Test universal exact search function for table/field name"""
-    text = '%' + text + '%'
-    session = DBsession()
-    results = session.query(table).filter(fieldname\
-                                          .like(text)).all()
-    session.close()
-    # check if query has returned results
-    if results:
-        return results
-
-    else:
-        return ['No results found']
-
-def searchexact(text, table, fieldname):
-    """ Test universal exact search function for table/field name"""
-    session = DBsession()
-    results = session.query(table).filter(fieldname == text).all()
-    session.close()
-    # check if query has returned results
-    if results:
-        return results
-
-    else:
-        return ['No results found']
 
 def browse_detail(text, table):
     """function to do something with kinase url thing

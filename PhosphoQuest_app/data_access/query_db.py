@@ -4,11 +4,16 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import pandas as pd
-dbpath = os.path.join('database', 'PhosphoQuest.db')
-engine = create_engine(f'sqlite:///{dbpath}')
 
-Base.metadata.bind = engine
-DBsession = sessionmaker()
+def create_sqlsession():
+    """Function to create database sessions in any script/function in app"""
+    dbpath = os.path.join('database', 'PhosphoQuest.db')
+    engine = create_engine(f'sqlite:///{dbpath}')
+    Base.metadata.bind = engine
+    DBsession = sessionmaker()
+    session = DBsession()
+    return session
+
 
 # create table dictionary to translate table name for search queries
 tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
@@ -53,8 +58,7 @@ def query_switch(text,type, table, option):
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,
                                Inhibitor.inhib_full_name]}
-    drop_cols = [] # to allow to drop cols if necessary (not implemented
-    # TODO determine if drop-cols needed here
+
     # find appropriate field to apply and find field object
     if table == 'kinase':
         if option == 'acc_no':
@@ -88,12 +92,12 @@ def query_switch(text,type, table, option):
             return results, style
 
         elif len(results) < 4: # if only 3 or less results display as list
-            results = query_to_list(results, table, drop_cols)
+            results = query_to_list(results, table)
             style = 'list'
             return results, style
 
         else:
-            results = query_to_dfhtml(results, table, drop_cols)
+            results = query_to_dfhtml(results, table)
             style = 'dataframe'
             return results, style
 
@@ -104,12 +108,12 @@ def query_switch(text,type, table, option):
             return results, style
 
         elif len(results) < 4: # if only 3 or less results display as list
-            results = query_to_list(results, table, drop_cols)
+            results = query_to_list(results, table)
             style = 'list'
             return results, style
 
         else: # if more results display as table
-            results = query_to_dfhtml(results, table, drop_cols)
+            results = query_to_dfhtml(results, table)
             style = 'dataframe'
             return results, style
 
@@ -118,32 +122,29 @@ def searchlike(text, table, fieldname):
     """ Test universal LIKE search function for table/field name,
         returns all fields"""
     text = '%'+ text + '%' # add wildcards for LIKE search
-    session = DBsession()
+    session = create_sqlsession()
     results = session.query(table).filter(fieldname\
                                           .like(text)).all()
+    session.close()
     # check if query has returned results
     if results:
-        session.close()
         return results
     else:
-        session.close()
         return ['No results found']
 
 
 def searchexact(text, table, fieldname):
     """ Test universal exact search function for table/field name"""
-    session = DBsession()
+    session = create_sqlsession()
     results = session.query(table).filter(fieldname == text).all()
+    session.close()
     # check if query has returned results
     if results:
-        session.close()
         return results
-
     else:
-        session.close()
         return ['No results found']
 
-def query_to_dfhtml(query_results, table, drop_cols):
+def query_to_dfhtml(query_results, table):
     """ Function to parse query output to pandas dataframe for selected columns
      and create html for website"""
 
@@ -152,31 +153,28 @@ def query_to_dfhtml(query_results, table, drop_cols):
     datalist = {}
 
     for col in colnames:
-        if col not in drop_cols:  # only parse info for wanted columns
-            if col in headers:
-                # find human friendly column header
-                header = headers[col]
-                datalist[header] = []
-                for item in query_results:
-                    datalist[header].append(getattr(item, col))
-
-            else:
-                datalist[col] = []
-                # if human friendly version not available
-                for item in query_results:
-                    datalist[col].append(getattr(item, col))
+        # only parse info for wanted columns
+        if col in headers:
+            # find human friendly column header
+            header = headers[col]
+            datalist[header] = []
+            for item in query_results:
+                datalist[header].append(getattr(item, col))
 
         else:
-            continue
+            datalist[col] = []
+            # if human friendly version not available
+            for item in query_results:
+                datalist[col].append(getattr(item, col))
 
     df = pd.DataFrame.from_dict(datalist)
     df = df.to_html(index=False)
     return df
 
 
-def query_to_list(query_results, table, drop_atrs):
+def query_to_list(query_results, table):
     """ Function to parse query output to list of lists for selected attributes
-      for website (results <4). Allows to drop some attributes"""
+      for website (results <4)."""
 
     # get attribute names for this table
     names = table.__table__.columns.keys()
@@ -186,16 +184,15 @@ def query_to_list(query_results, table, drop_atrs):
     for item in query_results:
         resultlist = []
         for name in names:
-            if name not in drop_atrs:  # check not dropped
-                if name in headers:
-                    header = headers[name]  # translate to human readable
-                    x = (header, getattr(item, name))
-                    resultlist.append(x)
-                else:
-                    x = (name, getattr(item, name))
-                    resultlist.append(x)
+
+            if name in headers:
+                header = headers[name]  # translate to human readable
+                x = (header, getattr(item, name))
+                resultlist.append(x)
             else:
-                continue  # pass over if in drop_attrs
+                x = (name, getattr(item, name))
+                resultlist.append(x)
+
         result.append(resultlist)
 
     return result
