@@ -36,8 +36,11 @@ def phos_site_parser(db_path):
                                            
     # Parse db human entries and pass to variable.
     db_human = db_df[(db_df.ORGANISM == "human")]
+        
+    # Remove "-p" extension to entries.
+    db_human.iloc[:, 4] = db_human.iloc[:, 4].str.replace("-p", "")
 
-    return db_human                                                 
+    return db_human                                               
 
 # --------------------------------------------------------------------------- #
 
