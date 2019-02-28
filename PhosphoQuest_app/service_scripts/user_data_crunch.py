@@ -5,6 +5,7 @@
 
 ### Import packages into environment.
 import pandas as pd
+import pandas.api.types as ptypes
 import numpy as np
 import seaborn as sb
 import matplotlib as mpl
@@ -20,8 +21,19 @@ def create_filtered_dfs(datafile):
     # Read user_data and assign to dataframe variable.
     ud_df_orig = pd.read_table(datafile)
     
+    # Assert substrate column to object data-type.
+    assert ptypes.is_object_dtype(ud_df_orig.loc[0])
+    
+    # Assert column types for numeric data.
+    # Define index range of columns and pass header names to list.
+    cols_to_numeric = ud_df_orig.iloc[:, 1:7].columns.values.tolist()
+    
+    # Assert fileds defined by column headers as numeric.
+    assert all(ptypes.is_numeric_dtype(ud_df_orig[col]) \
+               for col in cols_to_numeric)
+    
     # Rename "Substrate" column to "Substrate (gene name)".
-    ud_df_orig.rename(columns={"Substrate": "Substrate (gene name)"}, 
+    ud_df_orig.rename(columns={ud_df_orig.columns[0]: "Substrate (gene name)"}, 
                                inplace=True)
 
     # Subset source df by the first 6 columns.
