@@ -1,22 +1,10 @@
 # Standard library imports
-import os
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.inspection import inspect
-from sqlalchemy.interfaces import PoolListener
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base
 from datetime import datetime, timedelta
+from pandas import isnull
 
-
-class MyListener(PoolListener):
-    """
-    Class defining session execution in SQLite. Allows OS management of
-    writing to disk operations.
-    """
-    def connect(self, dbapi_con, con_record):
-        dbapi_con.execute('pragma journal_mode=OFF')
-        dbapi_con.execute('PRAGMA synchronous=OFF')
-        dbapi_con.execute('PRAGMA cache_size=100000')
+# project imports
+from PhosphoQuest_app.data_access.db_sessions import import_session_maker
 
 
 def import_data_from_data_frame(df, df_to_class_dict):
@@ -50,24 +38,14 @@ def import_data_from_data_frame(df, df_to_class_dict):
         classes_keys[class_in_df] = keys_of_class
 
     # define special type of values that are treated differently
-    undefined_values = [None, '', ' ', 'nan', 'NaN']
+    undefined_values = [None, '', ' ', '-', 'nan', 'NaN']
 
     # set up a row counter
     processed_rows = 0
     total_records = len(df)
 
-    # Create engine that stores data to database\<file_name>.db
-    db_path = os.path.join('database', 'PhosphoQuest.db')
-    # defines engine as SQLite, uses listeners to implement faster import
-    # (record writing to disk is managed by the OS and hence can occur
-    # simultaneously with data processing
-    engine = create_engine('sqlite:///' + db_path, echo=False,
-                           listeners=[MyListener()])
-    # Bind the engine to the metadata of the base class so that the
-    # classes can be accessed through a DBSession instance
-    Base.metadata.bind = engine
-    # DB session to connect to DB and keep any changes in a "staging zone"
-    DBSession = sessionmaker(bind=engine)
+    # Create session maker
+    DBSession = import_session_maker()
 
     # iterate through the data frame rows (of the data frame containing data to
     # import) to:
@@ -94,8 +72,9 @@ def import_data_from_data_frame(df, df_to_class_dict):
                 class_attr = class_match[1]
                 # if the row contains a non-null value and the df heading
                 # contains a primary key, add key value to dict
-                if (class_attr in classes_keys[class_name]) \
-                        and (row[df_heading] not in undefined_values):
+                if (class_attr in classes_keys[class_name]
+                    and row[df_heading] not in undefined_values
+                    and not isnull(row[df_heading])):
                     new_values = new_table_keys.setdefault(class_name, {})
                     new_values[class_attr] = row[df_heading]
 
@@ -113,6 +92,7 @@ def import_data_from_data_frame(df, df_to_class_dict):
             # .first
             query_res = query_res.first()
             # create new class instance if no record retrieved by query
+            # and none of the key values is None
             if query_res is None:
                 class_instance = class_name(**keys_info)
                 session.add(class_instance)

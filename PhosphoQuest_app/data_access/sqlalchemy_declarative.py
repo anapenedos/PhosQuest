@@ -115,7 +115,7 @@ class Substrate(Base):
     # molecular weight (kD) of the substrate
     subs_molec_weight_kd = Column(Float)
     # gene encoding the substrate
-    subs_gene = Column(String)
+    subs_gene = Column(String, index=True)
     # chromosomal location of the substrate-encoding gene
     subs_chrom_location = Column(String)
     # substrate organism
@@ -163,7 +163,7 @@ class Phosphosite(Base):
     # phosphosite group identifier is the primary key of the phosphosites table
     phos_group_id = Column(Integer, primary_key=True)
     # phosphosite modified residue, the amino-acid that is phosphorylated
-    phos_modified_residue = Column(String)
+    phos_modified_residue = Column(String, index=True)
     # phosphorylation site, ie, the phosphorylated amino-acid residue plus its
     # flanking 7 amino-acid residues
     phos_site = Column(String)

@@ -1,18 +1,8 @@
 import os
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
     Substrate, Inhibitor, Phosphosite
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 import pandas as pd
-
-def create_sqlsession():
-    """Function to create database sessions in any script/function in app"""
-    dbpath = os.path.join('database', 'PhosphoQuest.db')
-    engine = create_engine(f'sqlite:///{dbpath}')
-    Base.metadata.bind = engine
-    DBsession = sessionmaker()
-    session = DBsession()
-    return session
+from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 
 
 # create table dictionary to translate table name for search queries

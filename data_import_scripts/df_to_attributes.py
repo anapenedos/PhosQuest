@@ -1,6 +1,7 @@
 # import classes
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
-    Substrate, Phosphosite, Disease, DiseaseAlteration, Inhibitor
+    Substrate, Phosphosite, Disease, DiseaseAlteration, Inhibitor, \
+    CellularLocation
 
 # Dictionaries mapping 'DF header' : ('Class', 'class_attribute') #
 ###################################################################
@@ -92,17 +93,33 @@ mrc_inhib_source_to_class = {
 }
 
 bindingDB_human_to_class = {
-    'PubChem_CID':
-        [(Inhibitor, 'inhib_pubchem_cid')],
+    'PubChem_CID'          : [(Inhibitor, 'inhib_pubchem_cid')],
+    'Ligand_SMILES'        : [(Inhibitor, 'inhib_smile')],
+    'Ligand_InChI'         : [(Inhibitor, 'inhib_int_chem_id')],
+    'Ligand_InChI_Key'     : [(Inhibitor, 'inhib_int_chem_id_key')],
+    'Target_Name_Assigned_by_Curator_or_DataSource' :
+                             [(Kinase, 'kin_full_name')],
+    'BindingDB_Ligand_Name': [(Inhibitor, 'inhib_short_name')],
+    'PMID'                 : [(Inhibitor, 'inhib_bibl_references')],
     'UniProt_(SwissProt)_Primary_ID_of_Target_Chain':
-        [(Kinase, 'kin_accession')]
+                             [(Kinase, 'kin_accession')],
 }
 
-uniprot_to_class = {
-    'Entry'                 : [(Kinase, 'kin_accession')],
-    'Subcellular location55': [(Kinase, 'kin_cellular_location')],
-    'Protein name'          : [(Kinase, 'kin_full_name')]
+uniprot_kin_to_class = {
+    'Entry'                 : [(Kinase,           'kin_accession')],
+    'Subcellular location55': [(Kinase,           'kin_cellular_location'),
+                               (CellularLocation, 'loc_name')],
+    'Protein name'          : [(Kinase,           'kin_full_name')],
+    'Protein families'      : [(Kinase,           'kin_family')]
 }
+
+uniprot_subs_to_class = {
+    'Entry'                 : [(Substrate,        'subs_accession')],
+    'Protein name'          : [(Substrate,        'subs_full_name')],
+}
+
+pubchem_to_class = {'CID'      : [(Inhibitor, 'inhib_pubchem_cid')],
+                    'IUPACName': [(Inhibitor, 'inhib_full_name')]}
 
 """
 Class attributes

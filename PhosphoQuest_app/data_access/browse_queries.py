@@ -5,8 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
     Substrate_first_results
-from PhosphoQuest_app.data_access.query_db import headers, create_sqlsession,\
-        searchlike, searchexact
+from PhosphoQuest_app.data_access.query_db import headers, searchlike, \
+    searchexact
+from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+
 
 # TODO finish categories for substrates/inhibitors#
 tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
