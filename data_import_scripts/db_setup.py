@@ -17,7 +17,7 @@ from sqlalchemy import create_engine
 
 # --------------------------------------------------------------------------- #
 # project imports
-# import the base class
+# import the base class and classes needed for corrections and API imports
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
     Substrate, Inhibitor
 
@@ -80,37 +80,37 @@ mrc_inhib_source = mrc_inhib_import()
 # --------------------------------------------------------------------------- #
 
 # Import data from data frames to SQLite database
-# import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
-# import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
-# import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
-# import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
-# import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
-#
-# # --------------------------------------------------------------------------- #
-# # filter BindingDB data frame so that it contains only inhibitors of existing
-# # kinases in the kinases table
-# kinases_in_table = get_table_values_for_search(Kinase)
-#
-# # filter BindingDB df based on existing kinases in DB
-# filtered_bdb_df = bindingDB_human[
-#     bindingDB_human['UniProt_(SwissProt)_Primary_ID_of_Target_Chain']\
-#         .isin(kinases_in_table)]
-#
-# # import filtered BindingDB data into DB
-# import_data_from_data_frame(filtered_bdb_df, bindingDB_human_to_class)
-#
-# # =========================================================================== #
-# # Manual data curating
-#
-# # Inhibitor InChI key stored in InChI field as well
-# # open a SQLite session
+import_data_from_data_frame(kin_sub_human, kin_sub_human_to_class)
+import_data_from_data_frame(phos_sites_human, phos_sites_human_to_class)
+import_data_from_data_frame(reg_sites_human, reg_sites_human_to_class)
+import_data_from_data_frame(dis_sites_human, dis_sites_human_to_class)
+import_data_from_data_frame(mrc_inhib_source, mrc_inhib_source_to_class)
+
+# --------------------------------------------------------------------------- #
+# filter BindingDB data frame so that it contains only inhibitors of existing
+# kinases in the kinases table
+kinases_in_table = get_table_values_for_search(Kinase)
+
+# filter BindingDB df based on existing kinases in DB
+filtered_bdb_df = bindingDB_human[
+    bindingDB_human['UniProt_(SwissProt)_Primary_ID_of_Target_Chain']\
+        .isin(kinases_in_table)]
+
+# import filtered BindingDB data into DB
+import_data_from_data_frame(filtered_bdb_df, bindingDB_human_to_class)
+
+# =========================================================================== #
+# Manual data curating
+
+# Inhibitor InChI key stored in InChI field as well
+# open a SQLite session
 session = create_sqlsession()
-# inh_to_correct = session.query(Inhibitor).filter(
-#     Inhibitor.inhib_pubchem_cid == 9549284).first()
-# inh_to_correct.inhib_int_chem_id = 'InChI=1S/C16H12F3N3S/c17-16(18,' \
-#                                    '19)14-4-2-1-3-12(14)13(9-20)15(22)' \
-#                                    '23-11-7-5-10(21)6-8-11/h1-8H,21-22H2/' \
-#                                    'b15-13+'
+inh_to_correct = session.query(Inhibitor).filter(
+    Inhibitor.inhib_pubchem_cid == 9549284).first()
+inh_to_correct.inhib_int_chem_id = 'InChI=1S/C16H12F3N3S/c17-16(18,' \
+                                   '19)14-4-2-1-3-12(14)13(9-20)15(22)' \
+                                   '23-11-7-5-10(21)6-8-11/h1-8H,21-22H2/' \
+                                   'b15-13+'
 
 # --------------------------------------------------------------------------- #
 # Inhibitor PubChem SID in place of CID; CID already in DB
@@ -122,16 +122,16 @@ session.commit()
 session.close()
 
 # =========================================================================== #
-# # API imports
-#
-# # Add kinase cellular location, full name and family to kinases table
-# # get needed data from uniprot
-# kin_uniprot_data = get_uniprot_api_data(Kinase)
-# # import data into database
-# import_data_from_data_frame(kin_uniprot_data, uniprot_kin_to_class)
-#
-# # df1 = kin_uniprot_data[kin_uniprot_data['Entry'] == 'Q9Y478']
-# # import_data_from_data_frame(df1, uniprot_kin_to_class)
+# API imports
+
+# Add kinase cellular location, full name and family to kinases table
+# get needed data from uniprot
+kin_uniprot_data = get_uniprot_api_data(Kinase)
+# import data into database
+import_data_from_data_frame(kin_uniprot_data, uniprot_kin_to_class)
+
+# df1 = kin_uniprot_data[kin_uniprot_data['Entry'] == 'Q9Y478']
+# import_data_from_data_frame(df1, uniprot_kin_to_class)
 
 # --------------------------------------------------------------------------- #
 # Add substrate full name to DB using Uniprot API
