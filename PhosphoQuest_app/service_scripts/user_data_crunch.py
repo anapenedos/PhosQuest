@@ -14,12 +14,96 @@ import os
 
 # --------------------------------------------------------------------------- #
 
+### Function to read user data, check for errors and pass.
+def user_data_check(data_file):
+    """ 
+    1 - Check user data file, and if necessary coerce to correct format. 
+    2 - Check for fold calculation errors, and if correct, return data frame 
+        for passing to later functions. 
+    3 - If incorrect fold calculations detected, error message returned. """
+    # Read user_data and assign to dataframe variable.
+    orig_file = pd.read_table(data_file)
+    
+    # Subset source df by the first 7 columns.
+    # Note: last index should be +1 bigger than number of fields.
+    # AZ20.tsv file has 86 total columns, 80 of which are empty cells.
+    # Necessary step to maintain indexing references at a later stage!
+    orig_file_subset = orig_file.iloc[:, 0:7]
+    
+    # Subset data frame by checking if mean intensities in both columns,
+    # are greater than zero.
+    orig_file_subset = orig_file_subset[(orig_file_subset.iloc[:, 1] > 0) |\
+                                        (orig_file_subset.iloc[:, 2] > 0)]
+    
+    # A data file that has been edited such that columns have been deleted,
+    # i.e. in excel, may introduce "phantom" columns in python environment.
+    # Such columns are coerced to "un-named" fields with nan entries.
+    # If cv columns present with values, original data frame unaffected.
+    # Code drops columns that contain all nan in columns.
+    orig_file_subset = orig_file_subset.dropna(axis=1,    # Iterate by columns.
+                                               how="all") # Drop if all na
+                                                          # in columns.
+                                                          
+    # Determine number of columns.
+    num_col = orig_file_subset.shape[1]
+    
+    # Check if number of cols = 5 and append new columns with "empty" entries
+    # for cv calculations that are missing.
+    # If number of columns adhere to correct format, data frame unaffected.
+    if num_col == 5:
+        orig_file_subset["control_cv"] = 1
+        orig_file_subset["condition_cv"] = 1        
+    
+    # Add fold calculation column to df.
+    orig_file_subset["calc_fold_change"] = \
+        orig_file_subset.iloc[:, 2].divide(orig_file_subset.iloc[:,1])
+    
+    # Define user and script calculated fold changes as series variables.
+    user_fold_calc = orig_file_subset.iloc[:, 3]
+    script_fold_calc = orig_file_subset.iloc[:, 7]
+    
+    # Determine if fold change calculations match by 
+    # an absolute tolerance of 3 signifcant figures.
+    # Numpy "isclose()" function used to check closeness of match.
+    # Boolean series returned to new column in data frame.
+    orig_file_subset["check_fold_match"] = \
+        np.isclose(user_fold_calc, script_fold_calc, atol=10**3)
+    
+    # Determine number of true matches for fold change calculations.
+    # Summing of boolean series carried out: True = 1, False = 0.
+    sum_matches = sum(orig_file_subset.iloc[:, 8] == 1)
+    
+    # Define error message if fold calculation matching determines
+    # existance of errors.
+    error_message = \
+    ("Your incorrect fold change calculations shall not avail you..." +
+     "scourge of webapps!" +
+     " Your data frame SHALL NOT PASS!")
+    #"Anomaly detected..PhosphoQuest will self-destruct in T minus 10 seconds")
+    
+    # If "sum_matches" equal to length of data frame, then reurn data frame.
+    # If not, then return error message.
+    if sum_matches == len(orig_file_subset):
+        orig_file_parsed = orig_file_subset.iloc[:, 0:7]
+        return orig_file_parsed
+    elif sum_matches != len(orig_file_subset):
+        return error_message
+    
+
+#file = os.path.join('PhosphoQuest_app', 
+#                    'user_data', 
+#                    'az20_no_cvs.tsv')
+#
+#data_or_error = user_data_check(file)
+
+# --------------------------------------------------------------------------- #
+
 ### Function to read user data and sequentially generate data frames.
-def create_filtered_dfs(datafile):
+def create_filtered_dfs(parsed_data):
     """ Create data frame subsets of user data and expand
     with further analysis. """
     # Read user_data and assign to dataframe variable.
-    ud_df_orig = pd.read_table(datafile)
+    ud_df_orig = parsed_data
     
     # Assert substrate column to object data-type.
     assert ptypes.is_object_dtype(ud_df_orig.loc[0])
@@ -28,7 +112,7 @@ def create_filtered_dfs(datafile):
     # Define index range of columns and pass header names to list.
     cols_to_numeric = ud_df_orig.iloc[:, 1:7].columns.values.tolist()
     
-    # Assert fileds defined by column headers as numeric.
+    # Assert fields defined by column headers as numeric.
     assert all(ptypes.is_numeric_dtype(ud_df_orig[col]) \
                for col in cols_to_numeric)
     
@@ -36,7 +120,7 @@ def create_filtered_dfs(datafile):
     ud_df_orig.rename(columns={ud_df_orig.columns[0]: "Substrate (gene name)"}, 
                                inplace=True)
 
-    # Subset source df by the first 6 columns.
+    # Subset source df by the first 7 columns.
     # Note: last index should be +1 bigger than number of fields.
     # tsv file has 86 total columns, 80 of which are empty cells.
     # Necessary step to maintain indexing references at a later stage!
@@ -102,7 +186,7 @@ def create_filtered_dfs(datafile):
     ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 1]>0) &
                     (ud_df4_sty_valid.iloc[:, 2]>0))
 
-    # Check if condition CVs <=25% in both conditions.
+    # Check if cv <=25% in both conditions.
     # Boolean true/false outputs returned.
     # Append category to new column.
     ud_df4_sty_valid["CV <=25%(both)"] = ((ud_df4_sty_valid.iloc[:, 5]<=0.25) &
@@ -186,14 +270,26 @@ def table_sort_parse(filtered_df):
                                               sort_level_4,
                                               sort_level_5],
                                               ascending=False)
-
+    
+    # Sum control_cv & condition cv. 
+    # User data that didn't contain cv columns upon original upload,
+    # would return a sum of cv's equal to length of data frame.
+    # This will distinguish it from user_data with CV columns present,
+    # whose sum will always be unequal to length of data frame.
+    sum_cont_cv = filtered_df.iloc[:, 10].sum()
+    
     # Parse phospho-sites with corrected p-values <=0.05 & CV <=25% in both 
     # conditions or CV <=25% in either control or condition.
     # Parsed table passed to new data frame.
-    filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15] &
-                                         filtered_df.iloc[:, 19] |
-                                         filtered_df.iloc[:, 20] |
-                                         filtered_df.iloc[:, 21]]
+    # Note: if original user data upload didn't contain CV's then and alternate,
+    # and simplified parsing rule used.
+    if sum_cont_cv == len(filtered_df):
+        filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15]]
+    else:
+        filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15] &
+                                             filtered_df.iloc[:, 19] |
+                                             filtered_df.iloc[:, 20] |
+                                             filtered_df.iloc[:, 21]]
     
     # Replace "inf" & "-inf" values in log2 fold change column with nan.
     filtered_signif_df["Log2 fold change - condition over control"]\
@@ -545,9 +641,11 @@ if __name__ == "__main__":
     #set up runs for testing functions
     file = phos_sites_path = os.path.join('PhosphoQuest_app', 
                                           'user_data', 
-                                          'AZ20.tsv')
+                                          'az20_no_cvs.tsv')
 
-    styn, sty = create_filtered_dfs(file)
+    data_or_error = user_data_check(file)
+    
+    styn, sty = create_filtered_dfs(data_or_error)
 
     corrected_p = correct_pvalue(sty)
 
