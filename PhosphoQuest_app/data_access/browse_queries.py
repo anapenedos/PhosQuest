@@ -1,8 +1,7 @@
-import os
+import re
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase,\
     Substrate, Inhibitor
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
     Substrate_first_results
 from PhosphoQuest_app.data_access.query_db import headers, searchlike, \
@@ -41,13 +40,17 @@ def browse_subcat(category):
     if table == 'Kinase' and field == 'Cellular_Location':
         return location_cats
 
-    # run query for all distinct reuslts from table and field name
+    # run query for all distinct results from table and field name
     else:
         session = create_sqlsession()
         subcats = session.query(dbfield.distinct()).all()
-        links =[subcat[0] for subcat in subcats if subcat[0] != None]
-        print(links)
-
+        cats =[subcat[0] for subcat in subcats if subcat[0] != None]
+        links = []
+        #remove forward and black slash that cause problems in links
+        for item in cats:
+            item = item.replace("/","&F&")
+            item = item.replace("\\","&B&")
+            links.append(item)
         return links
 
 
@@ -58,11 +61,12 @@ def browse_table(subcategory):
     #get database field for query
     dbtable = tabledict[table][0]
     dbfield = tabledict[table][1][field]
-    print(text, dbtable, dbfield)
+    #translate any slash characters passed in link
+    text = text.replace("&F&","/")
+    text = text.replace("&B&","\\")
 
     # run query for all distinct reuslts from table and field name
     results = searchlike(text, dbtable, dbfield)
-    print(results)
     #find table format for output
     if 'No Results Found' not in results:
         if table == 'Kinase':

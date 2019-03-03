@@ -1,4 +1,3 @@
-import os
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
     Substrate, Inhibitor, Phosphosite
 import pandas as pd
@@ -134,8 +133,9 @@ def searchexact(text, table, fieldname):
     else:
         return ['No results found']
 
+
 def query_to_dfhtml(query_results, table):
-    """ Function to parse query output to pandas dataframe for selected columns
+    """ Function to parse query output to pandas dataframe
      and create html for website"""
 
     # get attribute names for this table
