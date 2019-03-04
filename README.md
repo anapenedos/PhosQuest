@@ -9,13 +9,14 @@ The application also provides an area for users to upload a tsv or csv file of e
 The uploaded file used for data analysis must be in the following format
 
 -	tab or comma separated data saved as tsv, csv or txt format
--	X columns containing the following information in the following order.
-Substrates. **UPDATE AS APPROPRIATE**
+-	X columns containing the following information in the following order.**UPDATE AS APPROPRIATE**
+Substrates. 
 
-  1)	Control  
-  2)	Condition  
-  3)	P value  
-  4)	CV
+  1)	Substrates
+  2)  Control  
+  3)	Condition  
+  4)	P value  
+  5)	CV
 
 
 ## Data sources
