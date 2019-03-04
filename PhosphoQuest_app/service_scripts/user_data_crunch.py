@@ -30,6 +30,12 @@ def user_data_check(data_file):
     # Necessary step to maintain indexing references at a later stage!
     orig_file_subset = orig_file.iloc[:, 0:7]
     
+    # Coerce column 1 to object.
+    orig_file_subset.iloc[:, 0] = orig_file_subset.iloc[:, 0].astype(object)
+    
+    # Coerce column 2-7 to float.
+    orig_file_subset.iloc[:, 1:7] = orig_file_subset.iloc[:, 1:7].astype(float)
+    
     # Subset data frame by checking if mean intensities in both columns,
     # are greater than zero.
     orig_file_subset = orig_file_subset[(orig_file_subset.iloc[:, 1] > 0) |\
@@ -88,13 +94,13 @@ def user_data_check(data_file):
         return orig_file_parsed
     elif sum_matches != len(orig_file_subset):
         return error_message
-    
 
 #file = os.path.join('PhosphoQuest_app', 
 #                    'user_data', 
-#                    'az20_no_cvs.tsv')
+#                    'Ipatasertib.tsv')
 #
 #data_or_error = user_data_check(file)
+#data_or_error.dtypes
 
 # --------------------------------------------------------------------------- #
 
@@ -104,17 +110,6 @@ def create_filtered_dfs(parsed_data):
     with further analysis. """
     # Read user_data and assign to dataframe variable.
     ud_df_orig = parsed_data
-    
-    # Assert substrate column to object data-type.
-    assert ptypes.is_object_dtype(ud_df_orig.loc[0])
-    
-    # Assert column types for numeric data.
-    # Define index range of columns and pass header names to list.
-    cols_to_numeric = ud_df_orig.iloc[:, 1:7].columns.values.tolist()
-    
-    # Assert fields defined by column headers as numeric.
-    assert all(ptypes.is_numeric_dtype(ud_df_orig[col]) \
-               for col in cols_to_numeric)
     
     # Rename "Substrate" column to "Substrate (gene name)".
     ud_df_orig.rename(columns={ud_df_orig.columns[0]: "Substrate (gene name)"}, 
@@ -139,68 +134,64 @@ def create_filtered_dfs(parsed_data):
     # Remove Phospho-site ID including () from "Substrate" column
     ud_df1_quant.iloc[:, 0] = ud_df1_quant.iloc[:, 0].\
                             str.replace(r"\(.*\)", "")
-
-    # Parse data that contains only Ser, Thr, Tyr & non phospho-sites (STYN).
-    ud_df2_styn = ud_df1_quant[ud_df1_quant.iloc[:, 7].
-                            str.contains("S|T|Y|None", case=False)]
-    # Search not case sensitive.
+    
     # Parse data that contains Ser, Thr & Tyr phospho-sites only (STY)
-    ud_df3_sty = ud_df2_styn[ud_df2_styn.iloc[:, 7].
-                            str.contains("S|T|Y", case=False)]
+    ud_df1_sty = ud_df1_quant[ud_df1_quant.iloc[:, 7].
+                              str.contains("S|T|Y", case=False)]
 
     # Parse data for phospo-sites with valid p-values.
-    ud_df4_sty_valid = ud_df3_sty[(ud_df3_sty.iloc[:, 4] > 0)]
+    ud_df1_sty_valid = ud_df1_sty[(ud_df1_sty.iloc[:, 4] > 0)]
 
     # Find max values of control vs input protein means, column header names
-    cond_1_name = ud_df4_sty_valid.columns[1]
-    cond_2_name = ud_df4_sty_valid.columns[2]
+    cond_1_name = ud_df1_sty_valid.columns[1]
+    cond_2_name = ud_df1_sty_valid.columns[2]
     # Find max of row for the 2 conditions (axis = 1 - by rows)
-    condition_max = ud_df4_sty_valid[[cond_1_name, cond_2_name]].max(axis=1)
+    condition_max = ud_df1_sty_valid[[cond_1_name, cond_2_name]].max(axis=1)
 
     # Calculate "fold conditions over max" values and append to new columns.
     # "df.divide" used to divide individual elements in a column by a variable.
-    ud_df4_sty_valid["Fold control intensity over maximum"] =\
-                    ud_df4_sty_valid.iloc[:, 1].divide(condition_max, axis=0)
-    ud_df4_sty_valid["Fold condition intensity over maximum"] =\
-                    ud_df4_sty_valid.iloc[:, 2].divide(condition_max, axis=0)
+    ud_df1_sty_valid["Fold control intensity over maximum"] =\
+                    ud_df1_sty_valid.iloc[:, 1].divide(condition_max, axis=0)
+    ud_df1_sty_valid["Fold condition intensity over maximum"] =\
+                    ud_df1_sty_valid.iloc[:, 2].divide(condition_max, axis=0)
 
     # Take log10 of control & condition intensities and pass to new columns.
-    ud_df4_sty_valid["Log10 control intensity"] =\
-                    np.log10(ud_df4_sty_valid.iloc[:, 1])
-    ud_df4_sty_valid["Log10 condition intensity"] =\
-                    np.log10(ud_df4_sty_valid.iloc[:, 2])
+    ud_df1_sty_valid["Log10 control intensity"] =\
+                    np.log10(ud_df1_sty_valid.iloc[:, 1])
+    ud_df1_sty_valid["Log10 condition intensity"] =\
+                    np.log10(ud_df1_sty_valid.iloc[:, 2])
 
     # Calc log2 fold change - condition/control and append as new column to df.
-    ud_df4_sty_valid["Log2 fold change - condition over control"] =\
-                    np.log2(ud_df4_sty_valid.iloc[:, 3])
+    ud_df1_sty_valid["Log2 fold change - condition over control"] =\
+                    np.log2(ud_df1_sty_valid.iloc[:, 3])
 
     # Phospho-sites detected in single conditions and append to new columns.
     # Boolean true/false outputs returned.
-    ud_df4_sty_valid["control only"] = ((ud_df4_sty_valid.iloc[:, 1]>0) &
-                    (ud_df4_sty_valid.iloc[:, 2]==0)) # control only.
-    ud_df4_sty_valid["condition only"] = ((ud_df4_sty_valid.iloc[:, 1]==0) &
-                    (ud_df4_sty_valid.iloc[:, 2]>0)) # AZ20 only.
+    ud_df1_sty_valid["control only"] = ((ud_df1_sty_valid.iloc[:, 1]>0) &
+                    (ud_df1_sty_valid.iloc[:, 2]==0)) # control only.
+    ud_df1_sty_valid["condition only"] = ((ud_df1_sty_valid.iloc[:, 1]==0) &
+                    (ud_df1_sty_valid.iloc[:, 2]>0)) # AZ20 only.
 
     # Phospho-sites detected in both conditions and append to new column.
     # Boolean true/false outputs returned.
-    ud_df4_sty_valid["both conditions"] = ((ud_df4_sty_valid.iloc[:, 1]>0) &
-                    (ud_df4_sty_valid.iloc[:, 2]>0))
+    ud_df1_sty_valid["both conditions"] = ((ud_df1_sty_valid.iloc[:, 1]>0) &
+                    (ud_df1_sty_valid.iloc[:, 2]>0))
 
     # Check if cv <=25% in both conditions.
     # Boolean true/false outputs returned.
     # Append category to new column.
-    ud_df4_sty_valid["CV <=25%(both)"] = ((ud_df4_sty_valid.iloc[:, 5]<=0.25) &
-                    (ud_df4_sty_valid.iloc[:, 6]<=0.25))
+    ud_df1_sty_valid["CV <=25%(both)"] = ((ud_df1_sty_valid.iloc[:, 5]<=0.25) &
+                    (ud_df1_sty_valid.iloc[:, 6]<=0.25))
     
     # Check if unique sites have CVs <=25%.
     # Boolean true/false outputs returned.
     # Append category to new column.
-    ud_df4_sty_valid["CV <=25%(control)"] = ((ud_df4_sty_valid.iloc[:, 5]\
-                     <=0.25) & (ud_df4_sty_valid.iloc[:, 13]==1))
-    ud_df4_sty_valid["CV <=25%(condition)"] = ((ud_df4_sty_valid.iloc[:, 6]\
-                     <=0.25) & (ud_df4_sty_valid.iloc[:, 14]==1))
+    ud_df1_sty_valid["CV <=25%(control)"] = ((ud_df1_sty_valid.iloc[:, 5]\
+                     <=0.25) & (ud_df1_sty_valid.iloc[:, 13]==1))
+    ud_df1_sty_valid["CV <=25%(condition)"] = ((ud_df1_sty_valid.iloc[:, 6]\
+                     <=0.25) & (ud_df1_sty_valid.iloc[:, 14]==1))
     
-    return(ud_df2_styn, ud_df4_sty_valid)
+    return(ud_df1_quant, ud_df1_sty_valid)
 
 # --------------------------------------------------------------------------- #
 
@@ -304,7 +295,7 @@ def table_sort_parse(filtered_df):
 # --------------------------------------------------------------------------- #
 
 ### Function to extract and collate info from phospho data frame.
-def data_extract(filtered_df, styn):
+def data_extract(filtered_df, styno):
     """ Extract data groups as follows:
         1 - Proportion of phospho-sites in total data & % enrichment.
         2 - Frequency of phosphorylated residues.
@@ -315,7 +306,7 @@ def data_extract(filtered_df, styn):
     phos_site_num = len(filtered_df)
 
     # Number of non-phosporylated peptides.
-    non_phos_num = len(styn) - phos_site_num
+    non_phos_num = len(styno) - phos_site_num
 
     # Calculate % proportion of phospho-sites in total data-set.
     phos_perc_enrich = round((phos_site_num/(non_phos_num+phos_site_num)\
@@ -641,18 +632,18 @@ if __name__ == "__main__":
     #set up runs for testing functions
     file = phos_sites_path = os.path.join('PhosphoQuest_app', 
                                           'user_data', 
-                                          'az20_no_cvs.tsv')
+                                          'Ipatasertib.tsv')
 
     data_or_error = user_data_check(file)
     
-    styn, sty = create_filtered_dfs(data_or_error)
+    styno, sty = create_filtered_dfs(data_or_error)
 
     corrected_p = correct_pvalue(sty)
 
     full_sty_sort, parsed_sty_sort = table_sort_parse(corrected_p)
 
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
-    data_extract(full_sty_sort, styn)
+    data_extract(full_sty_sort, styno)
 
     heat_map(full_sty_sort,"full")
 
