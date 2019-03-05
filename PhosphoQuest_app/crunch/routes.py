@@ -32,7 +32,7 @@ def analysis():
             check_var = user_data_crunch.user_data_check(f)
 
 
-            if type(check_var) != str:
+            if type(check_var) != str: # if not string run analysis
 
                 #run all data crunch functions and create dictionary of results
                 all_data = userdata_display.run_all(check_var)
@@ -57,15 +57,15 @@ def analysis():
                     title='All data', table=table, phos_enrich=phos_enrich,
                                        csv=csv)
 
-            else:
+            else: #if string show user error
                 flash(check_var, 'danger')
                 return render_template('upload.html', form=form,
                                        report='upload')
 
         except Exception as ex:
-            #catch any file exception with traceback to help debugging
+            #catch any file exception with error shown to help debugging
             flash('An error occurred please try again','danger')
-            flash(ex, 'info')
+            flash(ex, 'danger')
             return render_template('upload.html', form=form, report='upload')
 
     return render_template('upload.html', form=form, report='upload')

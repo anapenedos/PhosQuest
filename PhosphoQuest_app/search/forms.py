@@ -5,8 +5,7 @@ from wtforms import StringField, SubmitField, SelectField, RadioField
 
 class SearchForm(FlaskForm):
     """Search form with selectors"""
-    search = StringField('Enter Search text',
-                          validators=[])
+    search = StringField('Enter Search text')
     #Dropdown selector for exact or like match
     options= [('like', 'similar matches'),('exact', 'exact matches')]
     select = SelectField('Choose search type: ', choices=options)
