@@ -1,12 +1,14 @@
 """scripts to format subsets of crunched data for display"""
 from PhosphoQuest_app.service_scripts import user_data_crunch
-import os
 from datetime import datetime
+import os
 
-def run_all(file):
+def run_all(df):
 
-    """Function to run all crunch analyses"""
-    styn, sty = user_data_crunch.create_filtered_dfs(file)
+    """Function to run all crunch analyses on dataframe"""
+
+    #run analyses
+    styno, sty = user_data_crunch.create_filtered_dfs(df)
 
     corrected_p = user_data_crunch.correct_pvalue(sty)
 
@@ -16,19 +18,19 @@ def run_all(file):
 
     #collate extracted data as datalist
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
-                    user_data_crunch.data_extract(full_sty_sort, styn)
+                    user_data_crunch.data_extract(full_sty_sort, styno)
 
     datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq]
 
         #This can change depending on what is needed for display in route
-    all_data = {'styn':styn, 'sty':sty, 'corrected_p':corrected_p,
+    all_data = {'styno':styno, 'sty':sty, 'corrected_p':corrected_p,
         'full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
         'datalist':datalist}
 
     """ Upload and analysis Route : run all analyses in crunch script.
     Produces all date dictionary, with datalist of dataframes for piecharts
     and further display
-    all_data contains {'styn', 'sty', 'corrected_p','full_sty_sort':,
+    all_data contains {'styno', 'sty', 'corrected_p','full_sty_sort':,
     'parsed_sty_sort','datalist'}
 
     datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq,

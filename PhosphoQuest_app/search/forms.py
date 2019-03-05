@@ -18,7 +18,7 @@ class SearchForm(FlaskForm):
 
     table = RadioField('Search by: ', choices=criteria, default='kinase')
 
-    fields = [('acc_no', 'Accession or ID'), ('name', 'Full Name')]
+    fields = [('acc_no', 'Accession or ID'), ('name', 'Name')]
 
     option = RadioField('Search in: ', choices=fields, default='acc_no')
 

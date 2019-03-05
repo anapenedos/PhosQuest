@@ -3,14 +3,13 @@ from flask_table import Table, Col, LinkCol
 class Kinase_first_results(Table):
     """create Kinase results part info table format"""
     kin_accession = Col('Accession no')
-
     kin_full_name = Col('Full name')
     kin_gene = Col('Gene')
-    detail = LinkCol('Kinase Details', 'browse.kin_detail',
+    detail = LinkCol('Detail', 'browse.kin_detail',
                             url_kwargs=dict(text='kin_accession'))
 
 
-class Inhibitor(Table):
+class Inhibitor_first_results(Table):
     """create table of buttons for subcats"""
 
     inhib_pubchem_cid = Col('PubChem no')

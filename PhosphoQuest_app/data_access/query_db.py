@@ -2,7 +2,7 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
     Substrate, Inhibitor, Phosphosite
 import pandas as pd
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-
+from PhosphoQuest_app.data_access.interface_dicts import headers
 
 # create table dictionary to translate table name for search queries
 tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
@@ -15,26 +15,7 @@ tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
 
 #dictionary for human friendly attribute names
 #TODO finish adding Inhibitors to this dict as will be helpful for other things
-headers = {
-    'kin_accession':'Accession no', 'kin_short_name':'Short name',
-    'kin_full_name' :'Full name', 'kin_gene':'Gene',
-    'kin_organism':'Species', 'kin_cellular_location':'Cellular location',
-    'kin_family': 'Family', 'subs_accession':'Accession no',
-    'subs_short_name':'Short name', 'subs_full_name':'Full name',
-    'subs_protein_type':'Protein type',
-              'subs_molec_weight_kd':'Molecular weight (kd)',
-    'subs_gene':'Gene', 'subs_chrom_location':'Chromosome location',
-    'subs_organism':'Species', 'phos_group_id':'Group ID',
-    'phos_modified_residue': 'Modified residue','phos_site':'Phosphosite',
-    'phos_domain':'Phosphorylation domain',
-              'phos_cst_catalog_number':'CST Catalog number',
-    'phos_p_function':'Phosphorylation Function',
-    'phos_p_processes':'Processes',
-        'phos_prot_interactions':'Protein Interactions',
-    'other_interactions':'Other interactions',
-    'phos_bibl_references':'References','phos_notes':'Notes',
-    'phos_in_substrate':'In substrate'
-}
+
 
 def query_switch(text,type, table, option):
     """function to switch between different query methods
@@ -46,7 +27,7 @@ def query_switch(text,type, table, option):
                  'substrate': [Substrate.subs_accession,
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,
-                               Inhibitor.inhib_full_name]}
+                               Inhibitor.inhib_short_name]}
 
     # find appropriate field to apply and find field object
     if table == 'kinase':

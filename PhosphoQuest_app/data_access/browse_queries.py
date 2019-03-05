@@ -4,9 +4,10 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase,\
 
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
     Substrate_first_results
-from PhosphoQuest_app.data_access.query_db import headers, searchlike, \
+from PhosphoQuest_app.data_access.query_db import searchlike, \
     searchexact
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+from PhosphoQuest_app.data_access.interface_dicts import headers, location_cats
 
 
 # TODO finish categories for substrates/inhibitors#
