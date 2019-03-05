@@ -95,13 +95,6 @@ def user_data_check(data_file):
     elif sum_matches != len(orig_file_subset):
         return error_message
 
-#file = os.path.join('PhosphoQuest_app', 
-#                    'user_data', 
-#                    'Ipatasertib.tsv')
-#
-#data_or_error = user_data_check(file)
-#data_or_error.dtypes
-
 # --------------------------------------------------------------------------- #
 
 ### Function to read user data and sequentially generate data frames.
@@ -114,6 +107,7 @@ def create_filtered_dfs(parsed_data):
                                 inplace=True)
 
     # Pass "parsed_data" to variable fed into later code.
+    # Variable consists of all peptides with at least 1 quantitation.
     ud_df1_quant = parsed_data
 
     # Copy phospho-site id from "Substrate" field and append to new column.
@@ -646,6 +640,77 @@ if __name__ == "__main__":
 
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
 
+# --------------------------------------------------------------------------- #
+    
+#### Test code for volcano plot.  
+#from plotly.offline import init_notebook_mode,  plot
+#from plotly.graph_objs import *
+#init_notebook_mode()
+#
+#df_subset = full_sty_sort[[full_sty_sort.columns[0],  # Substrate.
+#                             full_sty_sort.columns[1],  # site
+#                             full_sty_sort.columns[9],  # Log2 fold change
+#                             full_sty_sort.columns[14]]] # -log10(p).
+# 
+#
+#trace0 = Scattergl(
+#    x=df_subset.iloc[:, 2],
+#    y=df_subset.iloc[:, 3],
+#    mode='markers',
+#    marker=dict(
+#        size=10,
+#        color = df_subset.iloc[:, 3], #set color equal to a variable
+#        colorscale='Viridis',
+#        showscale=True),
+#    text = df_subset.iloc[:, 0],
+#    opacity = 0.9)
+#
+#data = [trace0]
+#layout = Layout(
+#        title = 'Volcano plot - significantly differentially expressed sites',
+#        xaxis= dict(
+#        title= 'Log2 fold change - Condition over Control',
+#        ticklen= 5,
+#        zeroline= False,
+#        gridwidth= 2,
+#    ),
+#        yaxis=dict(
+#        title= '-log10(corrected p-value)',
+#        ticklen= 5,
+#        gridwidth= 2,
+#    ),
+#    showlegend=False,
+#    height=800,
+#    width=800,
+#)
+#
+#fig = dict(data=data, layout=layout)
+#
+#plot(fig)  
+#
+## --------------------------------------------------------------------------- #
+#### Test code for analysing multi-drug treatments
+#file = os.path.join('PhosphoQuest_app', 
+#                        'user_data', 
+#                        'mux.tsv')   
+#
+## read multi-treatment data into dataframe
+#mux_df = pd.read_table(file)
+## pass substrate and control columns to new dataframe
+#mux_df_sub_cont_subset = mux_df.iloc[:, 0:2]
+## take subset minus substrate and control columns
+#mux_df_treat_subset = mux_df.drop(mux_df.columns[[0,1]], axis=1)
+## define number of columns
+#mux_df_num_col = mux_df_treat_subset.shape[1]
+## define chunk size for splitting array
+#mux_df_chunk_size = mux_df_num_col/5
+## split dataframe treatment subset inot list of per treatment dataframes.
+#mux_df_chunk_list = np.array_split(mux_df_treat_subset, mux_df_chunk_size, axis=1)
+## merge each treatment subset with substrate & control column
+#for df in mux_df_chunk_list:
+#    df["substrate"] = mux_df.iloc[:, 0]
+#    df["control_mean"] = mux_df.iloc[:, 1]
+    
 # --------------------------------------------------------------------------- #
 #### Testing query/join code for db info extraction.
 #from sqlalchemy import create_engine
