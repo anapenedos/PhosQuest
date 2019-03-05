@@ -2,11 +2,13 @@
 {% extends "layout_no_sidebar.html" %}
 {% block content %}
 <div>
-    <center>
-    <img src="{{url_for('static', filename='404_page_image.png')}}"
+    <center>  <br>
+        <H3> 404 - Your Kinase has been Inhibited</H3>
+    <img src="{{url_for('static', filename='oops_kinase.png')}}"
         alt="404 error image"/>
     <br>
-    <H3>Page Not Found
+    <H3>You have taken a wrong turn in your PhosphoQuest.
+        <br>
     <a href="{{url_for('main.home')}}">Try going back home</a></center></H3>
 </div>
 </body>
