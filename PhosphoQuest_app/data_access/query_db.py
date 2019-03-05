@@ -23,7 +23,7 @@ def query_switch(text,type, table, option):
     # TODO update to long name when available for Kinase
     #find right field to search based on selected table and name or acc_no
     #using short name for now until long name avail
-    fielddict = {'kinase': [Kinase.kin_accession, Kinase.kin_short_name],
+    fielddict = {'kinase': [Kinase.kin_accession, Kinase.kin_full_name],
                  'substrate': [Substrate.subs_accession,
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,

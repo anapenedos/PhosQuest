@@ -23,12 +23,20 @@ def search_db():
             in {search_table} {search_option} using {search_type} match',
               'info')
         # call query switch function to decide which search and display option
+
         results, style = query_db.query_switch(search_txt, search_type,
                                                search_table, search_option)
-        return render_template('search_results.html', title="Search results",
-                               results=results, style=style)
-    else:
 
+        #for inhibitors, get CID number for PubChem 3D Widget
+        if search_table == 'inhibitor' and type(results) == list:
+            print(results)
+            cid = results[0][0][1]
+            return render_template('search_results.html', title="Search results",
+                      results=results, style=style, cid=cid)
+        else:
+           return render_template('search_results.html', title="Search results",
+                            results=results, style=style)
+    else:
         return render_template('search.html', title="Search", form=form)
 
 
