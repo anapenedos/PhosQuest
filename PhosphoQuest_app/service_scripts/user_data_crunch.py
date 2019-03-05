@@ -108,24 +108,13 @@ def user_data_check(data_file):
 def create_filtered_dfs(parsed_data):
     """ Create data frame subsets of user data and expand
     with further analysis. """
-    # Read user_data and assign to dataframe variable.
-    ud_df_orig = parsed_data
-    
     # Rename "Substrate" column to "Substrate (gene name)".
-    ud_df_orig.rename(columns={ud_df_orig.columns[0]: "Substrate (gene name)"}, 
-                               inplace=True)
+    parsed_data.rename(columns={parsed_data.columns[0]: \
+                                "Substrate (gene name)"}, 
+                                inplace=True)
 
-    # Subset source df by the first 7 columns.
-    # Note: last index should be +1 bigger than number of fields.
-    # tsv file has 86 total columns, 80 of which are empty cells.
-    # Necessary step to maintain indexing references at a later stage!
-    ud_df_orig = ud_df_orig.iloc[:, 0:7]
-
-    # Parse data that contains at least 1 quant value in either condition and
-    # pass to variable. Note: "df.iloc" function used to specify column indices
-    # instead of column names. Allows for  different field names.
-    ud_df1_quant = ud_df_orig[(ud_df_orig.iloc[:, 1] > 0) |\
-                              (ud_df_orig.iloc[:, 2] > 0)]
+    # Pass "parsed_data" to variable fed into later code.
+    ud_df1_quant = parsed_data
 
     # Copy phospho-site id from "Substrate" field and append to new column.
     ud_df1_quant["Phospho site ID"] = ud_df1_quant.iloc[:, 0].\
@@ -632,7 +621,7 @@ if __name__ == "__main__":
     #set up runs for testing functions
     file = phos_sites_path = os.path.join('PhosphoQuest_app', 
                                           'user_data', 
-                                          'Ipatasertib.tsv')
+                                          'az20.tsv')
 
     data_or_error = user_data_check(file)
     
