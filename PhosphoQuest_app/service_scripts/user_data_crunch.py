@@ -651,19 +651,31 @@ if __name__ == "__main__":
 #                             full_sty_sort.columns[1],  # site
 #                             full_sty_sort.columns[9],  # Log2 fold change
 #                             full_sty_sort.columns[14]]] # -log10(p).
-# 
 #
-#trace0 = Scattergl(
-#    x=df_subset.iloc[:, 2],
-#    y=df_subset.iloc[:, 3],
+## Concatenate "substrate" and "site" fields as single string.
+#df_subset["Sub_site_ID"] = df_subset.iloc[:, 0].astype(str)+"_"+\
+#                                          df_subset.iloc[:, 1] 
+#                                          
+## Subset gene_sitID, log2 fold change and p-value only.                          
+#df_subset = df_subset[[df_subset.columns[4],
+#                       df_subset.columns[2],
+#                       df_subset.columns[3]]]
+#
+## plot
+#trace0 = Scatter(
+#    x=df_subset.iloc[:, 1],
+#    y=df_subset.iloc[:, 2],
 #    mode='markers',
 #    marker=dict(
 #        size=10,
-#        color = df_subset.iloc[:, 3], #set color equal to a variable
+#        color = df_subset.iloc[:, 2], #set color equal to a variable
 #        colorscale='Viridis',
+#        colorbar=dict(
+#                title='corrected p-value'
+#            ),
 #        showscale=True),
-#    text = df_subset.iloc[:, 0],
-#    opacity = 0.9)
+#        text = df_subset.iloc[:, 0],
+#        opacity = 0.9)
 #
 #data = [trace0]
 #layout = Layout(
@@ -686,8 +698,8 @@ if __name__ == "__main__":
 #
 #fig = dict(data=data, layout=layout)
 #
-#plot(fig)  
-#
+#html = plot(fig)  
+
 ## --------------------------------------------------------------------------- #
 #### Test code for analysing multi-drug treatments
 #file = os.path.join('PhosphoQuest_app', 
