@@ -28,8 +28,7 @@ def search_db():
                                                search_table, search_option)
 
         #for inhibitors, get CID number for PubChem 3D Widget
-        if search_table == 'inhibitor' and type(results) == list:
-            print(results)
+        if search_table == 'inhibitor' and style == "list":
             cid = results[0][0][1]#get pubchem CID from results to pass
             return render_template('search_results.html', title="Search results",
                       results=results, style=style, cid=cid)

@@ -10,11 +10,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .bg-blue {
-  background-color: #3c6090;
+  background-color: #1f7a7a;
 }
 
 .site-header .navbar-nav .nav-link {
-  color: #cbd5db;
+  color: #ffffff;
 }
 
 .site-header .navbar-nav .nav-link:hover {
@@ -22,7 +22,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .site-header .navbar-nav .nav-link.active {
-  font-weight: 00;
+  font-weight: 10;
 }
 
 .navside-dark .navside-nav .navside-link {
@@ -68,4 +68,14 @@ tr:nth-child(odd)	{ background-color #ffffff;}
 tr:nth-child(even)	{ background-color: #dbe4f0;}
 tr:hover            { background-color: #f6f4d5;}
 
+.btn-default {
+  color: #fff;
+  background-color: #1f7a7a !important;
+  border-color: #1f7a7a !important;
+}
 
+.btn-info {
+  color: #000000;
+  background-color: #49d0d0 !important;
+  border-color: #49d0d0 !important;
+}

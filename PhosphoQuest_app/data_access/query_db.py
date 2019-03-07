@@ -75,7 +75,6 @@ def query_switch(text,type, table, option):
         results = searchlike(text, table, field)
         if 'No results found' in results:
             style = 'None'
-            results = "No results found"
             return results, style
 
         elif len(results) < 4: # if only 3 or less results display as list

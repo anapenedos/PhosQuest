@@ -37,9 +37,8 @@ def analysis():
                 #run all data crunch functions and create dictionary of results
                 all_data = userdata_display.run_all(check_var)
 
-
                 #create csv of all data for download
-                csvdf= all_data['full_sty_sort']
+                csvdf = all_data['full_sty_sort']
 
                 csv = userdata_display.create_csv(csvdf, filename)
 
@@ -53,8 +52,9 @@ def analysis():
                 phos_enrich = all_data['datalist'][0]
                 phos_enrich=phos_enrich.to_html()
 
+
                 return render_template('results.html',
-                    title='All data', table=table, phos_enrich=phos_enrich,
+                    title='Analysis', table=table, phos_enrich=phos_enrich,
                                        csv=csv)
 
             else: #if string show user error
