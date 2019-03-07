@@ -20,7 +20,7 @@
         <p class="lead">
             <a class="btn btn-info btn-block btn-sml"
                href="{{url_for('browse.browse_table', subcategory=link)}}" role="button">
-                {{ item }}</a>
+               {{item|replace("&F&", "/")}}</a>
         </p>
     {% endfor %}
 

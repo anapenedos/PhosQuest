@@ -1,14 +1,33 @@
 <!-- inherit template from layout.html-->
 {% extends "layout.html" %}
 {% block content %}
+
+<div class="container">
 <H1>Welcome to PhosphoQuest!</H1>
 <br>
 <H5><i>Begin your quest for  Human phosphate kinase and related information </i></H5>
 <br>
 <H5><i> Analyse your Phosphorylation data </i></H5>
 <hr>
-<img src="{{url_for('static', filename='happy_kinase_400.png',style="height:400px")}}"
-        alt="happy kinase image"/>
+<div
+    <div class="row">
+        <div class="col">
+          <p>PhosphoQuest is a website designed to bring together information
+            and data analysis tools for phosphate kinase research.
+            We need more text here.
+          </p>
+            <p>
+                For example you can search by kinase for related inhibitors
+                and substrates. BLAH BLAH BLAH
+            </p>
+        </div>
+        <div class="col">
+            <img src="{{url_for('static', filename='happy_kinase_400.png',style="height:200px")}}"
+            alt="happy kinase image"/>
+
+        </div>
+      </div>
+</div>
 
 
 {% endblock content %}

@@ -27,10 +27,17 @@ def browse_cat(category):
                                cat="cat", category=category)
 
     else: # if this is the subcategory level (requiring query)
-
         links = browse_queries.browse_subcat(category)
+        cleansedlinks = []
+        # remove forward slashes
+        for item in links:
+            item = item.replace("/","&F&")
+            item = item.replace("\\","&B&")
+            cleansedlinks.append(item)
+
         return render_template('browse_cat.html', title="Browse",
-                               links=links, cat="subcat",category=category)
+                               links=cleansedlinks, cat="subcat",
+                               category=category)
 
 
 @browse.route("/browse_table/<subcategory>")
