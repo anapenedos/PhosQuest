@@ -46,6 +46,8 @@ def analysis():
                 table = user_data_crunch.\
                          style_df(all_data['parsed_sty_sort'])
 
+                volcano = all_data['volcano']
+
                 flash(f'File {filename} successfully analysed', 'success')
 
                 #temporary display of phos enrich
@@ -55,15 +57,15 @@ def analysis():
 
                 return render_template('results.html',
                     title='Analysis', table=table, phos_enrich=phos_enrich,
-                                       csv=csv)
+                                      volcano=volcano, csv=csv)
 
-            else: #if string show user error
+            else: # if string show user error
                 flash(check_var, 'danger')
                 return render_template('upload.html', form=form,
                                        report='upload')
 
         except Exception as ex:
-            #catch any file exception with error shown to help debugging
+            # catch any file exception with error shown to help debugging
             flash('An error occurred please try again','danger')
             flash(ex, 'danger')
             return render_template('upload.html', form=form, report='upload')

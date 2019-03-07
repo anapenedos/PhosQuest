@@ -14,6 +14,9 @@ def run_all(df):
     full_sty_sort, parsed_sty_sort =\
         user_data_crunch.table_sort_parse(corrected_p)
 
+    #run volcano plot
+    volcano = user_data_crunch.user_data_volcano_plot(full_sty_sort)
+
 
     # collate extracted data as datalist
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
@@ -21,14 +24,15 @@ def run_all(df):
 
     datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq]
 
+
     # This can change depending on what is needed for display in route
     all_data = {'styno':styno, 'sty':sty, 'corrected_p':corrected_p,
         'full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
-        'datalist':datalist}
+        'datalist':datalist, 'volcano':volcano}
 
     """ Upload and analysis Route : run all analyses in crunch script.
     Produces all date dictionary, with datalist of dataframes for piecharts
-    and further display
+    and further display and html of volcano plot.
     all_data contains {'styno', 'sty', 'corrected_p','full_sty_sort':,
     'parsed_sty_sort','datalist'}
 
@@ -63,3 +67,6 @@ def create_csv(dataframe, filename):
                 os.remove(os.path.join(tempdir,oldfile))
                 print(oldfile + "_removed")
     return outname
+
+def volcano_html(html_file,filename):
+    t

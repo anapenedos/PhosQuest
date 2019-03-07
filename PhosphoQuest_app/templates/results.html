@@ -66,17 +66,17 @@
                {% endif %}
             {% endwith %}
         </div>
+      </div>
     </main>
-
-  </body>
-<div class="container">
+    <div class = 'container'>
     <H2> Your Phosphorylation Data Analysis Results</H2>
     <br>
     <div id="tabs">
       <ul>
         <li><a href="#analysis-1"><span>Significant results</span></a></li>
-        <li><a href="#analysis-2"><span>Results Summary</span></a></li>
-        <li><a href="#analysis-3"><span>Download data</span></a></li>
+        <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
+        <li><a href="#analysis-3"><span>Results Summary</span></a></li>
+        <li><a href="#analysis-4"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
         <H3> Significant Results</H3>
@@ -84,7 +84,12 @@
             {{ table|safe }}
         </div>
       </div>
-      <div id="analysis-2">
+        <div id="analysis-2">
+          <p>Volcano Plot of All Data</p>
+          <hr>
+          {{ volcano |safe}}
+          </div>
+      <div id="analysis-3">
           <p>This could be lovely piecharts etc</p>
           <hr>
           <div class = "row">
@@ -92,22 +97,20 @@
               <img src={{url_for('static', filename='test_piechart.png')}}> </div>
           <div class="col-md-4">{{ phos_enrich|safe }}</div>
           </div>
-
       </div>
-      <div id="analysis-3">
+      <div id="analysis-4">
           <H4>Download your analysed data:</H4>
             <p class="lead">
                 <a class="btn btn-warning btn-sml"
                   href="{{url_for('crunch.download_analysis',
                              csv=csv)}}" role="button"> {{ csv }}</a>
             </p>
-
       </div>
     </div>
     <script>
     $( "#tabs" ).tabs();
     </script>
-</div>
+    </div>
 </body>
 </html>
 

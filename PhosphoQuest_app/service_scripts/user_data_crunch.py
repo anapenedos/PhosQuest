@@ -12,7 +12,8 @@ import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
 from plotly.offline import init_notebook_mode,  plot
 import plotly.graph_objs as go
-init_notebook_mode()
+from datetime import datetime
+#init_notebook_mode() # ONLY NEEDED FOR IPYTHON NOTEBOOK
 import os
 
 # --------------------------------------------------------------------------- #
@@ -705,8 +706,23 @@ def user_data_volcano_plot(phos_table):
     }
     
     # Define plot as html variable for calling at Flask level.
-    html = plot(fig)
+
+    tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
+    time = str(datetime.now())  # get time now
+    # get date last 3 digits (milliseconds) as "unique" no for download
+    id = time[-4:]
+    date = time[:10]
+    outfile = os.path.join(tempdir,f"{date}-_volcano_id{id}.html")
+
+    plot(fig, filename=outfile, auto_open=False)
+
+    #open file and read lines into variable
+    with open(outfile,'r') as f:
+        html = f.read()
+        print(html)
     return html
+
+
 
 # --------------------------------------------------------------------------- #
     
