@@ -49,7 +49,7 @@ def create_csv(dataframe, filename):
     #SAVE FILE
     dataframe.to_csv(os.path.join(tempdir,outname))
 
-    # clean up old files
+    # clean up old files >1 day
     oldfiles = [name for name in os.listdir(tempdir) if\
           os.path.isfile(os.path.join(tempdir, name))]
     # get date from file name

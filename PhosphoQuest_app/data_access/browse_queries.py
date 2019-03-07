@@ -1,11 +1,10 @@
-import re
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase,\
     Substrate, Inhibitor
 
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
-    Substrate_first_results
+    Substrate_first_results, Inhibitor_first_results
 from PhosphoQuest_app.data_access.query_db import searchlike, \
-    searchexact
+    searchexact,all_table
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.interface_dicts import headers,\
     location_cats, kin_family_cats
@@ -19,11 +18,8 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                           {'Protein_Type':Substrate.subs_protein_type,
                            'Chromosome_Location':
                                Substrate.subs_chrom_location},
-                          Substrate.subs_accession],
-             'Inhibitor': [Inhibitor,
-                            {'Target_Kinases':Inhibitor.inhib_target_kinases,
-                           'Vendor': Inhibitor.inhib_vendor},
-                           Inhibitor.inhib_pubchem_cid]
+                          Substrate.subs_accession]
+
              }
 
 
@@ -33,6 +29,7 @@ def browse_subcat(category):
     #get database field for query
     dbfield = tabledict[table][1][field]
 
+    # Use query output or curated categories depending on which field etc.
     if table == 'Kinase' and field == 'Cellular_Location':
         return location_cats
 
@@ -43,8 +40,8 @@ def browse_subcat(category):
     else:
         session = create_sqlsession()
         subcats = session.query(dbfield.distinct()).all()
-        cats =[subcat[0] for subcat in subcats if subcat[0] != None]
-        links = []
+        links =[subcat[0] for subcat in subcats if subcat[0] != None]
+
         #remove forward and black slash that cause problems in links
         return links
 
@@ -52,41 +49,63 @@ def browse_subcat(category):
 
 def browse_table(subcategory):
     """ function to take subcategory and display results as flask_table"""
-    table, field, text = subcategory.split("~")
-    #get database field for query
-    dbtable = tabledict[table][0]
-    dbfield = tabledict[table][1][field]
-    #translate any slash characters passed in link
-    text = text.replace("&F&","/")
-    text = text.replace("&B&","\\")
+    #catch inhibitors that skip levels.
+    if subcategory == 'Inhibitor':
+        out_table = browse_inhibitors()
+        return out_table
+    # perform database query for other subcategories
+    else:
+        table, field, text = subcategory.split("~")
+        #get database field for query
+        dbtable = tabledict[table][0]
+        dbfield = tabledict[table][1][field]
+        #translate any slash characters passed in link
+        text = text.replace("&F&","/")
+        text = text.replace("&B&","\\")
 
-    # run query for all distinct reuslts from table and field name
-    results = searchlike(text, dbtable, dbfield)
-    #find table format for output
+        # run query for all  results from table and field name for input text
+        results = searchlike(text, dbtable, dbfield)
+        print(type(results))
+
+        #find table format for output
+        if 'No Results Found' not in results:
+            if table == 'Kinase':
+                out_table = Kinase_first_results(items=results)
+
+            elif table =='Substrate':
+                out_table = Substrate_first_results(items=results)
+
+            return out_table
+
+
+        else:
+            return results
+
+def browse_inhibitors():
+    """ function to return all inhibitors as FLask table"""
+    results = all_table(Inhibitor)
+        #find table format for output
     if 'No Results Found' not in results:
-        if table == 'Kinase':
-            out_table = Kinase_first_results(items=results)
-
-        elif table =='Substrate':
-            out_table = Substrate_first_results(items=results)
-
-        elif table == 'Inhibitor':
-            pass
-
+        for item in results:
+            #make short name up to 20 characters
+            item.inhib_short_name = item.inhib_short_name[:20]
+        out_table = Inhibitor_first_results(items=results)
+        return out_table
     else:
         return results
-    return out_table
 
 
 def browse_detail(text, table):
-    """function to do something with kinase url thing
-     and show individual item."""
-    # TODO update - decide what detail to show
-    dbtable = tabledict[table][0]
-    dbfield = tabledict[table][2]
+    """function to do and show individual item detail from link."""
+    if table == 'Inhibitor':
+        dbtable = Inhibitor
+        dbfield = Inhibitor.inhib_pubchem_cid
+    else:
+        dbtable = tabledict[table][0]
+        dbfield = tabledict[table][2]
 
     results = searchexact(text, dbtable, dbfield)
-    results= query_to_list(results, dbtable)
+    results = query_to_list(results, dbtable)
     return results
 
 

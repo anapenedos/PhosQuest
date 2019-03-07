@@ -114,6 +114,16 @@ def searchexact(text, table, fieldname):
     else:
         return ['No results found']
 
+def all_table(table):
+    session = create_sqlsession()
+    results = session.query(table).all()
+    session.close()
+    # check if query has returned results
+    if results:
+        return results
+    else:
+        return ['No results found']
+
 
 def query_to_dfhtml(query_results, table):
     """ Function to parse query output to pandas dataframe
