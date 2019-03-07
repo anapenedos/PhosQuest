@@ -10,6 +10,9 @@ import numpy as np
 import seaborn as sb
 import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
+from plotly.offline import init_notebook_mode,  plot
+import plotly.graph_objs as go
+init_notebook_mode()
 import os
 
 # --------------------------------------------------------------------------- #
@@ -609,6 +612,104 @@ def style_df(phospho_df):
 
 # --------------------------------------------------------------------------- #
 
+### Function to generate volcano plot from user data.
+def user_data_volcano_plot(phos_table):
+    """ Function to create volcano plot of signifcantly differentially 
+    expressed phosho-sites from user uploaded data """
+    # Parse subset of phospho-sites table.
+    vp_df_subset = phos_table[[phos_table.columns[0],   # Substrate.
+                               phos_table.columns[1],   # site.
+                               phos_table.columns[2],   # control mean.
+                               phos_table.columns[3],   # condition mean.
+                               phos_table.columns[9],   # Log2 fold change.
+                               phos_table.columns[14]]] # -log10(p-value).
+    
+    # Concatenate "substrate" and "site" fields as single string.
+    vp_df_subset["Sub_site_ID"] = vp_df_subset.iloc[:, 0].astype(str)+"_"+\
+                                                    vp_df_subset.iloc[:, 1] 
+                                              
+    # Parse substrate_sitID, log2 fold change and p-value only.                          
+    vp_df_subset = vp_df_subset[[ vp_df_subset.columns[6],  # subs_site id.
+                                  vp_df_subset.columns[2],  # control mean .
+                                  vp_df_subset.columns[3],  # condition mean.
+                                  vp_df_subset.columns[4],  # log2 fold change.
+                                  vp_df_subset.columns[5]]] # -log10(p-value)
+    
+    # Parse hits with intensity in both conditions.
+    # Necessary as fold changes for single condition hits are "inf or -inf".
+    # x-axis range, for log2 fold changes in volcano plot, 
+    # cannot be set properly with these entries at a lter stage.
+    vp_df_subset = vp_df_subset[(vp_df_subset.iloc[:, 1] > 0) &\
+                                (vp_df_subset.iloc[:, 2] > 0)]
+    
+    # Set core plot.
+    trace = go.Scattergl(
+            x=vp_df_subset.iloc[:, 3],    # log2 fold change.
+            y=vp_df_subset.iloc[:, 4],    # -log10(p-value).
+            text=vp_df_subset.iloc[:, 0], # Set subs_id for hovering on points.
+            opacity=0.9,                  # Point transparency: range = 0-1.
+            mode='markers',               # Set drawing method for plot.
+            marker=dict(                  # Set marker styling.
+                size = 10,
+                color=vp_df_subset.iloc[:, 3], # Colour set to -log10(p-value)
+                colorscale='Portland',
+                colorbar=dict(title='log2 fold change (color bar scale)'),
+                showscale=True),             
+    )
+            
+    # Define trace as data.        
+    data = [trace]
+    
+    # Pass styling to wider plot.
+    layout = {
+            'title': 'Volcano plot - significance of differential expression',
+            'font': {
+                    'family': 'Droid Sans Mono',
+                    'size': 15,
+                    'color': '#666699'
+                    },
+            'height': 900,
+            'width': 1100,
+            'xaxis': {
+                        'title': 'Log2 fold change: condition over control',
+                        'ticklen': 5,
+                        'gridwidth': 2
+                    },
+            'yaxis': {
+                        'title': '-log10(corrected p-value)',
+                        'ticklen': 5,
+                        'gridwidth': 2
+                    },
+            'shapes': [
+                    # Horizontal line to denote permissbale error rate.
+                    # Error rate of 0.05 = ~1.3 (-log10 scale).
+                     {
+                        'type': 'line',
+                        'x0': min(vp_df_subset.iloc[:, 3]),
+                        'y0': 1.3,
+                        'x1': max(vp_df_subset.iloc[:, 3]),
+                        'y1': 1.3,
+                        'line':{
+                            'color': 'Black',
+                            'width': 1.5,
+                            'dash': 'dot',
+                    },
+                },
+            ]        
+    }
+    
+    # Define figure paramters.
+    fig = {
+          'data': data,
+          'layout': layout,
+    }
+    
+    # Define plot as html variable for calling at Flask level.
+    html = plot(fig)
+    return html
+
+# --------------------------------------------------------------------------- #
+    
 # set up run if running this script only
 if __name__ == "__main__":
 
@@ -635,127 +736,14 @@ if __name__ == "__main__":
     style_df(parsed_sty_sort)
 
     style_df(full_sty_sort)
+    
+    ud_volcano = user_data_volcano_plot(full_sty_sort)
 
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
-
-# --------------------------------------------------------------------------- #
     
-#### Test code for volcano plot.  
-#from plotly.offline import init_notebook_mode,  plot
-#import plotly.graph_objs as go
-#init_notebook_mode()
-#
-#df_subset = full_sty_sort[[full_sty_sort.columns[0],  # Substrate.
-#                             full_sty_sort.columns[1],  # site.
-#                             full_sty_sort.columns[2],  # control mean.
-#                             full_sty_sort.columns[3],  # condition mean.
-#                             full_sty_sort.columns[9],  # Log2 fold change.
-#                             full_sty_sort.columns[14]]] # -log10(p).
-#
-## Concatenate "substrate" and "site" fields as single string.
-#df_subset["Sub_site_ID"] = df_subset.iloc[:, 0].astype(str)+"_"+\
-#                                          df_subset.iloc[:, 1] 
-#                                          
-## Subset gene_sitID, log2 fold change and p-value only.                          
-#df_subset = df_subset[[df_subset.columns[6],
-#                       df_subset.columns[2],
-#                       df_subset.columns[3],
-#                       df_subset.columns[4],
-#                       df_subset.columns[5]]]
-#
-## sbset
-#df_subset = df_subset[(df_subset.iloc[:, 1] > 0) &\
-#                      (df_subset.iloc[:, 2] > 0)]
-#
-## plot
-#trace = go.Scatter(
-#    x=df_subset.iloc[:, 1],
-#    y=df_subset.iloc[:, 2],
-#    mode='markers',
-#    marker=dict(
-#        size=10,
-#        color=df_subset.iloc[:, 1], # Colour set to log2 fold change.
-#        colorscale='Portland',
-#        colorbar=dict(title='log2 fold change (color bar scale)'),
-#        showscale=True),
-#    text=df_subset.iloc[:, 0],
-#    opacity=1
-#    )
-#
-#data = [trace]
-#layout = go.Layout(
-#        title='Volcano plot - significantly differentially expressed sites',
-#        showlegend=False,
-#        height=900,
-#        width=1100,
-#        xaxis=dict(
-#        title='Log2 fold change - Condition over Control',
-#        ticklen=5,
-#        zeroline=True,
-#        gridwidth=2,
-#    ),
-#        yaxis=dict(
-#        title= '-log10(corrected p-value)',
-#        ticklen=5,
-#        gridwidth=2,
-#    ),
-#)
-#
-#fig = dict(data=data, layout=layout)
-#
-#html = plot(fig)  
-#####
-#from plotly.offline import init_notebook_mode,  plot
-#import plotly.graph_objs as go
-#init_notebook_mode()
-#
-#trace = go.Scatter(
-#        x=df_subset.iloc[:, 3],
-#        y=df_subset.iloc[:, 4],
-#        text=df_subset.iloc[:, 0],
-#        opacity=0.9,
-#        mode='markers',
-#        marker=dict(
-#                size = 10,
-#                color=df_subset.iloc[:, 4], # Colour set to -log10(p-value)
-#                colorscale='Portland',
-#                colorbar=dict(title='corrected p-value (color bar scale)'),
-#                showscale=True),             
-# )
-#data = [trace]
-#layout = {
-#        'title': 'Volcano plot',
-#        'height': 900,
-#        'width': 1100,
-#        'xaxis': 'test',
-#        'shapes': [
-#                # Horizontal line
-#                {
-#                    'type': 'line',
-#                    'x0': min(df_subset.iloc[:, 3]),
-#                    'y0': 1.3,
-#                    'x1': max(df_subset.iloc[:, 3]),
-#                    'y1': 1.3,
-#                    'line':{
-#                        'color': 'Black',
-#                        'width': 1.5,
-#                        'dash': 'dot',
-#                    },
-#                },
-#        ]        
-#}
-#
-#fig = {
-#      'data': data,
-#      'layout': layout,
-# }
-#
-#plot(fig)
-#
-#test_min = min(df_subset.iloc[:, 3])
-## --------------------------------------------------------------------------- #
+# --------------------------------------------------------------------------- #
 #### Test code for analysing multi-drug treatments
 #file = os.path.join('PhosphoQuest_app', 
 #                        'user_data', 
