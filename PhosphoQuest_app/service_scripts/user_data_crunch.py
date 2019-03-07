@@ -644,12 +644,14 @@ if __name__ == "__main__":
     
 #### Test code for volcano plot.  
 #from plotly.offline import init_notebook_mode,  plot
-#from plotly.graph_objs import *
+#import plotly.graph_objs as go
 #init_notebook_mode()
 #
 #df_subset = full_sty_sort[[full_sty_sort.columns[0],  # Substrate.
-#                             full_sty_sort.columns[1],  # site
-#                             full_sty_sort.columns[9],  # Log2 fold change
+#                             full_sty_sort.columns[1],  # site.
+#                             full_sty_sort.columns[2],  # control mean.
+#                             full_sty_sort.columns[3],  # condition mean.
+#                             full_sty_sort.columns[9],  # Log2 fold change.
 #                             full_sty_sort.columns[14]]] # -log10(p).
 #
 ## Concatenate "substrate" and "site" fields as single string.
@@ -657,49 +659,102 @@ if __name__ == "__main__":
 #                                          df_subset.iloc[:, 1] 
 #                                          
 ## Subset gene_sitID, log2 fold change and p-value only.                          
-#df_subset = df_subset[[df_subset.columns[4],
+#df_subset = df_subset[[df_subset.columns[6],
 #                       df_subset.columns[2],
-#                       df_subset.columns[3]]]
+#                       df_subset.columns[3],
+#                       df_subset.columns[4],
+#                       df_subset.columns[5]]]
+#
+## sbset
+#df_subset = df_subset[(df_subset.iloc[:, 1] > 0) &\
+#                      (df_subset.iloc[:, 2] > 0)]
 #
 ## plot
-#trace0 = Scatter(
+#trace = go.Scatter(
 #    x=df_subset.iloc[:, 1],
 #    y=df_subset.iloc[:, 2],
 #    mode='markers',
 #    marker=dict(
 #        size=10,
-#        color = df_subset.iloc[:, 2], #set color equal to a variable
-#        colorscale='Viridis',
-#        colorbar=dict(
-#                title='corrected p-value'
-#            ),
+#        color=df_subset.iloc[:, 1], # Colour set to log2 fold change.
+#        colorscale='Portland',
+#        colorbar=dict(title='log2 fold change (color bar scale)'),
 #        showscale=True),
-#        text = df_subset.iloc[:, 0],
-#        opacity = 0.9)
+#    text=df_subset.iloc[:, 0],
+#    opacity=1
+#    )
 #
-#data = [trace0]
-#layout = Layout(
-#        title = 'Volcano plot - significantly differentially expressed sites',
-#        xaxis= dict(
-#        title= 'Log2 fold change - Condition over Control',
-#        ticklen= 5,
-#        zeroline= False,
-#        gridwidth= 2,
+#data = [trace]
+#layout = go.Layout(
+#        title='Volcano plot - significantly differentially expressed sites',
+#        showlegend=False,
+#        height=900,
+#        width=1100,
+#        xaxis=dict(
+#        title='Log2 fold change - Condition over Control',
+#        ticklen=5,
+#        zeroline=True,
+#        gridwidth=2,
 #    ),
 #        yaxis=dict(
 #        title= '-log10(corrected p-value)',
-#        ticklen= 5,
-#        gridwidth= 2,
+#        ticklen=5,
+#        gridwidth=2,
 #    ),
-#    showlegend=False,
-#    height=800,
-#    width=800,
 #)
 #
 #fig = dict(data=data, layout=layout)
 #
 #html = plot(fig)  
-
+#####
+#from plotly.offline import init_notebook_mode,  plot
+#import plotly.graph_objs as go
+#init_notebook_mode()
+#
+#trace = go.Scatter(
+#        x=df_subset.iloc[:, 3],
+#        y=df_subset.iloc[:, 4],
+#        text=df_subset.iloc[:, 0],
+#        opacity=0.9,
+#        mode='markers',
+#        marker=dict(
+#                size = 10,
+#                color=df_subset.iloc[:, 4], # Colour set to -log10(p-value)
+#                colorscale='Portland',
+#                colorbar=dict(title='corrected p-value (color bar scale)'),
+#                showscale=True),             
+# )
+#data = [trace]
+#layout = {
+#        'title': 'Volcano plot',
+#        'height': 900,
+#        'width': 1100,
+#        'xaxis': 'test',
+#        'shapes': [
+#                # Horizontal line
+#                {
+#                    'type': 'line',
+#                    'x0': min(df_subset.iloc[:, 3]),
+#                    'y0': 1.3,
+#                    'x1': max(df_subset.iloc[:, 3]),
+#                    'y1': 1.3,
+#                    'line':{
+#                        'color': 'Black',
+#                        'width': 1.5,
+#                        'dash': 'dot',
+#                    },
+#                },
+#        ]        
+#}
+#
+#fig = {
+#      'data': data,
+#      'layout': layout,
+# }
+#
+#plot(fig)
+#
+#test_min = min(df_subset.iloc[:, 3])
 ## --------------------------------------------------------------------------- #
 #### Test code for analysing multi-drug treatments
 #file = os.path.join('PhosphoQuest_app', 
