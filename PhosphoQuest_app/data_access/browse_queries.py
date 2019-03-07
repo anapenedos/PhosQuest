@@ -7,7 +7,8 @@ from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
 from PhosphoQuest_app.data_access.query_db import searchlike, \
     searchexact
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-from PhosphoQuest_app.data_access.interface_dicts import headers, location_cats
+from PhosphoQuest_app.data_access.interface_dicts import headers,\
+    location_cats, kin_family_cats
 
 
 # TODO finish categories for substrates/inhibitors#
@@ -18,19 +19,13 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                           {'Protein_Type':Substrate.subs_protein_type,
                            'Chromosome_Location':
                                Substrate.subs_chrom_location},
-                          Substrate.subs_accession]
-       }
-# 'Inhibitor': Inhibitor}
+                          Substrate.subs_accession],
+             'Inhibitor': [Inhibitor,
+                            {'Target_Kinases':Inhibitor.inhib_target_kinases,
+                           'Vendor': Inhibitor.inhib_vendor},
+                           Inhibitor.inhib_pubchem_cid]
+             }
 
-# dictionary to force subcategories for cellular location
-location_cats = ['Acrosome', 'Axon', 'Caveola','Cell cortex', 'Cell junction',
-                 'Cell projection', 'Centriole', 'Centromere', 'Chromosome',
-                 'Cilium', 'Cytoplasm', 'Cytoskeleton', 'Cytosol', 'Dendrite',
-                 'Endoplasmic reticulum', 'Endosome', 'Extracellular',
-                 'Golgi apparatus', 'Lysosome', 'Melanosome', 'Microsome',
-                 'Midbody', 'Mitochondrion', 'Nucleus', 'Perinuclear',
-                 'PML body', 'Ruffle', 'Sarcolemma', 'Secreted',
-                 'Secretory vesicle', 'Spindle', 'Synapse']
 
 def browse_subcat(category):
     """Function to give subcategories results """
@@ -41,6 +36,9 @@ def browse_subcat(category):
     if table == 'Kinase' and field == 'Cellular_Location':
         return location_cats
 
+    elif table == 'Kinase' and field == 'Family':
+        return kin_family_cats
+
     # run query for all distinct results from table and field name
     else:
         session = create_sqlsession()
@@ -48,10 +46,6 @@ def browse_subcat(category):
         cats =[subcat[0] for subcat in subcats if subcat[0] != None]
         links = []
         #remove forward and black slash that cause problems in links
-        for item in cats:
-            item = item.replace("/","&F&")
-            item = item.replace("\\","&B&")
-            links.append(item)
         return links
 
 

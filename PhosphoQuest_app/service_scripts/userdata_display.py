@@ -6,8 +6,7 @@ import os
 def run_all(df):
 
     """Function to run all crunch analyses on dataframe"""
-
-    # run analyses
+    # run data crunch analyses
     styno, sty = user_data_crunch.create_filtered_dfs(df)
 
     corrected_p = user_data_crunch.correct_pvalue(sty)
@@ -38,8 +37,6 @@ def run_all(df):
     #return all outputs and datalist html tables
     return(all_data)
 
-# TODO create temporary file delete method
-
 
 def create_csv(dataframe, filename):
     """ function to create full  dataframe as csv"""
@@ -53,7 +50,6 @@ def create_csv(dataframe, filename):
     dataframe.to_csv(os.path.join(tempdir,outname))
 
     # clean up old files
-
     oldfiles = [name for name in os.listdir(tempdir) if\
           os.path.isfile(os.path.join(tempdir, name))]
     # get date from file name

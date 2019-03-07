@@ -1,10 +1,11 @@
 <!-- inherit template from layout.html-->
 {% extends "layout.html" %}
 {% block content %}
-
+<div class ='container'>
 <H3>Search by name or accession number for Kinases, Substrates or Inhibitors.</H3>
 
 <br>
+
 <form method='POST' action="">
     <h5>Select which information to search.</h5>
         <div>
@@ -42,5 +43,6 @@
       </div>
     <br>
     <hr>
+</div>
 </form>
   {% endblock content %}
