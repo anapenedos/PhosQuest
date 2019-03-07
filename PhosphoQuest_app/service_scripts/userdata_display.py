@@ -53,8 +53,17 @@ def create_csv(dataframe, filename):
     dataframe.to_csv(os.path.join(tempdir,outname))
 
     # clean up old files
-    #TODO FINISH THIS >>>>>
-    # files = [name for name in os.listdir(tempdir) if\
-    #      os.path.isfile(os.path.join(tempdir, name))])
 
+    oldfiles = [name for name in os.listdir(tempdir) if\
+          os.path.isfile(os.path.join(tempdir, name))]
+    # get date from file name
+    for oldfile in oldfiles:
+        date = oldfile[:10]
+        # ignore tempfolder file
+        if date != 'temp_folde':
+            date = datetime.strptime(date, '%Y-%m-%d')
+            if abs((datetime.now() - date).days) >1:
+                #remove file if more than 1 day old
+                os.remove(os.path.join(tempdir,oldfile))
+                print(oldfile + "_removed")
     return outname
