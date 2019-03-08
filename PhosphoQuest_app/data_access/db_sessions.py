@@ -5,15 +5,6 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.interfaces import PoolListener
 
 
-# def create_sqlsession():
-#     """Function to create database sessions in any script/function in app"""
-#     dbpath = os.path.join('database', 'PhosphoQuest.db')
-#     engine = create_engine(f'sqlite:///{dbpath}', echo=True)
-#     Base.metadata.bind = engine
-#     DBsession = sessionmaker()
-#     session = DBsession()
-#     return session
-
 def session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
     """
     Produces a session maker object for standard database query sessions.
@@ -75,6 +66,24 @@ def import_session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
     return DBSession
 
 
+def pandas_sql_session_maker(db_path=os.path.join('database',
+                                                  'PhosphoQuest.db')):
+    """
+    Produces a session maker object to use when visualising sqlalchemy with a
+    pandas data frame.
+
+    :param db_path: system path to relevant DB (str)
+    :return: DB session maker object (sqlalchemy sessionmaker)
+    """
+    # Define instance of engine which represents interface to the database.
+    engine = create_engine('sqlite:///' + db_path, echo=False)
+    # Define session class object - ORM "handle" to the data-base.
+    DBSession = sessionmaker()
+    # Connect engine to the Session object.
+    DBSession.configure(bind=engine)
+    return DBSession
+
+
 def create_sqlsession(existing_maker=None,
                        session_type='standard',
                        db_path=os.path.join('database', 'PhosphoQuest.db')):
@@ -83,8 +92,11 @@ def create_sqlsession(existing_maker=None,
 
     :param existing_maker: existing DB maker object (sqlalchemy sessionmaker)
                            default is None
-    :param session_type: type of session desired - 'standard', 'import' or
-                                                   'print_sql' (str)
+    :param session_type: type of session desired (str)
+                         'standard' normal DB query
+                         'import' optimises DB connection for large data import
+                         'pandas_sql' allows visualising sqlalchemy with pandas
+                         'print_sql' prints sqlite statements to screen
                          default is 'standard'
     :param db_path: system path to relevant DB (str)
                     default is 'PhosphoQuest.db' DB in database folder
@@ -93,7 +105,8 @@ def create_sqlsession(existing_maker=None,
     if not existing_maker:
         maker = {'standard': session_maker(db_path),
                  'import': import_session_maker(db_path),
-                 'print_sql': print_sql_session_maker(db_path)}
+                 'print_sql': print_sql_session_maker(db_path),
+                 'pandas_sql': pandas_sql_session_maker(db_path)}
         DBSession = maker[session_type]
     else:
         DBSession = existing_maker
