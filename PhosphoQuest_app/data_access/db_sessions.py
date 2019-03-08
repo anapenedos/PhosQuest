@@ -18,8 +18,8 @@ def session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
     return DBSession
 
 
-def print_sql_session_maker(db_path=os.path.join(
-    'database', 'PhosphoQuest.db')):
+def print_sql_session_maker(db_path=os.path.join('database',
+                                                 'PhosphoQuest.db')):
     """
     Produces a session maker object for database query sessions where sql
     statements are printed to console.
@@ -103,11 +103,11 @@ def create_sqlsession(existing_maker=None,
     :return: DB session object (sqlalchemy session)
     """
     if not existing_maker:
-        maker = {'standard': session_maker(db_path),
-                 'import': import_session_maker(db_path),
-                 'print_sql': print_sql_session_maker(db_path),
-                 'pandas_sql': pandas_sql_session_maker(db_path)}
-        DBSession = maker[session_type]
+        maker = {'standard': session_maker,
+                 'import': import_session_maker,
+                 'print_sql': print_sql_session_maker,
+                 'pandas_sql': pandas_sql_session_maker}
+        DBSession = maker[session_type](db_path)
     else:
         DBSession = existing_maker
     # open a SQLite session

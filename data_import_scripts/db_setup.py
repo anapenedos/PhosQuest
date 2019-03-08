@@ -50,7 +50,7 @@ from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 # PhosphoQuest.db file.
 # The echo flag sets up SQLAlchemy logging
 db_path = os.path.join('database', 'PhosphoQuest.db')
-engine = create_engine('sqlite:///' + db_path, echo=True)
+engine = create_engine('sqlite:///' + db_path)
 # Create all tables
 Base.metadata.create_all(engine)
 

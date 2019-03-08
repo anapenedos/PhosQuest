@@ -108,3 +108,5 @@ def link_ud_to_db(user_data_frame):
     # TODO if pd df not converted to flask table, convert list of str into str with ', '.join(list) when appending
 
     return db_links
+
+#SELECT substrates.subs_accession AS substrates_subs_accession, substrates.subs_gene AS substrates_subs_gene, phosphosites.phos_group_id AS phosphosites_phos_group_id, phosphosites.phos_modified_residue AS phosphosites_phos_modified_residue, kinases.kin_accession AS kinases_kin_accession, kinases.kin_gene AS kinases_kin_gene FROM substrates LEFT OUTER JOIN phosphosites ON substrates.subs_accession = phosphosites.phos_in_substrate LEFT OUTER JOIN kinases_phosphosites ON phosphosites.phos_group_id = kinases_phosphosites.phos_group_id LEFT OUTER JOIN kinases ON kinases.kin_accession = kinases_phosphosites.kin_accession WHERE substrates.subs_gene = 'RBBP6' AND (phosphosites.phos_modified_residue = 'S770' OR phosphosites.phos_modified_residue IS NULL)
