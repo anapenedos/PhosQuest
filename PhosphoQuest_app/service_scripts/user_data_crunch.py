@@ -265,9 +265,9 @@ def table_sort_parse(filtered_df):
     else:
         filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15] &
                                              filtered_df.iloc[:, 19] |
-                                             #filtered_df.iloc[:, 15] &
+                                             filtered_df.iloc[:, 15] &
                                              filtered_df.iloc[:, 20] |
-                                             #filtered_df.iloc[:, 15] &
+                                             filtered_df.iloc[:, 15] &
                                              filtered_df.iloc[:, 21]]
     
     # Replace "inf" & "-inf" values in log2 fold change column with nan.
