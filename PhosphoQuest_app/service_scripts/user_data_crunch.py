@@ -5,7 +5,6 @@
 
 ### Import packages into environment.
 import pandas as pd
-import pandas.api.types as ptypes
 import numpy as np
 import seaborn as sb
 import matplotlib as mpl
@@ -266,7 +265,9 @@ def table_sort_parse(filtered_df):
     else:
         filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15] &
                                              filtered_df.iloc[:, 19] |
+                                             #filtered_df.iloc[:, 15] &
                                              filtered_df.iloc[:, 20] |
+                                             #filtered_df.iloc[:, 15] &
                                              filtered_df.iloc[:, 21]]
     
     # Replace "inf" & "-inf" values in log2 fold change column with nan.
@@ -722,8 +723,6 @@ def user_data_volcano_plot(phos_table):
         print(html)
     return html
 
-
-
 # --------------------------------------------------------------------------- #
     
 # set up run if running this script only
@@ -732,7 +731,7 @@ if __name__ == "__main__":
     #set up runs for testing functions
     file = phos_sites_path = os.path.join('PhosphoQuest_app', 
                                           'user_data', 
-                                          'az20.tsv')
+                                          'Ipatasertib.tsv')
 
     data_or_error = user_data_check(file)
     
