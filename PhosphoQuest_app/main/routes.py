@@ -10,3 +10,9 @@ main = Blueprint('main', __name__)
 def home():
     """render home page"""
     return render_template('home.html', title='home')
+
+# app route for documentation page
+@main.route("/documentation")
+def documentation():
+    """render documentation page"""
+    return render_template('documentation.html', title='Documentation')
