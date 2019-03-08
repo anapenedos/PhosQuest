@@ -27,8 +27,9 @@ params = {
         'from':'ACC',
         'to':'ACC',
         'format':'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes',
-        'query':'G1FDY4 P13368 Q9BQI6'
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
+        'query': 'P01236'
+        #'query':'G1FDY4 P13368 Q9BQI6'
         }
 
 # Takes the parameters and encodes it as it should be in the URL (e.g. %20 = 'a space').

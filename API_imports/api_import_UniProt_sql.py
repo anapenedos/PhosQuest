@@ -35,7 +35,7 @@ def get_kinase_info(accession_number_list):
         'from': 'ACC',
         'to': 'ACC',
         'format': 'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes',
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
         'query': api_query_accessions
     }
 
