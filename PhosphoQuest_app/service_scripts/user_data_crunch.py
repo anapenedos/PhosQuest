@@ -258,7 +258,7 @@ def table_sort_parse(filtered_df):
     # Parse phospho-sites with corrected p-values <=0.05 & CV <=25% in both 
     # conditions or CV <=25% in either control or condition.
     # Parsed table passed to new data frame.
-    # Note: if original user data upload didn't contain CV's then and alternate,
+    # Note: if original user data upload didn't contain CV's then an alternate,
     # and simplified parsing rule used.
     if sum_cont_cv == len(filtered_df):
         filtered_signif_df = filtered_df.loc[filtered_df.iloc[:, 15]]
@@ -645,7 +645,7 @@ def user_data_volcano_plot(phos_table):
                                 (vp_df_subset.iloc[:, 2] > 0)]
     
     # Set core plot.
-    trace = go.Scattergl(
+    trace = go.Scatter(
             x=vp_df_subset.iloc[:, 3],    # log2 fold change.
             y=vp_df_subset.iloc[:, 4],    # -log10(p-value).
             text=vp_df_subset.iloc[:, 0], # Set subs_id for hovering on points.
@@ -666,24 +666,28 @@ def user_data_volcano_plot(phos_table):
     layout = {
             'title': 'Volcano plot - significance of differential expression',
             'font': {
-                    'family': 'Droid Sans Mono',
-                    'size': 15,
-                    'color': '#666699'
+                    'family': 'Droid Serif',
+                    'size': 18,
+                    'color': '#3e4444'
                     },
-            'height': 900,
-            'width': 1100,
+            'height': 1000,
+            'width': 1200,
             'xaxis': {
                         'title': 'Log2 fold change: condition over control',
                         'ticklen': 5,
-                        'gridwidth': 2
+                        'gridwidth': 2,
+                        'nticks': 15,
+                        'showline': True,
+                        'zeroline': False
                     },
             'yaxis': {
                         'title': '-log10(corrected p-value)',
                         'ticklen': 5,
-                        'gridwidth': 2
+                        'gridwidth': 2,
+                        'showline': True
                     },
             'shapes': [
-                    # Horizontal line to denote permissbale error rate.
+                    # Horizontal dashed line to denote permissbale error rate.
                     # Error rate of 0.05 = ~1.3 (-log10 scale).
                      {
                         'type': 'line',
@@ -694,8 +698,34 @@ def user_data_volcano_plot(phos_table):
                         'line':{
                             'color': 'Black',
                             'width': 1.5,
-                            'dash': 'dot',
-                    },
+                            'dash': 'dot'
+                        },
+                     },    
+                    # Vertical dashed line to denote log2 fold change = -1.
+                     {
+                        'type': 'line',
+                        'x0': -1,
+                        'y0': min(vp_df_subset.iloc[:, 4]),
+                        'x1': -1,
+                        'y1': max(vp_df_subset.iloc[:, 4]),
+                        'line':{
+                            'color': 'Black',
+                            'width': 1.5,
+                            'dash': 'dot'
+                        },
+                     },    
+                    # Vertical dashed line to denote log2 fold change = +1.
+                     {
+                        'type': 'line',
+                        'x0': 1,
+                        'y0': min(vp_df_subset.iloc[:, 4]),
+                        'x1': 1,
+                        'y1': max(vp_df_subset.iloc[:, 4]),
+                        'line':{
+                            'color': 'Black',
+                            'width': 1.5,
+                            'dash': 'dot'
+                        },                                        
                 },
             ]        
     }
