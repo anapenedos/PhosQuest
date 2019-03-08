@@ -62,7 +62,7 @@ def get_uniprot_api_data(class_name):
         'from': 'ACC',
         'to': 'ACC',
         'format': 'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families',
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
         'query': query_str
     }
 
