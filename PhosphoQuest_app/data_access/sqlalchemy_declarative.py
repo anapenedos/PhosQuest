@@ -11,15 +11,17 @@ Base = declarative_base()
 kinases_inhibitors_table = Table(
     'kinases_inhibitors', Base.metadata,
     Column('kin_accession', String,
-           ForeignKey('kinases.kin_accession')),
+           ForeignKey('kinases.kin_accession'), index=True),
     Column('inhib_pubchem_cid', Integer,
-           ForeignKey('inhibitors.inhib_pubchem_cid'))
+           ForeignKey('inhibitors.inhib_pubchem_cid'), index=True)
 )
 
 kinases_phosphosites_table = Table(
     'kinases_phosphosites', Base.metadata,
-    Column('kin_accession', String, ForeignKey('kinases.kin_accession')),
-    Column('phos_group_id', String, ForeignKey('phosphosites.phos_group_id'))
+    Column('kin_accession', String,
+           ForeignKey('kinases.kin_accession'), index=True),
+    Column('phos_group_id', String,
+           ForeignKey('phosphosites.phos_group_id'), index=True)
 )
 
 
@@ -45,7 +47,8 @@ class Kinase(Base):
     kin_organism = Column(String)
     # cellular location of the kinase
     kin_cellular_location = Column(String,
-                                   ForeignKey('cellular_locations.loc_name'))
+                                   ForeignKey('cellular_locations.loc_name'),
+                                   index=True)
     # kinase family to which the kinase belongs
     kin_family = Column(String)
 
@@ -186,7 +189,8 @@ class Phosphosite(Base):
     # notes on phosphosite
     phos_notes = Column(String)
     # substrate to which phosphosite belongs
-    phos_in_substrate = Column(String, ForeignKey('substrates.subs_accession'))
+    phos_in_substrate = Column(String, ForeignKey('substrates.subs_accession'),
+                               index=True)
 
     # setting up relationships
     # many-to-many 'kinases' <> 'phosphosites' tables
