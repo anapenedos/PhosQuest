@@ -129,7 +129,7 @@ def get_pubchem_api_data(class_name):
         query_str = ','.join(str(i) for i in list_slice)
 
         results_csv = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/" \
-                      "cid/" + query_str + "/property/IUPACName/csv"
+                      "cid/" + query_str + "/property/IUPACName,MolecularFormula,MolecularWeight/csv"
         # Convert the csv to a data frame and append to the list
         dfs.append(pd.read_csv(results_csv))
         # update slice ends
