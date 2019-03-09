@@ -118,9 +118,9 @@ def link_ud_to_db(user_data_frame):
                     to_append = not_in_db
                 db_links[class_name].append(to_append)
 
-    # # rename db_links keys to present as str
-    # for col in db_links:
-    #     new_name = col.__name__ + ' DB links'
-    #     db_links[new_name] = db_links.pop(col)
+    # rename db_links keys to present as str
+    for col in db_links:
+        new_name = col.__name__ + ' DB links'
+        db_links[new_name] = db_links.pop(col)
 
     return db_links, kin_to_ud
