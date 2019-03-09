@@ -1,5 +1,15 @@
 import sys
 from sqlalchemy.inspection import inspect
+import PhosphoQuest_app.data_access.sqlalchemy_declarative
+
+
+def get_class_from_str(class_str):
+    """
+    Given a string matching the name of a class in the sqlalchemy declarative
+    script, returns the class object matching the string.
+    """
+    return getattr(PhosphoQuest_app.data_access.sqlalchemy_declarative,
+                   class_str)
 
 
 def get_class_key_attrs(class_name, single_key=False):
@@ -42,5 +52,5 @@ def get_classes_key_attrs(classes_iterable, single_key=False):
     return class_keys
 
 
-# def str_to_class(classname):
-#     return reduce(getattr, str.split("."), sys.modules[__name__])
+def str_to_class(classname):
+    return reduce(getattr, str.split("."), sys.modules[__name__])
