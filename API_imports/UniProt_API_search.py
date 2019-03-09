@@ -27,8 +27,8 @@ params = {
         'from':'ACC',
         'to':'ACC',
         'format':'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
-        'query': 'P01236'
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome,comment(DOMAIN)',
+        'query': 'Q86UU0'
         #'query':'G1FDY4 P13368 Q9BQI6'
         }
 
