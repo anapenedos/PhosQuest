@@ -27,8 +27,8 @@ params = {
         'from':'ACC',
         'to':'ACC',
         'format':'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
-        'query': 'P01236'
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome,comment(DOMAIN)',
+        'query': 'Q86UU0'
         #'query':'G1FDY4 P13368 Q9BQI6'
         }
 
@@ -56,7 +56,7 @@ df['Subcellular location55'] = df['Subcellular location55'].str.extract('(?<=SUB
 
 # extract single protein name
 df['Protein names1'] = df['Protein names'].astype(str)
-df['Protein names1'] = df['Protein names1'].str.extract('(.*?) \(.*', expand=True)
+df['Protein names1'] = df['Protein names1'].str.extract('^([^(]*?)(?: *\(.*)?$', expand=False)
 
 
 # The datagframe is converted to a .csv file.

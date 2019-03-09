@@ -6,9 +6,11 @@ import pandas as pd
 import urllib.request
 import urllib.parse
 import urllib
+import time
 
 # project-specific imports
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+from PhosphoQuest_app.data_access.class_functions import get_class_key_attrs
 
 # =========================================================================== #
 
@@ -23,7 +25,7 @@ def get_table_values_for_search(class_name):
     """
     # get the name of the primary key attribute in the class's corresponding
     # table
-    key_attr = inspect(class_name).primary_key[0].name
+    key_attr = get_class_key_attrs(class_name, single_key=True)
 
     # create a DB session
     session = create_sqlsession()
@@ -62,7 +64,8 @@ def get_uniprot_api_data(class_name):
         'from': 'ACC',
         'to': 'ACC',
         'format': 'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,'
+                   'genes,proteome,comment(DOMAIN)',
         'query': query_str
     }
 
@@ -86,15 +89,15 @@ def get_uniprot_api_data(class_name):
     df['Subcellular location55'] = df['Subcellular location [CC]'].astype(str)
 
     # Specfiically extracts the Subcellular location information (and nothing
-    # else) from the orignal column and places is /
+    # else) from the original column and places is /
     # within the new Subcellular loation columns.
     df['Subcellular location55'] = df['Subcellular location55'].str.extract(
         '(?<=SUBCELLULAR LOCATION: )(.*?)(?={)', expand=True)
 
     # extract single protein name
     df['Protein name'] = df['Protein names'].astype(str)
-    df['Protein name'] = df['Protein name'].str.extract('(.*?) \(.*',
-                                                        expand=True)
+    df['Protein name'] = df['Protein name'].str.extract(
+        '^([^(]*?)(?: *\(.*)?$', expand=False)
     return df
 
 
@@ -111,7 +114,7 @@ def get_pubchem_api_data(class_name):
     keys_list = get_table_values_for_search(class_name)
 
     # iterate through slices of the list to prevent exceeding of PubChem
-    # programmatic data gathering time access limits
+    # programmatic data gathering request length limit
     dfs = []
     i = 0
     j = 50
@@ -127,14 +130,17 @@ def get_pubchem_api_data(class_name):
         # convert list into PubChem query format 'val1,val2'
         query_str = ','.join(str(i) for i in list_slice)
 
-        results_csv = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/" \
-                      "cid/" + query_str + "/property/IUPACName/csv"
-        print(results_csv)
+        results_csv = ("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
+                       "cid/" + query_str + "/property/IUPACName,"
+                       "MolecularFormula,MolecularWeight/csv")
         # Convert the csv to a data frame and append to the list
         dfs.append(pd.read_csv(results_csv))
         # update slice ends
         i += 50
         j += 50
+        # introduce waiting time to prevent exceeding of PubChem
+        # programmatic data gathering request# 5/s limit
+        time.sleep(.2)
 
     full_df = pd.concat(dfs)
 

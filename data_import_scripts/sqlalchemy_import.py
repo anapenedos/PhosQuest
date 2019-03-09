@@ -5,6 +5,7 @@ from pandas import isnull
 
 # project imports
 from PhosphoQuest_app.data_access.db_sessions import import_session_maker
+from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 
 
 def import_data_from_data_frame(df, df_to_class_dict):
@@ -28,14 +29,7 @@ def import_data_from_data_frame(df, df_to_class_dict):
             classes_in_df.add(class_name)
 
     # get classes primary keys attributes
-    classes_keys = {}  # {Class: ['key_attr_1', 'key_attr_2'], ...}
-    for class_in_df in classes_in_df:
-        # produce list of primary keys for each class_in_df for all the classes
-        # present in the data frame (from the classes_in_df set)
-        keys_of_class = [key.name for key in inspect(class_in_df).primary_key]
-        # add a dictionary entry from the class_in_df to corresponding list of
-        # primary keys
-        classes_keys[class_in_df] = keys_of_class
+    classes_keys = get_classes_key_attrs(classes_in_df)
 
     # define special type of values that are treated differently
     undefined_values = [None, '', ' ', '-', 'nan', 'NaN']

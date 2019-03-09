@@ -2,6 +2,17 @@ import pandas as pd
 import numpy as np
 from itertools import chain
 
+def reset_df_index(data_frame):
+    """
+    Resets pandas data frame index, dropping current index and replacing it
+    with a "clean" index in place. Useful after data frame filtering and multi-
+    value column splitting.
+
+    :param data_frame: pandas data frame (pd df)
+    :return: resets index index in place in original df (None)
+    """
+    return data_frame.reset_index(drop=True, inplace=True)
+
 
 def get_column_with_single_values(data_frame_column, multi_value_separator):
     """
@@ -10,7 +21,8 @@ def get_column_with_single_values(data_frame_column, multi_value_separator):
     at the separator given.
     e.g., 3, 4, 5    >   [3, 4, 5, 'c', 'f']
           c,   f
-    :param data_frame_column: data frame column (df series)
+
+    :param data_frame_column: data frame column (pd series)
     :param multi_value_separator: multi-values separator (str)
     :return: list of single values (list of str)
     """
@@ -35,6 +47,7 @@ def split_multi_value_rows_in_df(data_frame, column_heading, separator):
                                               1       2       5
                                               a       b       c
                                               a       b       f
+
     :param data_frame: pandas data frame object (df)
     :param column_heading: name of column heading (str)
     :param separator: multi-values separator (str)
@@ -44,22 +57,40 @@ def split_multi_value_rows_in_df(data_frame, column_heading, separator):
     # calculate number of values per row in the multi-value column
     lens = data_frame[column_heading].str.split(separator).map(len)
 
-    # define a dictionary mapping a column to how its entries are treated
+    # define a dictionary mapping a column heading to the re-arranged data
     new_data = {}
     for col in data_frame.columns:
+        # if the column is not the one with multiple values, repeat values the
+        # same number of times as there are multiple values in the column to
+        # split
         if col not in [column_heading, None]:
             new_data[col] = np.repeat(data_frame[col], lens)
+        # if the column is the one with multiple values, produce a new column
+        # where multi-value lines are split to multiple lines
         elif col == column_heading:
             new_data[col] = get_column_with_single_values(data_frame[col],
                                                           separator)
     single_val_df = pd.DataFrame(new_data)
-    single_val_df.reset_index(drop=True, inplace=True)
+    # resets index so no index warnings follow data frame
+    reset_df_index(single_val_df)
     return single_val_df
 
 
-# # testing
-# df=pd.DataFrame(data=[['1 3',' 2','3,4,5'], ['ajh jh', 'b', 'ch,   dhh jj ']],
-#                 columns=['A','B','C'])
-# print(df, '\n')
-# sdf = split_multi_value_rows_in_df(df, 'C', ',')
-# print(sdf)
+def create_db_kin_links(accessions_set):
+    """
+    From a set of kinase accessions, produce url links to detail page of each
+    kinase. If 'not in DB', 'not in DB' is returned
+
+    :param accessions_set: set of kinase accessions (set of str)
+    :return: string containing links to each kinase (str)
+    """
+    if accessions_set != 'not in DB':
+        link_collection = ''
+        for acc in sorted(accessions_set):
+            link_collection += "<a href='/kin_detail/%s'>%s</a> " % (acc, acc)
+    else:
+        link_collection = 'not in DB'
+    return link_collection
+
+
+'http://127.0.0.1:5000/sub_detail/Q9UQL6'
