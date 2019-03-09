@@ -10,6 +10,7 @@ import time
 
 # project-specific imports
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+from PhosphoQuest_app.data_access.class_functions import get_class_key_attrs
 
 # =========================================================================== #
 
@@ -24,7 +25,7 @@ def get_table_values_for_search(class_name):
     """
     # get the name of the primary key attribute in the class's corresponding
     # table
-    key_attr = inspect(class_name).primary_key[0].name
+    key_attr = get_class_key_attrs(class_name, single_key=True)
 
     # create a DB session
     session = create_sqlsession()
@@ -63,7 +64,8 @@ def get_uniprot_api_data(class_name):
         'from': 'ACC',
         'to': 'ACC',
         'format': 'tab',
-        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes,proteome',
+        'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,'
+                   'genes,proteome',
         'query': query_str
     }
 
