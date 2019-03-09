@@ -3,7 +3,7 @@ from sqlalchemy.inspection import inspect
 import PhosphoQuest_app.data_access.sqlalchemy_declarative
 
 
-def get_class_from_str(class_str):
+def str_to_class(class_str):
     """
     Given a string matching the name of a class in the sqlalchemy declarative
     script, returns the class object matching the string.
@@ -50,7 +50,3 @@ def get_classes_key_attrs(classes_iterable, single_key=False):
         class_keys[class_name] = get_class_key_attrs(class_name, single_key)
 
     return class_keys
-
-
-def str_to_class(classname):
-    return reduce(getattr, str.split("."), sys.modules[__name__])
