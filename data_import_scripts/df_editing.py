@@ -22,7 +22,7 @@ def get_column_with_single_values(data_frame_column, multi_value_separator):
     e.g., 3, 4, 5    >   [3, 4, 5, 'c', 'f']
           c,   f
 
-    :param data_frame_column: data frame column (df series)
+    :param data_frame_column: data frame column (pd series)
     :param multi_value_separator: multi-values separator (str)
     :return: list of single values (list of str)
     """
@@ -76,9 +76,21 @@ def split_multi_value_rows_in_df(data_frame, column_heading, separator):
     return single_val_df
 
 
-# # testing
-# df=pd.DataFrame(data=[['1 3',' 2','3,4,5'], ['ajh jh', 'b', 'ch,   dhh jj ']],
-#                 columns=['A','B','C'])
-# print(df, '\n')
-# sdf = split_multi_value_rows_in_df(df, 'C', ',')
-# print(sdf)
+def create_db_kin_links(accessions_set):
+    """
+    From a set of kinase accessions, produce url links to detail page of each
+    kinase. If 'not in DB', 'not in DB' is returned
+
+    :param accessions_set: set of kinase accessions (set of str)
+    :return: string containing links to each kinase (str)
+    """
+    if accessions_set != 'not in DB':
+        link_collection = ''
+        for acc in sorted(accessions_set):
+            link_collection += "<a href='/kin_detail/%s'>%s</a> " % (acc, acc)
+    else:
+        link_collection = 'not in DB'
+    return link_collection
+
+
+'http://127.0.0.1:5000/sub_detail/Q9UQL6'

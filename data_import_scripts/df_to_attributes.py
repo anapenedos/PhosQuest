@@ -116,6 +116,7 @@ uniprot_kin_to_class = {
 uniprot_subs_to_class = {
     'Entry'                 : [(Substrate,        'subs_accession')],
     'Protein name'          : [(Substrate,        'subs_full_name')],
+    'Protein families'      : [(Substrate,        'subs_protein_type')]
 }
 
 pubchem_to_class = {'CID'      : [(Inhibitor, 'inhib_pubchem_cid')],

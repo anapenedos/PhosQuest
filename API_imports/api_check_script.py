@@ -5,4 +5,4 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
     Substrate, Inhibitor
 
 subs_uniprot_df = get_uniprot_api_data(Substrate)
-inh_pubch_df = get_pubchem_api_data(Inhibitor)
+# inh_pubch_df = get_pubchem_api_data(Inhibitor)
