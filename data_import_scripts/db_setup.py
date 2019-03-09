@@ -41,7 +41,8 @@ from data_import_scripts.df_to_attributes import kin_sub_human_to_class, \
     pubchem_to_class
 
 # import session maker function
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+from PhosphoQuest_app.data_access.db_sessions import create_sqlsession, \
+    set_db_path
 
 # =========================================================================== #
 
@@ -49,7 +50,7 @@ from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 # Create engine that stores schema in the database directory
 # PhosphoQuest.db file.
 # The echo flag sets up SQLAlchemy logging
-db_path = os.path.join('database', 'PhosphoQuest.db')
+db_path = set_db_path()
 engine = create_engine('sqlite:///' + db_path)
 # Create all tables
 Base.metadata.create_all(engine)

@@ -5,7 +5,12 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.interfaces import PoolListener
 
 
-def session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
+def set_db_path():
+    """ Returns the path to the DB being used."""
+    return os.path.join('database', 'PhosphoQuest-indexed.db')
+
+
+def session_maker(db_path=set_db_path()):
     """
     Produces a session maker object for standard database query sessions.
 
@@ -18,8 +23,7 @@ def session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
     return DBSession
 
 
-def print_sql_session_maker(db_path=os.path.join('database',
-                                                 'PhosphoQuest.db')):
+def print_sql_session_maker(db_path=set_db_path()):
     """
     Produces a session maker object for database query sessions where sql
     statements are printed to console.
@@ -44,7 +48,7 @@ class MyListener(PoolListener):
         dbapi_con.execute('PRAGMA cache_size=100000')
 
 
-def import_session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
+def import_session_maker(db_path=set_db_path()):
     """
     Produces a session maker object for database import sessions, where write
     operations are managed by OS.
@@ -66,8 +70,7 @@ def import_session_maker(db_path=os.path.join('database', 'PhosphoQuest.db')):
     return DBSession
 
 
-def pandas_sql_session_maker(db_path=os.path.join('database',
-                                                  'PhosphoQuest.db')):
+def pandas_sql_session_maker(db_path=set_db_path()):
     """
     Produces a session maker object to use when visualising sqlalchemy with a
     pandas data frame.
@@ -85,8 +88,8 @@ def pandas_sql_session_maker(db_path=os.path.join('database',
 
 
 def create_sqlsession(existing_maker=None,
-                       session_type='standard',
-                       db_path=os.path.join('database', 'PhosphoQuest.db')):
+                      session_type='standard',
+                      db_path=set_db_path()):
     """
     Returns a sqlalchemy session object of the type specified.
 
