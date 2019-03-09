@@ -683,8 +683,7 @@ def user_data_volcano_plot(phos_table):
             'yaxis': {
                         'title': '-log10(corrected p-value)',
                         'ticklen': 5,
-                        'gridwidth': 2,
-                        'showline': True
+                        'gridwidth': 2
                     },
             'shapes': [
                     # Horizontal dashed line to denote permissbale error rate.
@@ -787,7 +786,11 @@ if __name__ == "__main__":
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
-    
+# --------------------------------------------------------------------------- #
+#from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
+#
+#dict_test = link_ud_to_db(full_sty_sort)
+
 # --------------------------------------------------------------------------- #
 #### Test code for analysing multi-drug treatments
 #file = os.path.join('PhosphoQuest_app', 
@@ -865,16 +868,6 @@ if __name__ == "__main__":
 #                                      statement,\
 #                                      subs_phos_kin_query.session.bind)
 #
-## Parse dataframe for only phosphosites.
-## Parse sites with only phospho as modification.
-## Regex - parse lines that end with "-p".
-#subs_phos_subset_df = \
-#        subs_phos_subset_df[subs_phos_subset_df.iloc[:, 3].str.\
-#                            contains(r"-p$", regex=True)]
-#
-## Remove "-p" extension to entries.
-#subs_phos_subset_df.iloc[:, 3] = \
-#        subs_phos_subset_df.iloc[:, 3].str.replace("-p", "")
 #
 ## Add column to full phos_sites table of concatenated substrate and site id.
 #subs_phos_subset_df["phos_site_ID"] = subs_phos_subset_df.iloc[:, 1].\
@@ -892,3 +885,81 @@ if __name__ == "__main__":
 #                            
 ## Compute number of IDs that match to db.     
 #ID_match_sum = sum(full_sty_sort.iloc[:, 23])
+    
+# --------------------------------------------------------------------------- #
+    
+### Populate user data table with kinase matches in db.
+   
+## Read "Kinase_Substrate_Data" source database and assign to dataframe.
+#kin_sub_source_df = pd.read_table("Kinase_Substrate_Dataset", 
+#                                  skiprows=3)  # Skip first 3 rows of file
+#                                               
+#                                            
+## Parse "Kinase_Substrate_Dataset" db human entries and pass to variable.
+#kin_sub_human = kin_sub_source_df[(kin_sub_source_df.KIN_ORGANISM == "human") &
+#                                  (kin_sub_source_df.SUB_ORGANISM == "human")]
+#
+## Parse subset of "kin_sub_human" df.
+#kin_sub_subset = kin_sub_human[[kin_sub_human.columns[0],
+#                                kin_sub_human.columns[7],
+#                                kin_sub_human.columns[9]]]
+#
+## Concatenate "substrate" and "site" fields as single string.
+#kin_sub_subset["Sub_site_ID"] = kin_sub_subset.iloc[:, 1].astype(str)+"_"+\
+#                                kin_sub_subset.iloc[:, 2]
+#                                
+## Parse concatenated id and fold over max columns.
+#kin_sub_subset = kin_sub_subset[[kin_sub_subset.columns[3],
+#                                 kin_sub_subset.columns[0]]]
+#
+## Add column to full phos_sites table of concatenated substrate and site id.
+#full_sty_sort["Sub_site_ID"] = full_sty_sort.iloc[:, 0].astype(str)+"_"+\
+#                               full_sty_sort.iloc[:, 1]
+#                               
+## Add column to signif phos_sites table of concatenated substrate and site id.
+#parsed_sty_sort["Sub_site_ID"] = full_sty_sort.iloc[:, 0].astype(str)+"_"+\
+#                                 full_sty_sort.iloc[:, 1]
+#
+## Parse combined id column to new variable.                             
+#full_sty_sort_subset = full_sty_sort[[full_sty_sort.columns[20]]]
+#
+## Check if "Sub_site_ID" in user data present in db.
+## Boolean value returned to new column in full data-set.
+#full_sty_sort["Substrate & site in DB"] = full_sty_sort_subset.iloc[:, 0].\
+#                                          isin(kin_sub_subset.iloc[:, 0])
+#
+## Compute number of IDs that match to db.     
+#ID_match_sum = sum(full_sty_sort.iloc[:, 21])   
+#   
+## Merge subsets of user data & kin_sub_db by "Sub_site_ID".
+## Data frame returned with entries for every "Sub_site_ID" match.
+## Entries will include duplicate entries where phos_site targetted by
+## different kinases and vice-versa.  
+#merged_df = pd.merge(full_sty_sort_subset, kin_sub_subset, on="Sub_site_ID")
+#
+## Compute frequency of duplicate "Sub_site_ID" entries.
+## Series represents number of kinases that target a site in the user data.
+## Sort by highest frequency & extract top 10 sites most targetted by kinases in DB.
+#kinase_target_freq = merged_df.groupby([merged_df.iloc[:, 0]]).size()
+#kinase_target_freq = kinase_target_freq.sort_values(ascending=False)
+#kinase_target_freq = kinase_target_freq.head(n=10)
+#
+## Compute frequency of each kinase matched to user data.
+## Represents number of unique substrate sites targetted by each kinase
+## matched from db.
+#kinase_freq = merged_df.groupby([merged_df.iloc[:, 1]]).size()
+#Kinase_entry_num = sum(kinase_freq) 
+#kinase_freq = kinase_freq.sort_values(ascending=False)
+#kinase_freq = kinase_freq.head(n=10)
+#
+## Create dictionary from merged data:
+## Keys = Substrate/Site ID.
+## Values = Series of kinases for each key.
+#phospho_df_dict = merged_df.groupby("Sub_site_ID").GENE.agg(list).to_dict()
+#
+## Map dictionary values to user data by key matches.
+#full_sty_sort["kinase(s)"] = full_sty_sort["Sub_site_ID"].map(phospho_df_dict)
+#parsed_sty_sort["kinase(s)"] = parsed_sty_sort["Sub_site_ID"].map(phospho_df_dict)
+#parsed_sty_sort["kinase(s)"] = parsed_sty_sort.iloc[:,21].fillna("Not in DB")
+
+# --------------------------------------------------------------------------- #
