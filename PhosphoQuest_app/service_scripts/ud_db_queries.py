@@ -23,13 +23,19 @@ def link_ud_to_db(user_data_frame):
     # open sqlite session
     session = create_sqlsession()
 
-    # create dictionary to form columns to be displayed
-    # 'Substrate Entry in DB': ['ACC1', 'not in DB', ...] accessions are stings
-    # 'Phosphosite Entry in DB': [id1, 'not in DB', ...] ids are integers
-    # 'Associated Kinases': [['ACCa', 'ACCb'], 'not in DB', ...]
+    # create dictionary to link user phosphosites to db entries
+    # 'Substrate Entry in DB': [{'ACC1'}, 'not in DB', ...] accessions are stings
+    # 'Phosphosite Entry in DB': [{id1}, 'not in DB', ...] ids are integers
+    # 'Associated Kinases': [{'ACCa', 'ACCb'}, 'not in DB', ...]
     db_links = {Substrate: [],
                 Phosphosite: [],
                 Kinase: []}
+
+    # create dictionary for kinase-centric analysis data frame
+    # Kinase column contains single kinase accession per line
+    # User substrates column contains multiple GENE_site strings for each
+    # kinase
+    kin_to_ud = {}
 
     # primary key attribute for each class
     db_key_attrs = get_classes_key_attrs(db_links, single_key=True)
@@ -84,9 +90,11 @@ def link_ud_to_db(user_data_frame):
                 for instance in subs_phos_kin_trio:
                     # ignore if None
                     if instance:
-                        # compare to entries in db_links to determine to which
-                        # column values should map
+                        # if an instance of substrate/phosphosite/kinase is
+                        # found add it to appropriate column in db_links
                         for class_name in db_links:
+                            # compare to entries in db_links to determine to
+                            # which column values should map
                             if isinstance(instance, class_name):
                                 # name of key attr for current class
                                 key_attr = db_key_attrs[class_name]
@@ -95,6 +103,12 @@ def link_ud_to_db(user_data_frame):
                                 # create set of unique key values for class
                                 new_set = in_row.setdefault(class_name, set())
                                 new_set.add(instance_key)
+                        # if the instance is a kinase, add substrate gene and
+                        # residue to that kinases entry in kin_to_ud dict
+                        if isinstance(instance, Kinase):
+                            kin_acc = instance.kin_accession
+                            new_set = kin_to_ud.setdefault(kin_acc, set())
+                            new_set.add((gene, residue))
 
             # append the new values to the columns dict db_links
             for class_name in db_links:
@@ -103,8 +117,10 @@ def link_ud_to_db(user_data_frame):
                 else:
                     to_append = not_in_db
                 db_links[class_name].append(to_append)
-    # TODO if pd df not converted to flask table, convert list of str into str with ', '.join(list) when appending
 
-    return db_links
+    # # rename db_links keys to present as str
+    # for col in db_links:
+    #     new_name = col.__name__ + ' DB links'
+    #     db_links[new_name] = db_links.pop(col)
 
-#SELECT substrates.subs_accession AS substrates_subs_accession, substrates.subs_gene AS substrates_subs_gene, phosphosites.phos_group_id AS phosphosites_phos_group_id, phosphosites.phos_modified_residue AS phosphosites_phos_modified_residue, kinases.kin_accession AS kinases_kin_accession, kinases.kin_gene AS kinases_kin_gene FROM substrates LEFT OUTER JOIN phosphosites ON substrates.subs_accession = phosphosites.phos_in_substrate LEFT OUTER JOIN kinases_phosphosites ON phosphosites.phos_group_id = kinases_phosphosites.phos_group_id LEFT OUTER JOIN kinases ON kinases.kin_accession = kinases_phosphosites.kin_accession WHERE substrates.subs_gene = 'RBBP6' AND (phosphosites.phos_modified_residue = 'S770' OR phosphosites.phos_modified_residue IS NULL)
+    return db_links, kin_to_ud
