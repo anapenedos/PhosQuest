@@ -89,7 +89,7 @@ def get_uniprot_api_data(class_name):
     df['Subcellular location55'] = df['Subcellular location [CC]'].astype(str)
 
     # Specfiically extracts the Subcellular location information (and nothing
-    # else) from the orignal column and places is /
+    # else) from the original column and places is /
     # within the new Subcellular loation columns.
     df['Subcellular location55'] = df['Subcellular location55'].str.extract(
         '(?<=SUBCELLULAR LOCATION: )(.*?)(?={)', expand=True)
