@@ -8,7 +8,8 @@ import csv
 import os.path
 
 ### Import project scripts
-from data_import_scripts.df_editing import split_multi_value_rows_in_df
+from data_import_scripts.df_editing import split_multi_value_rows_in_df, \
+    reset_df_index
 
 
 # --------------------------------------------------------------------------- #
@@ -23,7 +24,7 @@ def kin_sub_parser(db_path):
     # Parse db human entries and pass to variable.
     db_human = db_df[(db_df.KIN_ORGANISM == "human") &
                      (db_df.SUB_ORGANISM == "human")]
-    
+    db_human = reset_df_index(db_human)
     return db_human     
               
 # --------------------------------------------------------------------------- #
@@ -39,7 +40,7 @@ def phos_site_parser(db_path):
         
     # Remove "-p" extension to entries.
     db_human.iloc[:, 4] = db_human.iloc[:, 4].str.replace("-p", "")
-
+    db_human = reset_df_index(db_human)
     return db_human                                               
 
 # --------------------------------------------------------------------------- #
@@ -74,7 +75,7 @@ def dis_site_parser(db_path):
         
     # Remove "-p" extension to entries.
     db_human_phos.iloc[:, 10] = db_human_phos.iloc[:, 10].str.replace("-p", "")
-
+    db_human_phos = reset_df_index(db_human_phos)
     return db_human_phos
 
 # --------------------------------------------------------------------------- #
@@ -112,7 +113,7 @@ def reg_site_parser(db_path):
         
     # Remove "-p" extension to entries.
     db_human_phos.iloc[:, 7] = db_human_phos.iloc[:, 7].str.replace("-p", "")
-
+    db_human_phos = reset_df_index(db_human_phos)
     return db_human_phos
 
 # --------------------------------------------------------------------------- #
@@ -157,7 +158,7 @@ def bdb_inhib_parser(db_path):
         db_human,
         'UniProt_(SwissProt)_Primary_ID_of_Target_Chain',
         ',')
-
+    db_human_tidy = reset_df_index(db_human_tidy)
     return db_human_tidy
 
 # --------------------------------------------------------------------------- #  
@@ -175,7 +176,7 @@ def mrc_inhib_parser(db_path):
     db_df[['PubChem CID']] = db_df[['PubChem CID']].astype(int)
     # Change dtype of 'MW' to float.
     db_df[['MW']] = db_df[['MW']].astype(float)
-
+    db_df = reset_df_index(db_df)
     return db_df     
 
 # --------------------------------------------------------------------------- #

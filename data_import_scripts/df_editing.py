@@ -2,6 +2,18 @@ import pandas as pd
 import numpy as np
 from itertools import chain
 
+def reset_df_index(data_frame):
+    """
+    Resets pandas data frame index, dropping current index and replacing it
+    with a "clean" index in place. Useful after data frame filtering and multi-
+    value column splitting.
+
+    :param data_frame: pandas data frame (pd df)
+    :return: data frame with a new index (pd df)
+    """
+    df_reset = data_frame.reset_index(drop=True)
+    return df_reset
+
 
 def get_column_with_single_values(data_frame_column, multi_value_separator):
     """
@@ -10,6 +22,7 @@ def get_column_with_single_values(data_frame_column, multi_value_separator):
     at the separator given.
     e.g., 3, 4, 5    >   [3, 4, 5, 'c', 'f']
           c,   f
+
     :param data_frame_column: data frame column (df series)
     :param multi_value_separator: multi-values separator (str)
     :return: list of single values (list of str)
@@ -35,6 +48,7 @@ def split_multi_value_rows_in_df(data_frame, column_heading, separator):
                                               1       2       5
                                               a       b       c
                                               a       b       f
+
     :param data_frame: pandas data frame object (df)
     :param column_heading: name of column heading (str)
     :param separator: multi-values separator (str)
@@ -44,16 +58,22 @@ def split_multi_value_rows_in_df(data_frame, column_heading, separator):
     # calculate number of values per row in the multi-value column
     lens = data_frame[column_heading].str.split(separator).map(len)
 
-    # define a dictionary mapping a column to how its entries are treated
+    # define a dictionary mapping a column heading to the re-arranged data
     new_data = {}
     for col in data_frame.columns:
+        # if the column is not the one with multiple values, repeat values the
+        # same number of times as there are multiple values in the column to
+        # split
         if col not in [column_heading, None]:
             new_data[col] = np.repeat(data_frame[col], lens)
+        # if the column is the one with multiple values, produce a new column
+        # where multi-value lines are split to multiple lines
         elif col == column_heading:
             new_data[col] = get_column_with_single_values(data_frame[col],
                                                           separator)
     single_val_df = pd.DataFrame(new_data)
-    single_val_df.reset_index(drop=True, inplace=True)
+    # resets index so no index warnings follow data frame
+    reset_df_index(single_val_df)
     return single_val_df
 
 
