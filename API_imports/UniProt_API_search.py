@@ -56,7 +56,7 @@ df['Subcellular location55'] = df['Subcellular location55'].str.extract('(?<=SUB
 
 # extract single protein name
 df['Protein names1'] = df['Protein names'].astype(str)
-df['Protein names1'] = df['Protein names1'].str.extract('(.*?) \(.*', expand=True)
+df['Protein names1'] = df['Protein names1'].str.extract('^([^(]*?)(?: *\(.*)?$', expand=False)
 
 
 # The datagframe is converted to a .csv file.
