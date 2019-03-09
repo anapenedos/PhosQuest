@@ -9,10 +9,9 @@ def reset_df_index(data_frame):
     value column splitting.
 
     :param data_frame: pandas data frame (pd df)
-    :return: data frame with a new index (pd df)
+    :return: resets index index in place in original df (None)
     """
-    df_reset = data_frame.reset_index(drop=True)
-    return df_reset
+    return data_frame.reset_index(drop=True, inplace=True)
 
 
 def get_column_with_single_values(data_frame_column, multi_value_separator):
