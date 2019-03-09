@@ -2,9 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <!-- Bootstrap Required meta tags -->
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
@@ -24,72 +22,66 @@
     <link href="css/bootstrap.min.css" rel="stylesheet">
 
 </head>
-<body>
 <!--add header bar with bootstrap classes-->
 <header class="site-header">
-      <nav class="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
+    <nav class="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
         <div class="container">
-          <a class="navbar-brand mr-4" href="/">PhosphoQuest </a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse"
-                  data-target="#navbarToggle" aria-controls="navbarToggle"
-                  aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarToggle">
-            <div class="navbar-nav mr-auto">
-              <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
-              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
-              <a class="nav-item nav-link" href= "{{ url_for('search.search_db') }}" >Search</a>
-              <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
-              <a class="nav-item nav-link" href="{{ url_for('main.documentation') }}">Documentation</a>
+            <a class="navbar-brand mr-4" href="/">PhosphoQuest </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                    data-target="#navbarToggle" aria-controls="navbarToggle"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarToggle">
+                <div class="navbar-nav mr-auto">
+                    <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
+                    <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
+                    <a class="nav-item nav-link" href= "{{ url_for('search.search_db') }}" >Search</a>
+                    <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.documentation') }}">Documentation</a>
+                </div>
             </div>
-          </div>
         </div>
-      </nav>
-    </header>
+    </nav>
+</header>
 
-    <!-- block content from child templates with bootstrap styles-->
-    <main role="main" class="container">
-      <div class="row">
-        <div class="col-md-8">
-            <!-- print error messages from form validation-->
-            {% with messages = get_flashed_messages(with_categories=true) %}
-               {% if messages %}
-                  {% for category, message in messages %}
-                     <div class = "alert alert-{{ category }}">
-                         {{ message }}
-                     </div>
-                  {% endfor %}
-               {% endif %}
-            {% endwith %}
-            {% block content %}{% endblock %}
+<!-- block content from child templates with bootstrap styles-->
+<main role="main" class="container">
+<div class="row">
+    <div class="col-md-8">
+        <!-- print error messages from form validation-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class = "alert alert-{{ category }}">
+            {{ message }}
         </div>
-        <div class="col-md-4">
-          <div class="content-section">
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+    <div class="col-md-4">
+        <div class="content-section">
             <h3>Browse Database</h3>
-            <p class='text-muted'>Categories
-              <ul class="list-group">
+            <p class='text-muted'>Categories</p>
+            <ul class="list-group">
                 <li class="list-group-item list-group-item-dark">
                     <a class="navside-item navside-link"
-                            href = {{url_for('browse.browse_cat', category="Kinase")}}>Kinases</a></li>
+                       href = {{url_for('browse.browse_cat', category="Kinase")}}>Kinases</a></li>
                 <li class="list-group-item list-group-item-dark">
                     <a class="navside-item navside-link"
-                            href = {{url_for('browse.browse_cat', category="Substrate")}}>Substrates</a></li>
+                       href = {{url_for('browse.browse_cat', category="Substrate")}}>Substrates</a></li>
                 <li class="list-group-item list-group-item-dark">
                     <a class="navside-item navside-link"
-                            href = {{url_for('browse.browse_table', subcategory='Inhibitor')}}>Inhibitors</a></li>
+                       href = {{url_for('browse.browse_table', subcategory='Inhibitor')}}>Inhibitors</a></li>
                 <li class="list-group-item list-group-item-dark">
                     <a class="navside-item navside-link"
-                            href = {{url_for('main.documentation')}}>Documentation</li></a>
-              </ul>
-            </p>
-          </div>
-        </div>      </div>
-    </main>
-
-
-  </body>
-
-
+                       href = {{url_for('main.documentation')}}>Documentation</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+</main>
 </body>
 </html>
