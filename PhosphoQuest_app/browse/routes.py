@@ -73,8 +73,8 @@ def sub_detail(text):
 
 @browse.route("/inh_detail/<text>")
 def inh_detail(text):
-    """ route to create details from browse"""
-    # add function to search for other info her""
+    " inhibitor detail"
     results = browse_queries.browse_detail(text, 'Inhibitor')
+    cid = results[0][0][1]  # get pubchem CID from results to pass
     return render_template('search_results.html', title="Browse", style="list",
-                           results=results)
+                           results=results, cid=cid)

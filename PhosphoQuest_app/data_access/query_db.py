@@ -3,6 +3,7 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
 import pandas as pd
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.interface_dicts import headers
+from PhosphoQuest_app.data_access import display_tables
 
 # create table dictionary to translate table name for search queries
 tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
@@ -47,45 +48,60 @@ def query_switch(text,type, table, option):
             field = fielddict['inhibitor'][0]
         else:
             field = fielddict['inhibitor'][1]
-    else:
-        print(" an error has occurred")
-        # TODO create custom error class for logic errors
 
     # convert table text to table object to apply to query
-    table = tabledict[table]
+    dbtable = tabledict[table]
 
     #carry out query with exact or like method depending on user choice
     if type == "exact":
-        results = searchexact(text, table, field)
+        results = searchexact(text, dbtable, field)
         if 'No results found' in results:
             style = 'None'
             return results, style
 
         elif len(results) < 4: # if only 3 or less results display as list
-            results = query_to_list(results, table)
+            results = query_to_list(results, dbtable)
             style = 'list'
             return results, style
 
         else:
-            results = query_to_dfhtml(results, table)
-            style = 'dataframe'
-            return results, style
+            if table == 'kinase':
+                results = display_tables.Kinase_first_results(results)
+            elif table == 'inhibitor':
+                for item in results: #shorten name
+                    item.inhib_short_name = item.inhib_short_name[:20]
+                results = display_tables.Inhibitor_first_results(results)
+                cid='cid'
+            else:
+                results = display_tables.Substrate_first_results(results)
+            style = 'table'
+            return results, style, cid
 
     else:
-        results = searchlike(text, table, field)
+        results = searchlike(text, dbtable, field)
         if 'No results found' in results:
             style = 'None'
             return results, style
 
-        elif len(results) < 4: # if only 3 or less results display as list
-            results = query_to_list(results, table)
+        elif len(results) < 3: # if only 2 or less results display as list
+            results = query_to_list(results, dbtable)
             style = 'list'
             return results, style
 
-        else: # if more results display as table
-            results = query_to_dfhtml(results, table)
-            style = 'dataframe'
-            return results, style
+        else:
+            # if more results display as table for each type
+            if table == 'kinase':
+                results = display_tables.Kinase_first_results(results)
+            elif table == 'inhibitor':
+                # make short name up to 20 characters to avoid long table
+                for item in results:
+                    item.inhib_short_name = item.inhib_short_name[:20]
+                results = display_tables.Inhibitor_first_results(results)
+            else:
+                results = display_tables.Substrate_first_results(results)
+            style = 'table'
+
+            return results,style
 
 
 def searchlike(text, table, fieldname):
@@ -125,37 +141,11 @@ def all_table(table):
         return ['No results found']
 
 
-def query_to_dfhtml(query_results, table):
-    """ Function to parse query output to pandas dataframe
-     and create html for website"""
-
-    # get attribute names for this table
-    colnames = table.__table__.columns.keys()
-    datalist = {}
-
-    for col in colnames:
-        # only parse info for wanted columns
-        if col in headers:
-            # find human friendly column header
-            header = headers[col]
-            datalist[header] = []
-            for item in query_results:
-                datalist[header].append(getattr(item, col))
-
-        else:
-            datalist[col] = []
-            # if human friendly version not available
-            for item in query_results:
-                datalist[col].append(getattr(item, col))
-
-    df = pd.DataFrame.from_dict(datalist)
-    df = df.to_html(index=False)
-    return df
 
 
 def query_to_list(query_results, table):
     """ Function to parse query output to list of lists for selected attributes
-      for website (results <4)."""
+      for website (results <3)."""
 
     # get attribute names for this table
     names = table.__table__.columns.keys()
@@ -179,3 +169,30 @@ def query_to_list(query_results, table):
     return result
 
 
+# def query_to_dfhtml(query_results, table):
+#     """ Function to parse query output to pandas dataframe
+#      and create html for website"""
+#
+#     # get attribute names for this table
+#     colnames = table.__table__.columns.keys()
+#     datalist = {}
+#
+#     for col in colnames:
+#         # only parse info for wanted columns
+#         if col in headers:
+#             # find human friendly column header
+#             header = headers[col]
+#             datalist[header] = []
+#             for item in query_results:
+#                 datalist[header].append(getattr(item, col))
+#
+#         else:
+#             datalist[col] = []
+#             # if human friendly version not available
+#             for item in query_results:
+#                 datalist[col].append(getattr(item, col))
+#
+#     df = pd.DataFrame.from_dict(datalist)
+#     df = df.to_html(index=False)
+#     return df
+#
