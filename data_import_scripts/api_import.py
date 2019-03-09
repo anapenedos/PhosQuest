@@ -6,6 +6,7 @@ import pandas as pd
 import urllib.request
 import urllib.parse
 import urllib
+import time
 
 # project-specific imports
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
@@ -93,8 +94,8 @@ def get_uniprot_api_data(class_name):
 
     # extract single protein name
     df['Protein name'] = df['Protein names'].astype(str)
-    df['Protein name'] = df['Protein name'].str.extract('(.*?) \(.*',
-                                                        expand=True)
+    df['Protein name'] = df['Protein name'].str.extract(
+        '^([^(]*?)(?: *\(.*)?$', expand=False)
     return df
 
 
@@ -111,7 +112,7 @@ def get_pubchem_api_data(class_name):
     keys_list = get_table_values_for_search(class_name)
 
     # iterate through slices of the list to prevent exceeding of PubChem
-    # programmatic data gathering time access limits
+    # programmatic data gathering request length limit
     dfs = []
     i = 0
     j = 50
@@ -129,12 +130,14 @@ def get_pubchem_api_data(class_name):
 
         results_csv = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/" \
                       "cid/" + query_str + "/property/IUPACName/csv"
-        print(results_csv)
         # Convert the csv to a data frame and append to the list
         dfs.append(pd.read_csv(results_csv))
         # update slice ends
         i += 50
         j += 50
+        # introduce waiting time to prevent exceeding of PubChem
+        # programmatic data gathering request# 5/s limit
+        time.sleep(.2)
 
     full_df = pd.concat(dfs)
 
