@@ -1,12 +1,13 @@
 # standard imports
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Load
+from sqlalchemy.inspection import inspect
 
 # project imports
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
     Substrate, Phosphosite, kinases_phosphosites_table
-from sqlalchemy.inspection import inspect
+from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 
 
 def link_ud_to_db(user_data_frame):
@@ -31,10 +32,7 @@ def link_ud_to_db(user_data_frame):
                 Kinase: []}
 
     # primary key attribute for each class
-    db_key_attrs = {}
-    for class_name in db_links:
-        key_attr = inspect(class_name).primary_key[0].name
-        db_key_attrs[class_name] = key_attr
+    db_key_attrs = get_classes_key_attrs(db_links, single_key=True)
 
     # not found in DB message
     not_in_db = 'not in DB'
