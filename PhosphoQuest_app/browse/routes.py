@@ -30,7 +30,7 @@ def browse_cat(category):
 
         table = browse_queries.browse_inhibitors()
 
-        return render_template('browse_table.html', title=subcategory,
+        return render_template('browse_table.html', title=category,
                                table=table)
 
     else: # if this is the subcategory level (requiring query)
@@ -39,7 +39,6 @@ def browse_cat(category):
         # remove forward slashes
         for item in links:
             item = item.replace("/","&F&")
-            item = item.replace("\\","&B&")
             cleansedlinks.append(item)
 
         return render_template('browse_cat.html', title="Browse",
