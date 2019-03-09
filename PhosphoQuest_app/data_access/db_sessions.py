@@ -7,7 +7,7 @@ from sqlalchemy.interfaces import PoolListener
 
 def set_db_path():
     """ Returns the path to the DB being used."""
-    return os.path.join('database', 'PhosphoQuest-indexed.db')
+    return os.path.join('database', 'PhosphoQuest.db')
 
 
 def session_maker(db_path=set_db_path()):
