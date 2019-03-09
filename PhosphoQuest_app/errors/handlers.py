@@ -10,3 +10,8 @@ errors = Blueprint('errors', __name__)
 def page_not_found(e):
     """render special 404 page"""
     return render_template('404_error.html'), 404
+
+@errors.app_errorhandler(500)
+def server_error(e):
+    """render 500 page(server error"""
+    return render_template('500_error.html'),500

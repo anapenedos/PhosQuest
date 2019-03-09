@@ -1,0 +1,17 @@
+<!--inherits layout from layout.html-->
+{% extends "layout_no_sidebar.html" %}
+{% block content %}
+<div>
+    <center>  <br>
+        <H3> 500 - Our Kinases have been Inhibited</H3>
+    <img src="{{url_for('static', filename='oops_kinase.png')}}"
+        alt="500 error image"/>
+    <br>
+    <H3>Server Error Gremlins have defeated PhosphoQuest.
+        <br>
+    <a href="{{url_for('main.home')}}">Try going back home</a></center></H3>
+</div>
+</body>
+</html>
+
+{% endblock content %}
