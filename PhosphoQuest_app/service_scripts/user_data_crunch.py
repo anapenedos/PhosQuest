@@ -1,5 +1,4 @@
 ### User data analysis script. 
-### Alex and Carmen "data_crunch_fu" in action.
 
 # --------------------------------------------------------------------------- #
 
@@ -7,13 +6,13 @@
 import os
 import pandas as pd
 import numpy as np
-import seaborn as sb
-import matplotlib as mpl
+#import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
 from plotly.offline import init_notebook_mode,  plot
 import plotly.graph_objs as go
 from datetime import datetime
 from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 #init_notebook_mode() # ONLY NEEDED FOR IPYTHON NOTEBOOK
 
 # Import packages from sqlalchemy.
@@ -270,7 +269,8 @@ def table_sort_parse(filtered_df):
     
     # concatenate full phospho table with DB user data links.
     filtered_df = pd.concat([filtered_df.reset_index(drop=True),
-                             db_ud_df.reset_index(drop=True)], axis=1)    
+                             db_ud_df.reset_index(drop=True)], axis=1)      
+    
     # Sum control_cv & condition cv. 
     # User data that didn't contain cv columns upon original upload,
     # would return a sum of cv's equal to length of data frame.
@@ -301,7 +301,7 @@ def table_sort_parse(filtered_df):
     filtered_signif_df.loc[:, "Log2 fold change - condition over control"] =\
     filtered_signif_df.iloc[:, 9].fillna(0)
 
-    return(filtered_df, filtered_signif_df)
+    return(filtered_df, filtered_signif_df, kin_dict)
 
 # --------------------------------------------------------------------------- #
 
@@ -740,7 +740,142 @@ def user_data_volcano_plot(phos_table):
     return html
 
 # --------------------------------------------------------------------------- #
+
+### Function to analyse and visualise kinase data distributions. 
+def kinase_analysis(db_kin_dict):
+    """ Kinase centric analysis:
+        1 - Convert kinase dictionary from "ud_db_queries.py" to dataframe.
+        2 - Extract groupings, totals and frequencies.
+        3 - Create wordcloud for kinases and subs-sites.
+        4 - Create frequency bar charts to compliment wordcloud analysis."""
+    # Call function to extract user/db data alignment as dictionaries.
+    # Pass kinase dictionary to dataframe.
+    # Df: index = kinases, columns = matching ("subs","site") string tuple(s).
+    kin_subs_site_df = pd.DataFrame.from_dict(db_kin_dict, orient="index")
     
+    # Pass kinase_dictionary keys to list variable and compute length.
+    # This is the number of unique kinases whose substrates are detected
+    # in the user data.
+    unique_kin_lst_len = len(list(db_kin_dict.keys()))
+    
+    # Convert dataframe such that each row is now a 
+    # unique substrate-site per kinase.
+    # stack() - returns series of unique subs_sites per kinase. Index = kinases
+    # to_frame() - converts series to dataframe.
+    # reset_index() - extracts kinases from index to new column.
+    # drop - removes "level_1" column (remnant of dictionary structure).
+    kin_subs_site_df = kin_subs_site_df.stack().\
+                       to_frame().\
+                       reset_index().\
+                       drop("level_1", axis=1)
+                       
+    # Rename columns.
+    kin_subs_site_df.columns = ["kinase", "subs_site"]
+    
+    # Concatenate "subs_site" tuple i.e. ('PRKDC', 'S2612') to "PRKDC_S2612".
+    kin_subs_site_df["substrate_site"] =\
+            ['_'.join(map(str, l)) for l in kin_subs_site_df["subs_site"]]  
+                     
+    # Drop string tuple.
+    kin_subs_site_df = kin_subs_site_df.drop("subs_site", axis=1) 
+    
+    # Create dictionary from kin_subs_site_df:
+    # Keys = Substrate_Site ID, Values = Series of kinases for each key.
+    kin_subs_site_df_dict = kin_subs_site_df.groupby("substrate_site").\
+                            kinase.agg(list).to_dict()
+    
+    # Pass sunstrates dictionary keys to list variable and compute length.
+    # This is the number of unique subs_sites whose kinases are detected
+    # in the user data.
+    unique_subs_lst_len = len(list(kin_subs_site_df_dict.keys()))
+    
+    # Compute frequency of duplicate "Sub_site_ID" entries.
+    # Series represents number of kinases that target a site in the user data.
+    # Sort by highest frequency & extract top 10 sites 
+    # most targetted by kinases in DB.
+    kinase_target_freq =\
+             kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 1]]).size()
+    
+    # Compute sum of kinase frequencies.       
+    kinase_target_entry_num = sum(kinase_target_freq)
+    
+    # Sort frequencies - highest to lowest.
+    kinase_target_freq =\
+             kinase_target_freq.sort_values(ascending=False)
+             
+    # Take top 10 and pass to variable.
+    kinase_target_freq =\
+             kinase_target_freq.head(n=10)
+    
+    # Compute frequency of duplicate kinases matched to user data.
+    # Represents the total number of unique kinases 
+    # targeting a susb_site matched from db.
+    kinase_freq = kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 0]]).size()
+    
+    # Compute sum of subs_sites frequencies.
+    Kinase_entry_num = sum(kinase_freq) 
+    
+    # Sort frequencies - highest to lowest.
+    kinase_freq = kinase_freq.sort_values(ascending=False)
+    
+    # Take top 10 and pass to variable.
+    kinase_freq = kinase_freq.head(n=10)
+    
+    # Parse subset of df corresponding to kinases & subs_sites.
+    kin_word_list = kin_subs_site_df.iloc[:, 0]
+    subs_sites_word_list = kin_subs_site_df.iloc[:, 1]
+    
+    # Convert subsets to string variables.
+    kin_word_str  = ' '.join(kin_word_list)
+    subs_sites_word_str  = ' '.join(subs_sites_word_list)
+    
+    # Pass string variables to wordcloud function.
+    kin_wcloud =\
+         WordCloud(collocations=False, background_color="gray", colormap="RdBu").\
+         generate(kin_word_str).\
+         to_file("kin_word_cloud.png")
+    
+    subs_sites_wcloud =\
+         WordCloud(collocations=False, background_color="gray", colormap="RdBu").\
+         generate(subs_sites_word_str).\
+         to_file("subs_sites_word_cloud.png")
+    
+    # Display the generated images.
+    # Kinases.
+    plt.imshow(kin_wcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    
+    # Subs_sites.
+    plt.imshow(subs_sites_wcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    
+    # Plot kinase frequency - top10
+    plt.figure(figsize=(10,7))
+    kinase_freq.sort_values(ascending=False).plot.bar()
+    plt.xticks(rotation=50)
+    plt.xlabel("Kinase")
+    plt.ylabel("Frequency")
+    kin_freq_bar_plt = plt.savefig("kin_frequency_top10.png")
+    plt.show()
+    
+    # Plot subs_sites frequency - top10
+    plt.figure(figsize=(10,7))
+    kinase_target_freq.sort_values(ascending=False).plot.bar()
+    plt.xticks(rotation=50)
+    plt.xlabel("Substrate & site")
+    plt.ylabel("Frequency")
+    subs_sites_freq_bar_plt = plt.savefig("subs_sites_frequency_top10.png")
+    plt.show()
+
+    return(kin_wcloud, 
+           subs_sites_wcloud, 
+           kin_freq_bar_plt, 
+           subs_sites_freq_bar_plt)
+
+# --------------------------------------------------------------------------- #
+
 # set up run if running this script only
 if __name__ == "__main__":
 
@@ -755,7 +890,7 @@ if __name__ == "__main__":
 
     corrected_p = correct_pvalue(sty)
 
-    full_sty_sort, parsed_sty_sort = table_sort_parse(corrected_p)
+    full_sty_sort, parsed_sty_sort, db_kin_dict = table_sort_parse(corrected_p)
 
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
     data_extract(full_sty_sort, styno)
@@ -765,6 +900,9 @@ if __name__ == "__main__":
     style_df(full_sty_sort)
     
     ud_volcano = user_data_volcano_plot(full_sty_sort)
+    
+    kin_wc, subs_sites_wc, kin_freq, subs_sites_freq =\
+                                            kinase_analysis(db_kin_dict)
 
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 
