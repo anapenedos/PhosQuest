@@ -10,12 +10,11 @@ def browse_main():
 @browse.route("/browse/<category>")
 def browse_cat(category):
     """ Display sub-categories depending on browse main click"""
+
     # category dict to look up sub categories for browse.
-    # TODO decide on categories for display
     categories = {
         'Kinase': ['Kinase~Family', 'Kinase~Cellular_Location'],
-        'Substrate': ['Substrate~Protein_Type',
-                      'Substrate~Chromosome_Location']
+        'Substrate': ['Substrate~All','Substrate~Chromosome_Location']
     }
 
     # if this is the first specific category level the category variable
@@ -35,15 +34,21 @@ def browse_cat(category):
 
     else: # if this is the subcategory level (requiring query)
         links = browse_queries.browse_subcat(category)
-        cleansedlinks = []
-        # remove forward slashes
-        for item in links:
-            item = item.replace("/","&F&")
-            cleansedlinks.append(item)
 
-        return render_template('browse_cat.html', title="Browse",
-                               links=cleansedlinks, cat="subcat",
-                               category=category)
+        if type(links) == list:
+            cleansedlinks = []
+            # remove forward slashes
+            for item in links:
+                item = item.replace("/","&F&")
+                cleansedlinks.append(item)
+
+            return render_template('browse_cat.html', title="Browse",
+                                   links=cleansedlinks, cat="subcat",
+                                   category=category)
+        else:#catch Substrate~All
+            return render_template('browse_table.html',title="Substrate",
+                                            table=links)
+
 
 
 @browse.route("/browse_table/<subcategory>")
@@ -54,7 +59,6 @@ def browse_table(subcategory):
     return render_template('browse_table.html', title=subcategory,
                                             table=table)
 
-# TODO write specific template for browse detail page.
 @browse.route("/kin_detail/<text>")
 def kin_detail(text):
     """ route to create details from browse"""
@@ -73,8 +77,8 @@ def sub_detail(text):
 
 @browse.route("/inh_detail/<text>")
 def inh_detail(text):
-    """ route to create details from browse"""
-    # add function to search for other info her""
+    " inhibitor detail"
     results = browse_queries.browse_detail(text, 'Inhibitor')
-    return render_template('search_results.html', title="Browse", style="list",
-                           results=results)
+    cid = results[0][0][1]  # get pubchem CID from results to pass
+    return render_template('search_results.html', title="Detail", style="list",
+                           results=results, cid=cid)

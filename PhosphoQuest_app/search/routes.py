@@ -5,7 +5,7 @@ from PhosphoQuest_app.search.forms import SearchForm
 search = Blueprint('search', __name__)
 
 
-# route for browse page with browse template
+# search DB route
 @search.route("/search",methods=['GET', 'POST'])
 def search_db():
     """Call switch function to search database and render results

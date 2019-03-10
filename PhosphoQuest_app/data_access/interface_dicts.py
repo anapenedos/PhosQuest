@@ -57,3 +57,4 @@ kin_family_cats = ["5'-AMP-activated protein kinase beta subunit",
                 "TFIIF alpha subunit", "TKL Ser/Thr protein kinase",
                 "TRAFAC class myosin-kinesin ATPase superfamily",
                 "Transglutaminase","Tyr protein kinase", "WAL"]
+

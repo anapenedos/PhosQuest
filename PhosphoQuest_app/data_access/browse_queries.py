@@ -15,7 +15,7 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                     'Cellular_Location': Kinase.kin_cellular_location},
                         Kinase.kin_accession],
              'Substrate':[Substrate,
-                          {'Protein_Type':Substrate.subs_protein_type,
+                          {'All':Substrate,
                            'Chromosome_Location':
                                Substrate.subs_chrom_location},
                           Substrate.subs_accession]
@@ -36,12 +36,15 @@ def browse_subcat(category):
     elif table == 'Kinase' and field == 'Family':
         return kin_family_cats
 
+    elif table == 'Substrate' and field =='All':
+        results = browse_substrates()
+        return results
+
     # run query for all distinct results from table and field name
     else:
         session = create_sqlsession()
         subcats = session.query(dbfield.distinct()).all()
         links =[subcat[0] for subcat in subcats if subcat[0] != None]
-
         #remove forward and black slash that cause problems in links
         return links
 
@@ -53,9 +56,14 @@ def browse_table(subcategory):
     if subcategory == 'Inhibitor':
         out_table = browse_inhibitors()
         return out_table
+
     # perform database query for other subcategories
     else:
         table, field, text = subcategory.split("~")
+
+        #return all results for Substrate~All results
+
+
         #get database field for query
         dbtable = tabledict[table][0]
         dbfield = tabledict[table][1][field]
@@ -65,7 +73,6 @@ def browse_table(subcategory):
 
         # run query for all  results from table and field name for input text
         results = searchlike(text, dbtable, dbfield)
-        print(type(results))
 
         #find table format for output
         if 'No Results Found' not in results:
@@ -81,6 +88,7 @@ def browse_table(subcategory):
         else:
             return results
 
+
 def browse_inhibitors():
     """ function to return all inhibitors as FLask table"""
     results = all_table(Inhibitor)
@@ -90,6 +98,16 @@ def browse_inhibitors():
             #make short name up to 20 characters
             item.inhib_short_name = item.inhib_short_name[:20]
         out_table = Inhibitor_first_results(items=results)
+        return out_table
+    else:
+        return results
+
+def browse_substrates():
+    """ function to return all inhibitors as FLask table"""
+    results = all_table(Substrate)
+        #find table format for output
+    if 'No Results Found' not in results:
+        out_table = Substrate_first_results(items=results)
         return out_table
     else:
         return results
