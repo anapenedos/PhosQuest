@@ -1,5 +1,7 @@
-import sys
+# standard imports
 from sqlalchemy.inspection import inspect
+
+# project imports
 import PhosphoQuest_app.data_access.sqlalchemy_declarative
 
 
@@ -12,18 +14,18 @@ def str_to_class(class_str):
                    class_str)
 
 
-def get_class_key_attrs(class_name, single_key=False):
+def get_class_key_attrs(class_obj, single_key=False):
     """
     Given a sqlalchemy Class, returns list of primary key attributes for the
     class or single primary key attribute if single_key=True.
 
-    :param class_name: sqlalchemy Class (class obj)
+    :param class_obj: sqlalchemy Class (class obj)
     :param single_key: single key is expected (True) or multiple keys (False)
                        (boolean)
     :return: list of class attributes that are primary keys (list of str)
              primary key attribute if single_key=True (str)
     """
-    keys_of_class =  [key.name for key in inspect(class_name).primary_key]
+    keys_of_class =  [key.name for key in inspect(class_obj).primary_key]
     if single_key:
         key_str = keys_of_class[0]
         keys_to_return = key_str
@@ -50,3 +52,17 @@ def get_classes_key_attrs(classes_iterable, single_key=False):
         class_keys[class_name] = get_class_key_attrs(class_name, single_key)
 
     return class_keys
+
+
+def get_class_name_attr(class_obj):
+    """
+    Given a class object returns attribute that contains the full name or None.
+
+    :param class_obj: Class object (Class)
+    :return: full name attr or None (str/None)
+    """
+    cl_full_name = None
+    for key in class_obj.__dict__:
+        if 'full_name' in key:
+            cl_full_name = key
+    return cl_full_name
