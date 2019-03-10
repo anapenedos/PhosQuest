@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from itertools import chain
 
+
 def reset_df_index(data_frame):
     """
     Resets pandas data frame index, dropping current index and replacing it

@@ -1,7 +1,4 @@
-import pandas as pd
-
-from data_import_scripts.df_editing import split_multi_value_rows_in_df, \
-    create_db_kin_links
+from PhosphoQuest_app.service_scripts.df_editing import create_db_kin_links
 #
 # # testing split multi value lines function
 # df=pd.DataFrame(data=[['1 3',' 2','3,4,5'], ['ajh jh', 'b', 'ch,   dhh jj ']],

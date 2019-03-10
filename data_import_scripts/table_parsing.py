@@ -3,12 +3,12 @@
 # --------------------------------------------------------------------------- #
 
 ### Import packages into environment.
-import pandas as pd
 import csv
 import os.path
 
-### Import project scripts
-from data_import_scripts.df_editing import split_multi_value_rows_in_df, \
+import pandas as pd
+
+from PhosphoQuest_app.service_scripts.df_editing import split_multi_value_rows_in_df, \
     reset_df_index
 
 

@@ -9,6 +9,21 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
 from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 
 
+def keys_from_join_res(list_of_tuples):
+    """
+    Given a list of tuples from the result of a sqlalchemy join query returns
+    a dictionary mapping a class to a set of instances of that class.
+
+    :param list_of_tuples: sqlalchemy join query result (list of tuples)
+    :return: dictionary of classes to unique instances set (dict)
+             {Class: {inst1, inst2})
+    """
+    class_inst = {}
+    for instances_tuple in list_of_tuples:
+
+        pass
+
+
 def link_ud_to_db(user_data_frame):
     """
     Check substrates and phosphosites in the user data against the data base
