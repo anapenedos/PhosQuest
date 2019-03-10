@@ -92,6 +92,18 @@ class Kinase(Base):
             # add phosphosite to list of kinase targets
             self.kin_phosphorylates.append(class_instances[Phosphosite])
 
+    def get_key_val(self):
+        """Returns value for table primary key of instance"""
+        return self.kin_accession
+
+    def get_gene(self):
+        """Returns value for gene attribute of instance"""
+        return self.kin_gene
+
+    def get_name(self):
+        """Return value for full name attribute of instance"""
+        return self.kin_full_name
+
 
 class Substrate(Base):
     """
@@ -149,6 +161,18 @@ class Substrate(Base):
         if Phosphosite in class_instances:
             # add phosphosite to list of sites in substrate
             self.subs_sites.append(class_instances[Phosphosite])
+
+    def get_key_val(self):
+        """Returns value for table primary key of instance"""
+        return self.subs_accession
+
+    def get_gene(self):
+        """Returns value for gene attribute of instance"""
+        return self.subs_gene
+
+    def get_name(self):
+        """Return value for full name attribute of instance"""
+        return self.subs_full_name
 
 
 class Phosphosite(Base):
@@ -240,6 +264,10 @@ class Phosphosite(Base):
             # alterations associated with phosphosite
             self.disease_alterations.append(
                 class_instances[DiseaseAlteration])
+
+    def get_key_val(self):
+        """Returns value for table primary key of instance"""
+        return self.phos_group_id
 
 
 class Disease(Base):
@@ -398,6 +426,14 @@ class Inhibitor(Base):
         if Kinase in class_instances:
             # add kinase to list of kinases targeted by inhibitor
             self.inhib_target_kinases.append(class_instances[Kinase])
+
+    def get_key_val(self):
+        """Returns value for table primary key of instance"""
+        return self.inhib_pubchem_cid
+
+    def get_name(self):
+        """Return value for full name attribute of instance"""
+        return self.inhib_full_name
 
 
 class CellularLocation(Base):
