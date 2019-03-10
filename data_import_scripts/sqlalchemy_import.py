@@ -12,6 +12,16 @@ NULL_VALS = [None, '', ' ', '-', 'nan', 'NaN']
 
 
 def get_key_vals(df_to_class_dict, classes_keys, row):
+    """
+    Gets the key values for the class instances in a data frame row.
+
+    :param df_to_class_dict: data frame heading to class & attribute (dict)
+                             {'DF header': [(Class, 'class_attribute')]}
+    :param classes_keys: {Class: ['key_attr1', ...], ...} (dict)
+    :param row: pandas data frame row (df row)
+    :return: key values for the class instances in the row (dict)
+             {class: {key_attr: key_value, ...}, ...}
+    """
     # get keys for classes in row
     # dictionary of class to primary key attributes and key values tuples
     new_table_keys = {}  # {class: {key_attr: key_value, ...}, ...}
@@ -32,6 +42,16 @@ def get_key_vals(df_to_class_dict, classes_keys, row):
 
 
 def get_instances(new_table_keys, session):
+    """
+    Check if records already exist in tables and obtain class instances. Create
+    new instances if not in tables.
+
+    :param new_table_keys: key values for the class instances in the row (dict)
+                           {class: {key_attr: key_value, ...}, ...}
+    :param session: a sqlalchemy DB session (sqlalchemy session)
+    :return: dictionary of instance for each class (dict)
+             {Class: class_instance, ...}
+    """
     # check if records already exist in tables and obtain class instances
     class_instances = {}  # {Class: class_instance, ...}
     for class_name, keys_info in new_table_keys.items():
@@ -59,6 +79,16 @@ def get_instances(new_table_keys, session):
 
 
 def import_attrs(class_instances, df_to_class_dict, row):
+    """
+    Get instance attributes for each instance from a pandas data frame row.
+
+    :param class_instances: dictionary of instance for each class (dict)
+                            {Class: class_instance, ...}
+    :param df_to_class_dict: data frame heading to class & attribute (dict)
+                             {'DF header': [(Class, 'class_attribute')]}
+    :param row: pandas data frame row (df row)
+    :return: updates class_instances dict (None)
+    """
     # get remaining attributes for each instance
     for instance_class_name, class_instance in class_instances.items():
         # get the class attributes
@@ -96,6 +126,7 @@ def import_data_from_data_frame(df, df_to_class_dict):
             classes_in_df.add(class_name)
 
     # get classes primary keys attributes
+    # Class: ['key_attr1', ...]
     classes_keys = get_classes_key_attrs(classes_in_df)
 
     # set up a row counter
