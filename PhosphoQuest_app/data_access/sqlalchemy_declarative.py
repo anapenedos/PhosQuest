@@ -269,6 +269,10 @@ class Phosphosite(Base):
         """Returns value for table primary key of instance"""
         return self.phos_group_id
 
+    def get_name(self):
+        """Return value for full name attribute of instance"""
+        return self.phos_modified_residue
+
 
 class Disease(Base):
     """
@@ -302,6 +306,14 @@ class Disease(Base):
             # alterations associated with disease
             self.caused_by_alterations.append(
                 class_instances[DiseaseAlteration])
+
+    def get_key_val(self):
+        """Returns value for table primary key of instance"""
+        return self.dis_name
+
+    def get_name(self):
+        """Return value for full name attribute of instance"""
+        return self.dis_name
 
 
 class DiseaseAlteration(Base):
@@ -363,6 +375,16 @@ class DiseaseAlteration(Base):
             self.disalt_phosphosite_id = phos_instance.phos_group_id
             # set the disease alteration <> phosphosite relationship
             self.altered_phosphosite = phos_instance
+
+    def get_key_vals(self):
+        """Returns value for table primary key of instance"""
+        return (self.disalt_disease_name,
+                self.disalt_phosphosite_id,
+                self.disalt_phos_alteration)
+
+    def get_name(self):
+        """Return value for full name attribute of instance"""
+        return self.disalt_disease_name
 
 
 class Inhibitor(Base):
