@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------- #
 
 ### Import packages into environment.
+import os
 import pandas as pd
 import numpy as np
 import seaborn as sb
@@ -13,7 +14,18 @@ from plotly.offline import init_notebook_mode,  plot
 import plotly.graph_objs as go
 from datetime import datetime
 #init_notebook_mode() # ONLY NEEDED FOR IPYTHON NOTEBOOK
-import os
+
+# Import packages from sqlalchemy.
+from sqlalchemy import and_, or_
+from sqlalchemy.orm import Load
+from sqlalchemy.inspection import inspect
+
+# project imports
+from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
+    Substrate, Phosphosite, kinases_phosphosites_table
+from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
+from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
 
 # --------------------------------------------------------------------------- #
 
@@ -105,79 +117,80 @@ def create_filtered_dfs(parsed_data):
     """ Create data frame subsets of user data and expand
     with further analysis. """
     # Rename "Substrate" column to "Substrate (gene name)".
+    # Df consists of all peptides with at least 1 quantitation.
     parsed_data.rename(columns={parsed_data.columns[0]: \
                                 "Substrate (gene name)"}, 
                                 inplace=True)
 
-    # Pass "parsed_data" to variable fed into later code.
-    # Variable consists of all peptides with at least 1 quantitation.
-    ud_df1_quant = parsed_data
-
     # Copy phospho-site id from "Substrate" field and append to new column.
-    ud_df1_quant["Phospho site ID"] = ud_df1_quant.iloc[:, 0].\
+    parsed_data["Phospho site ID"] = parsed_data.iloc[:, 0].\
                             str.extract(r"\((.*?)\)", expand=False)
 
     # Remove Phospho-site ID including () from "Substrate" column
-    ud_df1_quant.iloc[:, 0] = ud_df1_quant.iloc[:, 0].\
+    parsed_data.iloc[:, 0] = parsed_data.iloc[:, 0].\
                             str.replace(r"\(.*\)", "")
     
     # Parse data that contains Ser, Thr & Tyr phospho-sites only (STY)
-    ud_df1_sty = ud_df1_quant[ud_df1_quant.iloc[:, 7].
-                              str.contains("S|T|Y", case=False)]
+    ud_df1_sty = parsed_data[parsed_data.iloc[:, 7].
+                            str.contains("S|T|Y", case=False)]
 
     # Parse data for phospo-sites with valid p-values.
     ud_df1_sty_valid = ud_df1_sty[(ud_df1_sty.iloc[:, 4] > 0)]
 
-    # Find max values of control vs input protein means, column header names
-    cond_1_name = ud_df1_sty_valid.columns[1]
-    cond_2_name = ud_df1_sty_valid.columns[2]
-    # Find max of row for the 2 conditions (axis = 1 - by rows)
-    condition_max = ud_df1_sty_valid[[cond_1_name, cond_2_name]].max(axis=1)
+    # Find max of row for the 2 conditions (axis = 1 - by rows).
+    # Note: indexer range should be last index postion +1.
+    condition_max = ud_df1_sty_valid.iloc[:, 1:3].max(axis=1)
 
     # Calculate "fold conditions over max" values and append to new columns.
     # "df.divide" used to divide individual elements in a column by a variable.
-    ud_df1_sty_valid["Fold control intensity over maximum"] =\
+    ud_df1_sty_valid.loc[:, "Fold control intensity over maximum"] =\
                     ud_df1_sty_valid.iloc[:, 1].divide(condition_max, axis=0)
-    ud_df1_sty_valid["Fold condition intensity over maximum"] =\
+    ud_df1_sty_valid.loc[:, "Fold condition intensity over maximum"] =\
                     ud_df1_sty_valid.iloc[:, 2].divide(condition_max, axis=0)
 
     # Take log10 of control & condition intensities and pass to new columns.
-    ud_df1_sty_valid["Log10 control intensity"] =\
+    ud_df1_sty_valid.loc[:, "Log10 control intensity"] =\
                     np.log10(ud_df1_sty_valid.iloc[:, 1])
-    ud_df1_sty_valid["Log10 condition intensity"] =\
+    ud_df1_sty_valid.loc[:, "Log10 condition intensity"] =\
                     np.log10(ud_df1_sty_valid.iloc[:, 2])
 
     # Calc log2 fold change - condition/control and append as new column to df.
-    ud_df1_sty_valid["Log2 fold change - condition over control"] =\
+    ud_df1_sty_valid.loc[:,"Log2 fold change - condition over control"] =\
                     np.log2(ud_df1_sty_valid.iloc[:, 3])
 
     # Phospho-sites detected in single conditions and append to new columns.
     # Boolean true/false outputs returned.
-    ud_df1_sty_valid["control only"] = ((ud_df1_sty_valid.iloc[:, 1]>0) &
-                    (ud_df1_sty_valid.iloc[:, 2]==0)) # control only.
-    ud_df1_sty_valid["condition only"] = ((ud_df1_sty_valid.iloc[:, 1]==0) &
-                    (ud_df1_sty_valid.iloc[:, 2]>0)) # AZ20 only.
+    ud_df1_sty_valid.loc[:, "control only"] =\
+            ((ud_df1_sty_valid.iloc[:, 1]>0) &
+             (ud_df1_sty_valid.iloc[:, 2]==0)) # control only.
+    ud_df1_sty_valid.loc[:, "condition only"] =\
+            ((ud_df1_sty_valid.iloc[:, 1]==0)&
+             (ud_df1_sty_valid.iloc[:, 2]>0)) # AZ20 only.
 
     # Phospho-sites detected in both conditions and append to new column.
     # Boolean true/false outputs returned.
-    ud_df1_sty_valid["both conditions"] = ((ud_df1_sty_valid.iloc[:, 1]>0) &
-                    (ud_df1_sty_valid.iloc[:, 2]>0))
+    ud_df1_sty_valid.loc[:, "both conditions"] =\
+            ((ud_df1_sty_valid.iloc[:, 1]>0) &
+             (ud_df1_sty_valid.iloc[:, 2]>0))
 
     # Check if cv <=25% in both conditions.
     # Boolean true/false outputs returned.
     # Append category to new column.
-    ud_df1_sty_valid["CV <=25%(both)"] = ((ud_df1_sty_valid.iloc[:, 5]<=0.25) &
-                    (ud_df1_sty_valid.iloc[:, 6]<=0.25))
+    ud_df1_sty_valid.loc[:, "CV <=25%(both)"] =\
+            ((ud_df1_sty_valid.iloc[:, 5]<=0.25) &
+             (ud_df1_sty_valid.iloc[:, 6]<=0.25))
     
     # Check if unique sites have CVs <=25%.
     # Boolean true/false outputs returned.
     # Append category to new column.
-    ud_df1_sty_valid["CV <=25%(control)"] = ((ud_df1_sty_valid.iloc[:, 5]\
-                     <=0.25) & (ud_df1_sty_valid.iloc[:, 13]==1))
-    ud_df1_sty_valid["CV <=25%(condition)"] = ((ud_df1_sty_valid.iloc[:, 6]\
-                     <=0.25) & (ud_df1_sty_valid.iloc[:, 14]==1))
+    ud_df1_sty_valid.loc[:, "CV <=25%(control)"] =\
+            ((ud_df1_sty_valid.iloc[:, 5]<=0.25) & 
+             (ud_df1_sty_valid.iloc[:, 13]==1))
+    ud_df1_sty_valid.loc[:, "CV <=25%(condition)"] =\
+            ((ud_df1_sty_valid.iloc[:, 6]<=0.25) & 
+             (ud_df1_sty_valid.iloc[:, 14]==1))
     
-    return(ud_df1_quant, ud_df1_sty_valid)
+    return(parsed_data, ud_df1_sty_valid)
 
 # --------------------------------------------------------------------------- #
 
@@ -248,6 +261,15 @@ def table_sort_parse(filtered_df):
                                               sort_level_5],
                                               ascending=False)
     
+    # Call function to extract user data/db alignment data as dictionaries.
+    db_ud_dict, kin_dict = link_ud_to_db(filtered_df)
+    
+    # Pass DB/user data dictionary to dataframe.
+    db_ud_df = pd.DataFrame.from_dict(db_ud_dict, orient='index').transpose()
+    
+    # concatenate full phospho table with DB user data links.
+    filtered_df = pd.concat([filtered_df.reset_index(drop=True),
+                             db_ud_df.reset_index(drop=True)], axis=1)    
     # Sum control_cv & condition cv. 
     # User data that didn't contain cv columns upon original upload,
     # would return a sum of cv's equal to length of data frame.
@@ -271,11 +293,11 @@ def table_sort_parse(filtered_df):
                                              filtered_df.iloc[:, 21]]
     
     # Replace "inf" & "-inf" values in log2 fold change column with nan.
-    filtered_signif_df["Log2 fold change - condition over control"]\
+    filtered_signif_df.loc[:, "Log2 fold change - condition over control"]\
                       .replace([np.inf, -np.inf], np.nan, inplace=True)
     
     # Replace nan with 0.
-    filtered_signif_df["Log2 fold change - condition over control"] =\
+    filtered_signif_df.loc[:, "Log2 fold change - condition over control"] =\
     filtered_signif_df.iloc[:, 9].fillna(0)
 
     return(filtered_df, filtered_signif_df)
@@ -449,6 +471,9 @@ def style_df(phospho_df):
     # Parse subset of significant phospho hits.
     phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
                              phospho_df.columns[1],   # Phospho_site_ID.
+                             phospho_df.columns[22],  # Substrate links.
+                             phospho_df.columns[23],  # Phos-site links.
+                             phospho_df.columns[24],  # Kinase links.
                              phospho_df.columns[4],   # Fold_cont_over_max.
                              phospho_df.columns[5],   # Fold_cond_over_max.
                              phospho_df.columns[9],   # Log2 fold change.
@@ -607,10 +632,10 @@ def style_df(phospho_df):
 
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
-    #with open("style_df_rename.html","w") as fp:
-        #fp.write(html)
+    with open("style_df_rename.html","w") as fp:
+        fp.write(html)
 
-    return html
+    #return html
 
 # --------------------------------------------------------------------------- #
 
@@ -760,7 +785,7 @@ if __name__ == "__main__":
     #set up runs for testing functions
     file = phos_sites_path = os.path.join('PhosphoQuest_app', 
                                           'user_data', 
-                                          'Ipatasertib.tsv')
+                                          'az20.tsv')
 
     data_or_error = user_data_check(file)
     
@@ -786,10 +811,88 @@ if __name__ == "__main__":
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
+    
 # --------------------------------------------------------------------------- #
+#from sqlalchemy import and_, or_
+#from sqlalchemy.orm import Load
+#from sqlalchemy.inspection import inspect
+#
+## project imports
+#from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+#from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
+#    Substrate, Phosphosite, kinases_phosphosites_table
+#from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 #from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
 #
-#dict_test = link_ud_to_db(full_sty_sort)
+## Call function to extract user data/db alignment data as dictionaries.
+#db_ud_dict, kin_dict = link_ud_to_db(full_sty_sort)
+#
+## Pass DB/user data dictionary to dataframe.
+#db_ud_df = pd.DataFrame.from_dict(db_ud_dict, orient='index').transpose()
+#
+## concatenate full phospho table with DB user data links.
+#test_df = pd.concat([full_sty_sort.reset_index(drop=True),db_ud_df.reset_index(drop=True)], axis=1)
+#
+## --------------------------------------------------------------------------- #
+####TESTING - potentially redundant code
+## Pass kinase_dictinary keys to list variable and compute length.
+## This is the number of unique kinases whose substrates are detected
+## in the user data.
+#kin_lst_len = len(list(kin_dict.keys()))
+#
+## Pass kinase dictionary to dataframe.
+## Df: index = kinases, columns = matching ("subs","site") string tuple(s).
+#kin_subs_site_df = pd.DataFrame.from_dict(kin_dict, orient="index")
+#
+## Convert dataframe such that each row is now a unique
+## substrate-site per kinase.
+## stack() - returns series of unique subs_sites per kinase. Index = kinases
+## to_frame() - converts series to dataframe.
+## reset_index() - extracts kinase from index to new column.
+## drop - removes "level_1" column (integer - remnant of dictionary structure).
+#kin_subs_site_df = kin_subs_site_df.stack().\
+#                   to_frame().\
+#                   reset_index().\
+#                   drop("level_1", axis=1)
+#                   
+## Rename columns.
+#kin_subs_site_df.columns = ["kinase", "subs_site"]
+#
+## Concatenate "subs_site" tuple i.e. ('PRKDC', 'S2612') to "PRKDC_S2612".
+#kin_subs_site_df["substrate_site"] =\
+#                ['_'.join(map(str, l)) for l in kin_subs_site_df["subs_site"]]  
+#                 
+## Drop string tuple.
+#kin_subs_site_df = kin_subs_site_df.drop("subs_site", axis=1) 
+#
+## Create dictionary from kin_subs_site_df:
+## Keys = Substrate_Site ID, Values = Series of kinases for each key.
+#kin_subs_site_df_dict = kin_subs_site_df.groupby("substrate_site").\
+#                        kinase.agg(list).to_dict()
+#
+## Map dictionary values to full and parsed user data by key matches.
+#full_sty_sort.loc[:, "kinase(s)"] = full_sty_sort["substrate_site"].\
+#                                    map(kin_subs_site_df_dict)
+#parsed_sty_sort.loc[:, "kinase(s)"] = parsed_sty_sort["substrate_site"].\
+#                               map(kin_subs_site_df_dict)
+#
+## "nan" returned from non-matches coerced to empty string - "".                               
+#full_sty_sort.loc[:, "kinase(s)"] = full_sty_sort.iloc[:,23].fillna("")
+#parsed_sty_sort.loc[:, "kinase(s)"] = parsed_sty_sort.iloc[:,23].fillna("")               
+#
+## Remove "[]" & "''" from kinase(s) columns and joing by ",".
+#full_sty_sort.loc[:, "kinase(s)"] =\
+#             [','.join(map(str, l)) for l in full_sty_sort["kinase(s)"]]
+#parsed_sty_sort.loc[:, "kinase(s)"] =\
+#             [','.join(map(str, l)) for l in parsed_sty_sort["kinase(s)"]]
+#
+## Empty strings coerced to string - "Not in DB".             
+#full_sty_sort.loc[:, "kinase(s)"] =\
+#             full_sty_sort.iloc[:, 23].\
+#             replace(r'^\s*$', "not in DB", regex=True) 
+#parsed_sty_sort.loc[:,"kinase(s)"] =\
+#             parsed_sty_sort.iloc[:, 23].\
+#             replace(r'^\s*$', "not in DB", regex=True)     
 
 # --------------------------------------------------------------------------- #
 #### Test code for analysing multi-drug treatments
