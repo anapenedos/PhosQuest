@@ -13,6 +13,7 @@ from statsmodels.stats.multitest import fdrcorrection
 from plotly.offline import init_notebook_mode,  plot
 import plotly.graph_objs as go
 from datetime import datetime
+from wordcloud import WordCloud
 #init_notebook_mode() # ONLY NEEDED FOR IPYTHON NOTEBOOK
 
 # Import packages from sqlalchemy.
@@ -632,10 +633,10 @@ def style_df(phospho_df):
 
     # Render table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
-    with open("style_df_rename.html","w") as fp:
-        fp.write(html)
+    #with open("style_df_rename.html","w") as fp:
+        #fp.write(html)
 
-    #return html
+    return html
 
 # --------------------------------------------------------------------------- #
 
