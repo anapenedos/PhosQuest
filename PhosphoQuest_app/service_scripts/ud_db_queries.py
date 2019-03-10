@@ -1,7 +1,6 @@
 # standard imports
 from sqlalchemy import and_, or_
 from sqlalchemy.orm import Load
-from sqlalchemy.inspection import inspect
 
 # project imports
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
@@ -24,7 +23,7 @@ def link_ud_to_db(user_data_frame):
     session = create_sqlsession()
 
     # create dictionary to link user phosphosites to db entries
-    # 'Substrate Entry in DB': [{'ACC1'}, 'not in DB', ...] accessions are stings
+    # 'Substrate Entry in DB': [{'ACC1'}, 'not in DB', ...] accessions are str
     # 'Phosphosite Entry in DB': [{id1}, 'not in DB', ...] ids are integers
     # 'Associated Kinases': [{'ACCa', 'ACCb'}, 'not in DB', ...]
     db_links = {Substrate: [],
@@ -32,9 +31,7 @@ def link_ud_to_db(user_data_frame):
                 Kinase: []}
 
     # create dictionary for kinase-centric analysis data frame
-    # Kinase column contains single kinase accession per line
-    # User substrates column contains multiple GENE_site strings for each
-    # kinase
+    # 'KIN_ACC': {('SUB_GENE', 'RSD'),...}
     kin_to_ud = {}
 
     # primary key attribute for each class

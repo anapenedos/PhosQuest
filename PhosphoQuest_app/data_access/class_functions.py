@@ -65,4 +65,5 @@ def get_class_name_attr(class_obj):
     for key in class_obj.__dict__:
         if 'full_name' in key:
             cl_full_name = key
+            break
     return cl_full_name
