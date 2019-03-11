@@ -6,7 +6,7 @@
 import os
 import pandas as pd
 import numpy as np
-#import matplotlib as mpl
+import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
 from plotly.offline import init_notebook_mode,  plot
 import plotly.graph_objs as go
@@ -301,7 +301,7 @@ def table_sort_parse(filtered_df):
     filtered_signif_df.loc[:, "Log2 fold change - condition over control"] =\
     filtered_signif_df.iloc[:, 9].fillna(0)
 
-    return(filtered_df, filtered_signif_df, kin_dict)
+    return(filtered_df, filtered_signif_df)
 
 # --------------------------------------------------------------------------- #
 
@@ -831,14 +831,18 @@ def kinase_analysis(db_kin_dict):
     
     # Pass string variables to wordcloud function.
     kin_wcloud =\
-         WordCloud(collocations=False, background_color="gray", colormap="RdBu").\
-         generate(kin_word_str).\
-         to_file("kin_word_cloud.png")
+         WordCloud(collocations=False, 
+                   background_color="gray", 
+                   colormap="RdBu").\
+                   generate(kin_word_str).\
+                   to_file("kin_word_cloud.png")
     
     subs_sites_wcloud =\
-         WordCloud(collocations=False, background_color="gray", colormap="RdBu").\
-         generate(subs_sites_word_str).\
-         to_file("subs_sites_word_cloud.png")
+         WordCloud(collocations=False, 
+                   background_color="gray", 
+                   colormap="RdBu").\
+                   generate(subs_sites_word_str).\
+                   to_file("subs_sites_word_cloud.png")
     
     # Display the generated images.
     # Kinases.
@@ -872,7 +876,8 @@ def kinase_analysis(db_kin_dict):
     return(kin_wcloud, 
            subs_sites_wcloud, 
            kin_freq_bar_plt, 
-           subs_sites_freq_bar_plt)
+           subs_sites_freq_bar_plt,
+           kin_subs_site_df)
 
 # --------------------------------------------------------------------------- #
 
@@ -890,7 +895,7 @@ if __name__ == "__main__":
 
     corrected_p = correct_pvalue(sty)
 
-    full_sty_sort, parsed_sty_sort, db_kin_dict = table_sort_parse(corrected_p)
+    full_sty_sort, parsed_sty_sort = table_sort_parse(corrected_p)
 
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
     data_extract(full_sty_sort, styno)
@@ -901,11 +906,38 @@ if __name__ == "__main__":
     
     ud_volcano = user_data_volcano_plot(full_sty_sort)
     
-    kin_wc, subs_sites_wc, kin_freq, subs_sites_freq =\
-                                            kinase_analysis(db_kin_dict)
+    kin_wc, \
+    subs_sites_wc, \
+    kin_freq_bar_plt, \
+    subs_sites_freq_bar_plt, \
+    kin_subs_site_df = kinase_analysis(db_kin_dict)
 
     full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
 
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
     
 # --------------------------------------------------------------------------- #
+
+#### Test code for relative kinase activity analysis.
+## Parse significant hits table for gene, site_id,
+## log2 fold change & corrected p-value.
+#
+#signif_hits_subset = parsed_sty_sort[[parsed_sty_sort.columns[0],
+#                                      parsed_sty_sort.columns[1],
+#                                      parsed_sty_sort.columns[9],
+#                                      parsed_sty_sort.columns[13]]]
+#    
+## Add column to signif phos_sites table of concatenated substrate and site id.
+#signif_hits_subset.loc[:,"substrate_site"] =\
+#        parsed_sty_sort.iloc[:, 0].astype(str)+"_"+parsed_sty_sort.iloc[:, 1]
+#        
+## Drop 1st 2 columns.
+#signif_hits_subset = signif_hits_subset.drop(["Substrate (gene name)", 
+#                                              "Phospho site ID"], axis=1)
+#
+## Merge significant hits dataframe subset and db query data
+## by "substrate_site" column.
+#db_ud_merge_df = pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
+#
+## Extract mean of fold change per kinase
+#kin_fold_change = db_ud_merge_df.groupby("kinase")["Log2 fold change - condition over control"].mean()

@@ -175,5 +175,5 @@ def link_ud_to_db(user_data_frame):
                     to_append = not_in_db
                 db_links[class_obj].append(to_append)
 
-        tidy_db_links = format_db_links(db_links)
+    tidy_db_links = format_db_links(db_links)
     return tidy_db_links, kin_to_ud
