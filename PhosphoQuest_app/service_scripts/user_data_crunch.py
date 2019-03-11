@@ -917,3 +917,27 @@ if __name__ == "__main__":
     parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
     
 # --------------------------------------------------------------------------- #
+
+#### Test code for relative kinase activity analysis.
+## Parse significant hits table for gene, site_id,
+## log2 fold change & corrected p-value.
+#
+#signif_hits_subset = parsed_sty_sort[[parsed_sty_sort.columns[0],
+#                                      parsed_sty_sort.columns[1],
+#                                      parsed_sty_sort.columns[9],
+#                                      parsed_sty_sort.columns[13]]]
+#    
+## Add column to signif phos_sites table of concatenated substrate and site id.
+#signif_hits_subset.loc[:,"substrate_site"] =\
+#        parsed_sty_sort.iloc[:, 0].astype(str)+"_"+parsed_sty_sort.iloc[:, 1]
+#        
+## Drop 1st 2 columns.
+#signif_hits_subset = signif_hits_subset.drop(["Substrate (gene name)", 
+#                                              "Phospho site ID"], axis=1)
+#
+## Merge significant hits dataframe subset and db query data
+## by "substrate_site" column.
+#db_ud_merge_df = pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
+#
+## Extract mean of fold change per kinase
+#kin_fold_change = db_ud_merge_df.groupby("kinase")["Log2 fold change - condition over control"].mean()
