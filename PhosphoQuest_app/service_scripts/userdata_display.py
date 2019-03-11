@@ -11,7 +11,7 @@ def run_all(df):
 
     corrected_p = user_data_crunch.correct_pvalue(sty)
 
-    full_sty_sort, parsed_sty_sort =\
+    full_sty_sort, parsed_sty_sort, db_kin_dict =\
         user_data_crunch.table_sort_parse(corrected_p)
 
     #run volcano plot
