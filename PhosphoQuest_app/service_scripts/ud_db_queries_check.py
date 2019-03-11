@@ -18,7 +18,7 @@ ad = run_all(user_data_check(os.path.join('PhosphoQuest_app',
 sty = ad['sty']
 styno = ad['styno']
 
-sites_dict, kin_dict = link_ud_to_db(styno)
+# sites_dict, kin_dict = link_ud_to_db(styno)
 
 # session = create_sqlsession(session_type='pandas_sql')
 # query = session.query(Substrate, Phosphosite, Kinase)\
