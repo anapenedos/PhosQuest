@@ -301,7 +301,7 @@ def table_sort_parse(filtered_df):
     filtered_signif_df.loc[:, "Log2 fold change - condition over control"] =\
     filtered_signif_df.iloc[:, 9].fillna(0)
 
-    return(filtered_df, filtered_signif_df)
+    return(filtered_df, filtered_signif_df, kin_dict)
 
 # --------------------------------------------------------------------------- #
 
@@ -895,7 +895,7 @@ if __name__ == "__main__":
 
     corrected_p = correct_pvalue(sty)
 
-    full_sty_sort, parsed_sty_sort = table_sort_parse(corrected_p)
+    full_sty_sort, parsed_sty_sort, db_kin_dict = table_sort_parse(corrected_p)
 
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
     data_extract(full_sty_sort, styno)
