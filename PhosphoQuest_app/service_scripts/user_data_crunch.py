@@ -919,17 +919,24 @@ if __name__ == "__main__":
 # --------------------------------------------------------------------------- #
 
 #### Test code for relative kinase activity analysis.
-## Parse significant hits table for gene, site_id,
-## log2 fold change & corrected p-value.
-#
+# Parse significant hits table for gene, site_id,
+# log2 fold change & corrected p-value.
+
 #signif_hits_subset = parsed_sty_sort[[parsed_sty_sort.columns[0],
 #                                      parsed_sty_sort.columns[1],
 #                                      parsed_sty_sort.columns[9],
 #                                      parsed_sty_sort.columns[13]]]
+#
+## Parse hits with intensity in both conditions.
+## Necessary as fold changes for single condition hits are "inf or -inf".
+## x-axis range, for log2 fold changes in volcano plot, 
+## cannot be set properly with these entries at a lter stage.
+#signif_hits_subset = signif_hits_subset[(signif_hits_subset.iloc[:, 2] > 0) |\
+#                            (signif_hits_subset.iloc[:, 2] < 0)]
 #    
 ## Add column to signif phos_sites table of concatenated substrate and site id.
 #signif_hits_subset.loc[:,"substrate_site"] =\
-#        parsed_sty_sort.iloc[:, 0].astype(str)+"_"+parsed_sty_sort.iloc[:, 1]
+#    signif_hits_subset.iloc[:, 0].astype(str)+"_"+signif_hits_subset.iloc[:, 1]
 #        
 ## Drop 1st 2 columns.
 #signif_hits_subset = signif_hits_subset.drop(["Substrate (gene name)", 
@@ -937,7 +944,34 @@ if __name__ == "__main__":
 #
 ## Merge significant hits dataframe subset and db query data
 ## by "substrate_site" column.
-#db_ud_merge_df = pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
+#db_ud_merge_df =\
+#     pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
 #
-## Extract mean of fold change per kinase
-#kin_fold_change = db_ud_merge_df.groupby("kinase")["Log2 fold change - condition over control"].mean()
+## Convert log2 fold changes to absolute values.
+#db_ud_merge_df.loc[:, "Log2 fold change - absolute values"] =\
+#     db_ud_merge_df.iloc[:, 2].abs()             
+#
+## Calculate mean of absolute fold change per kinase
+#kin_mean_abs_fold_change =\
+#     db_ud_merge_df.groupby("kinase")\
+#     ["Log2 fold change - absolute values"].mean()
+#
+## Calculate mean of absolute fold change per kinase
+#kin_mean_fold_change =\
+#     db_ud_merge_df.groupby("kinase")\
+#     ["Log2 fold change - condition over control"].mean()
+#     
+## Calculate sum of log2 fold changes per kinase
+#kin_sum_fold_change =\
+#     db_ud_merge_df.groupby("kinase")\
+#     ["Log2 fold change - condition over control"].sum()
+#
+## Concatenate kinase activity estimates.
+#kin_activity_merge = pd.concat([kin_mean_abs_fold_change,
+#                                kin_mean_fold_change,
+#                                kin_sum_fold_change], axis=1)
+#
+## Change column names
+#kin_activity_merge.columns = ["Kinase activity - mean of absolute fold changes",
+#                              "kinase activity - mean of fold changes",
+#                              "Kinase activity - sum of fold changes"]
