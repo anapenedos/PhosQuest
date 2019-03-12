@@ -119,8 +119,9 @@ uniprot_subs_to_class = {
     'Protein families'      : [(Substrate,        'subs_protein_type')]
 }
 
-pubchem_to_class = {'CID'      : [(Inhibitor, 'inhib_pubchem_cid')],
-                    'IUPACName': [(Inhibitor, 'inhib_full_name')]}
+pubchem_to_class = {'CID'            : [(Inhibitor, 'inhib_pubchem_cid')],
+                    'IUPACName'      : [(Inhibitor, 'inhib_full_name')],
+                    'MolecularWeight': [(Inhibitor, 'inhib_molec_weight')]}
 
 """
 Class attributes

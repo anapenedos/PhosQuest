@@ -23,6 +23,7 @@ def get_table_values_for_search(class_name):
     :param class_name: a sqlalchemy declarative class (sqlalchemy class object)
     :return: list of key values for search (list)
     """
+    print('Obtaining key values for %s records in DB' % class_name.__name__)
     # get the name of the primary key attribute in the class's corresponding
     # table
     key_attr = get_class_key_attrs(class_name, single_key=True)
@@ -37,6 +38,9 @@ def get_table_values_for_search(class_name):
     # convert into list of str ['val1', ...]
     keys_list = [val[0] for val in records]
 
+    print('Retrieved key values for %i %s records'
+          % (len(keys_list), class_name.__name__))
+
     return keys_list
 
 
@@ -49,6 +53,8 @@ def get_uniprot_api_data(class_name):
     :param class_name: a sqlalchemy declarative class (sqlalchemy class object)
     :return: pandas data frame (df)
     """
+    print('Retrieving UniProt data for %s records' % class_name.__name__)
+
     # Get all class_name table key values
     keys_list = get_table_values_for_search(class_name)
     # convert list into Uniprot query format 'val1 val2'
@@ -98,6 +104,10 @@ def get_uniprot_api_data(class_name):
     df['Protein name'] = df['Protein names'].astype(str)
     df['Protein name'] = df['Protein name'].str.extract(
         '^([^(]*?)(?: *\(.*)?$', expand=False)
+
+    print('UniProt data obtained for %i %s records'
+          % (len(keys_list), class_name.__name__))
+
     return df
 
 
@@ -110,6 +120,8 @@ def get_pubchem_api_data(class_name):
     :param class_name: a sqlalchemy declarative class (sqlalchemy class object)
     :return: pandas data frame (df)
     """
+    print('Retrieving PubChem data for %s records' % class_name.__name__)
+
     # Get all class_name table key values
     keys_list = get_table_values_for_search(class_name)
 
@@ -142,6 +154,11 @@ def get_pubchem_api_data(class_name):
         # programmatic data gathering request# 5/s limit
         time.sleep(.2)
 
+    # concatenate data frames resulting from all slices into a single data
+    # frame
     full_df = pd.concat(dfs)
+
+    print('PubChem data obtained for %i %s records'
+          % (len(keys_list), class_name.__name__))
 
     return full_df
