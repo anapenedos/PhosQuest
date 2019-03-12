@@ -48,7 +48,20 @@ def extract_record_info(instances, info_needed_tuple):
     return sorted(records_info)
 
 
-def format_db_links(db_links):
+def format_db_links(db_links, headers=False):
+    """
+    Formats a db_links dictionary to show in web app.
+
+    :param db_links: dictionary listing processed query results matching each
+                     line of a user data frame (dict)
+                     col: [[('Q8WYB5',)],
+                           'not in DB',
+                           [('Q8WYB6',), ('Q8WYB7',)]]
+    :headers: convert dict keys (column headers) to string when column headers
+              are class objects (boolean)
+    :return: dictionary with more readable lines (dict)
+             col: ['Q8WYB5', 'not in DB', 'Q8WYB6 Q8WYB7']
+    """
     # [('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]
     tidy_db_links = {}
     for col in db_links:
@@ -64,14 +77,15 @@ def format_db_links(db_links):
                 # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
                 for record in line:
                     rec_strs.append('/'.join(map(str, record)))
-                new_line = ' '.join(rec_strs)
+                new_line = ', '.join(rec_strs)
             else:
                 new_line = line
             tidy_db_links[col].append(new_line)
 
-        # rename db_links keys to present as str
-        new_name = col.__name__ + ' DB links'
-        tidy_db_links[new_name] = tidy_db_links.pop(col)
+        if headers:
+            # rename db_links keys to present as str
+            new_name = col.__name__ + ' DB links'
+            tidy_db_links[new_name] = tidy_db_links.pop(col)
     return tidy_db_links
 
 
@@ -175,5 +189,15 @@ def link_ud_to_db(user_data_frame):
                     to_append = not_in_db
                 db_links[class_obj].append(to_append)
 
+    # format db_links dict
+    # show as strings
     tidy_db_links = format_db_links(db_links)
+    # change key/column names
+    tidy_db_links['Substrate/Isoform in DB (accession)'] = \
+        tidy_db_links.pop(Substrate)
+    tidy_db_links['Phosphosite in DB (ID)'] = \
+        tidy_db_links.pop(Phosphosite)
+    tidy_db_links['Kinase in DB\n(gene/accession)'] = \
+        tidy_db_links.pop(Kinase)
+
     return tidy_db_links, kin_to_ud
