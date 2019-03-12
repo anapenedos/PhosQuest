@@ -1,6 +1,7 @@
 from flask_table import Table, Col, LinkCol
 
 # Tables for browse and search results
+
 class Kinase_first_results(Table):
     """create Kinase results part info table format"""
     kin_accession = Col('Accession no')

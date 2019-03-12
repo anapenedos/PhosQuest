@@ -1,7 +1,39 @@
 """scripts to format subsets of crunched data for display"""
 from PhosphoQuest_app.service_scripts import user_data_crunch
 from datetime import datetime
+from flask import session
 import os
+
+def create_userfilename(text, extension):
+    """
+    Function to create temp filename and store in session cookie
+    and use to create unique file names for user-data incorporating date
+    for cleanup purposes
+    :param text: filename string eg: "plot", " analysed_data"
+    :param extension: file extension to add (as string) eg 'csv'
+    :return: full filename (string) for passing to os functions etc.
+    """
+    # if session cookie already set use this if not set one
+    if 'id' in session:
+
+        id = session['id']
+        outname = f"{id}_{text}.{extension}"
+        return outname
+
+    # create user
+    else:
+        # get date time now and convert to string
+        time = str(datetime.now())
+        # get date last 3 digits (milliseconds) as "unique" no for download
+        id = time[:10] + "_id" + time[-3:]
+        # store cookie for reuse on other files
+        session['id'] = id
+        #use created id in filename
+        outname = f"{id}_{text}.{extension}"
+        return outname
+
+
+
 
 def run_all(df):
 
@@ -45,15 +77,17 @@ def run_all(df):
 def create_csv(dataframe, filename):
     """ function to create full  dataframe as csv"""
     tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
-    time = str(datetime.now()) # get time now
-    # get date last 3 digits (milliseconds) as "unique" no for download
-    id = time[-3:]
-    date= time[:10]
-    outname = f"{date}-{filename}_analysed_id{id}.csv"
+
+    #capture input file name for output csv
+    text = f"{filename}_analysed"
+
+    #run create userfilename function to get used specific filename
+    outname = create_userfilename(text, 'csv')
+
     #SAVE FILE
     dataframe.to_csv(os.path.join(tempdir,outname))
 
-    # clean up old files >1 day
+    # clean up old files in temp folder >1 day old
     oldfiles = [name for name in os.listdir(tempdir) if\
           os.path.isfile(os.path.join(tempdir, name))]
     # get date from file name
@@ -61,12 +95,10 @@ def create_csv(dataframe, filename):
         date = oldfile[:10]
         # ignore tempfolder file
         if date != 'temp_folde':
+            #reformat to datetime object
             date = datetime.strptime(date, '%Y-%m-%d')
             if abs((datetime.now() - date).days) >1:
                 #remove file if more than 1 day old
                 os.remove(os.path.join(tempdir,oldfile))
                 print(oldfile + "_removed")
     return outname
-
-def volcano_html(html_file,filename):
-    t

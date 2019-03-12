@@ -23,52 +23,52 @@ def analysis():
 
      #if form validates (correct file types) save file in temp dir
     if form.validate_on_submit():
-        try:
-            #get file from form and access filename
-            f = form.data_file.data
-            filename =  secure_filename(f.filename)
+        # try:
+        #get file from form and access filename
+        f = form.data_file.data
+        filename =  secure_filename(f.filename)
 
-            #check file and return error or dataframe
-            check_var = user_data_crunch.user_data_check(f)
-
-
-            if type(check_var) != str: # if not string run analysis
-
-                #run all data crunch functions and create dictionary of results
-                all_data = userdata_display.run_all(check_var)
-
-                #create csv of all data for download
-                csvdf = all_data['full_sty_sort']
-
-                csv = userdata_display.create_csv(csvdf, filename)
-
-                #output for significant hits
-                table = user_data_crunch.\
-                         style_df(all_data['parsed_sty_sort'])
-
-                volcano = all_data['volcano']
-
-                flash(f'File {filename} successfully analysed', 'success')
-
-                #temporary display of phos enrich
-                phos_enrich = all_data['datalist'][0]
-                phos_enrich=phos_enrich.to_html()
+        #check file and return error or dataframe
+        check_var = user_data_crunch.user_data_check(f)
 
 
-                return render_template('results.html',
-                    title='Analysis', table=table, phos_enrich=phos_enrich,
-                                      volcano=volcano, csv=csv)
+        if type(check_var) != str: # if not string run analysis
 
-            else: # if string show user error
-                flash(check_var, 'danger')
-                return render_template('upload.html', form=form,
-                                       report='upload')
+            #run all data crunch functions and create dictionary of results
+            all_data = userdata_display.run_all(check_var)
 
-        except Exception as ex:
-            # catch any file exception with error shown to help debugging
-            flash('An error occurred please try again','danger')
-            flash(ex, 'danger')
-            return render_template('upload.html', form=form, report='upload')
+            #create csv of all data for download
+            csvdf = all_data['full_sty_sort']
+
+            csv = userdata_display.create_csv(csvdf, filename)
+
+            #output for significant hits
+            table = user_data_crunch.\
+                     style_df(all_data['parsed_sty_sort'])
+
+            volcano = all_data['volcano']
+
+            flash(f'File {filename} successfully analysed', 'success')
+
+            #temporary display of phos enrich
+            phos_enrich = all_data['datalist'][0]
+            phos_enrich=phos_enrich.to_html()
+
+
+            return render_template('results.html',
+                title='Analysis', table=table, phos_enrich=phos_enrich,
+                                  volcano=volcano, csv=csv)
+
+        else: # if string show user error
+            flash(check_var, 'danger')
+            return render_template('upload.html', form=form,
+                                   report='upload')
+
+        # except Exception as ex:
+        #     # catch any file exception with error shown to help debugging
+        #     flash('An error occurred please try again','danger')
+        #     flash(ex, 'danger')
+        #     return render_template('upload.html', form=form, report='upload')
 
     return render_template('upload.html', form=form, report='upload')
 
