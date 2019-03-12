@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import session
 import os
 
+
 def create_userfilename(text, extension):
     """
     Function to create temp filename and store in session cookie
@@ -14,22 +15,25 @@ def create_userfilename(text, extension):
     :return: full filename (string) for passing to os functions etc.
     """
     # if session cookie already set use this if not set one
-    if 'id' in session:
 
+    # get date time now and convert to string
+    time = str(datetime.now())
+    date = time[:10]
+
+    #if session cookie already exists use date and existing id
+    if 'id' in session:
         id = session['id']
-        outname = f"{id}_{text}.{extension}"
+        outname = f"{date}_{id}_{text}.{extension}"
         return outname
 
-    # create user
+    # create user id cookie if not already in session
     else:
-        # get date time now and convert to string
-        time = str(datetime.now())
-        # get date last 3 digits (milliseconds) as "unique" no for download
-        id = time[:10] + "_id" + time[-3:]
+        # get date last 4 digits (milliseconds) as "unique" no for download
+        id = "id" + time[-4:]
         # store cookie for reuse on other files
         session['id'] = id
         #use created id in filename
-        outname = f"{id}_{text}.{extension}"
+        outname = f"{date}_{id}_{text}.{extension}"
         return outname
 
 
