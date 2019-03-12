@@ -14,8 +14,6 @@ def create_userfilename(text, extension):
     :param extension: file extension to add (as string) eg 'csv'
     :return: full filename (string) for passing to os functions etc.
     """
-    # if session cookie already set use this if not set one
-
     # get date time now and convert to string
     time = str(datetime.now())
     date = time[:10]
