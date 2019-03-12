@@ -7,7 +7,7 @@ import os
 
 def create_userfilename(text, extension):
     """
-    Function to create temp filename and store in session cookie
+    Function to create temp user id and store in session cookie
     and use to create unique file names for user-data incorporating date
     for cleanup purposes
     :param text: filename string eg: "plot", " analysed_data"
