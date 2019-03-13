@@ -6,7 +6,7 @@
 import os
 import pandas as pd
 import numpy as np
-import matplotlib as mpl
+#import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
 from plotly.offline import init_notebook_mode,  plot
 import plotly.graph_objs as go
@@ -949,7 +949,11 @@ if __name__ == "__main__":
 #
 ## Convert log2 fold changes to absolute values.
 #db_ud_merge_df.loc[:, "Log2 fold change - absolute values"] =\
-#     db_ud_merge_df.iloc[:, 2].abs()             
+#     db_ud_merge_df.iloc[:, 2].abs()     
+#
+## Parse kinase and subs_sites to new column.
+#kin_subs_only = db_ud_merge_df[[db_ud_merge_df.columns[0],
+#                                db_ud_merge_df.columns[1]]]        
 #
 ## Calculate mean of absolute fold change per kinase
 #kin_mean_abs_fold_change =\
@@ -971,7 +975,101 @@ if __name__ == "__main__":
 #                                kin_mean_fold_change,
 #                                kin_sum_fold_change], axis=1)
 #
-## Change column names
+## Change column names.
 #kin_activity_merge.columns = ["Kinase activity - mean of absolute fold changes",
 #                              "kinase activity - mean of fold changes",
 #                              "Kinase activity - sum of fold changes"]
+#
+## Change sign of mean absolute fold changes by the sign in the
+## sum of fold changes and parse to new variable.
+#kin_activity_merge.iloc[:, 0][kin_activity_merge.iloc[:, 2]<0] *= -1
+#
+## Parse mean of absolute fold changes with sign chnage to new column.
+#kin_activities = kin_activity_merge[[kin_activity_merge.columns[0]]]
+#
+## Set kinase names to column instead of index.
+#kin_activities.reset_index(level=0, inplace=True)
+#
+## Group kinases in db & user data merged df as dictionary:
+## Keys = Kinases
+## values = subs_sites
+#kin_subs_dict = kin_subs_only.groupby("kinase").\
+#                            substrate_site.agg(list).to_dict()
+#
+## Map Kinase activities to the subs_sites from which they are calculated.
+## Kinase column in df mapped to keys (kinases) in dictionary.
+#kin_activities.loc[:, "Substrate_site"] = kin_activities["kinase"].map(kin_subs_dict)
+#
+## Reorder columns.
+#kin_activities = kin_activities[["kinase", "Substrate_site", "Kinase activity - mean of absolute fold changes"]]
+#
+## Sort values.
+#kin_activities = kin_activities.sort_values(by=["Kinase activity - mean of absolute fold changes"], ascending=False)
+#
+## Set CSS properties for pandas.style object.
+## CSS properties for table header/index in dataframe.
+#th_props = [
+#  ('font-size', '16px'),
+#  ('font-family', 'Calibri'),
+#  ('text-align', 'center'),
+#  ('font-weight', 'bold'),
+#  ('color', '#000000'),
+#  ('background-color', '#708090'),
+#  ('border', '1px solid black'),
+#  ('height', '50px'),
+#  ('position', 'sticky'),
+#  ('position', '-webkit-sticky'),
+#  ('top', '50px'),
+#  ('z-index', '999'),
+#  ('padding', '5px'),
+#  ('background-clip', 'padding-box') # Required for firefox rendering of 
+#                                     # of borders on table headers. Header
+#                                     # background obscures bordering, hence
+#                                     # application of clipping.
+#  ]
+#
+## CSS properties for table data in dataframe.
+#td_props = [
+#  ('font-size', '12px'),
+#  ('border', '1px solid black'),
+#  ('text-align', 'center'),
+#  ('font-weight', 'bold'),
+#  ('background-clip', 'border-box') # Required for chrome to counter border
+#                                    # clipping applied to table headers.
+#  ]
+#
+## Set table styles.
+#styles = [
+#  dict(selector="th", props=th_props),
+#  dict(selector="td", props=td_props)
+#  ]
+#
+## Pass data frame fields to multiple style methods.
+#styled_kin_activities_df = (kin_activities.style               
+#  # Use "bar" method to apply bar-chart styling to kinase activity field.
+#  .bar(subset=["Kinase activity - mean of absolute fold changes"], 
+#       align='mid',                  # Align bars with cells
+#       color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
+#  
+#  # Set float precision for data - 2 significant figures. 
+#  .set_precision(2)
+#  
+#   # Pass CSS styling to styled table.
+#  .set_table_styles(styles))
+#
+## Render table as html and export to wkdir.
+#html = styled_kin_activities_df.hide_index().render()
+#with open("style_kin_activities.html","w") as fp:
+#    fp.write(html)
+#
+#    #return html
+#
+#
+## Plot kinase relative activities as barplots.
+#plt.figure(figsize=(10,7))
+#kin_activity_merge.iloc[:, 0].sort_values(ascending=False).plot.bar()
+#plt.xticks(rotation=75)
+#plt.xlabel("Kinase")
+#plt.ylabel("Mean of substrate fold changes")
+#subs_sites_freq_bar_plt = plt.savefig("kinase_activity.png")
+#plt.show()
