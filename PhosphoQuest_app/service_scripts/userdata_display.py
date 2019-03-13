@@ -18,7 +18,7 @@ def create_userfilename(text, extension):
     time = str(datetime.now())
     date = time[:10]
 
-    #if session cookie already exists use date and existing id
+    # if session cookie already exists use date and existing id
     if 'id' in session:
         id = session['id']
         outname = f"{date}_{id}_{text}.{extension}"
@@ -35,8 +35,6 @@ def create_userfilename(text, extension):
         return outname
 
 
-
-
 def run_all(df):
 
     """Function to run all crunch analyses on dataframe"""
@@ -48,7 +46,14 @@ def run_all(df):
     full_sty_sort, parsed_sty_sort, db_kin_dict =\
         user_data_crunch.table_sort_parse(corrected_p)
 
-    #run volcano plot
+    # run kinase analysis
+    kin_wc, \
+    subs_sites_wc, \
+    kin_freq_bar_plt, \
+    subs_sites_freq_bar_plt, \
+    kin_subs_site_df = user_data_crunch.kinase_analysis(db_kin_dict)
+
+    # run volcano plot
     volcano = user_data_crunch.user_data_volcano_plot(full_sty_sort)
 
 

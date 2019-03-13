@@ -13,6 +13,8 @@ import plotly.graph_objs as go
 from datetime import datetime
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+from PhosphoQuest_app.service_scripts.userdata_display import\
+    create_userfilename
 #init_notebook_mode() # ONLY NEEDED FOR IPYTHON NOTEBOOK
 
 # Import packages from sqlalchemy.
@@ -28,6 +30,9 @@ from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
 
 # --------------------------------------------------------------------------- #
+
+# define temporary directory location
+tempdir = os.path.join("PhosphoQuest_app","user_data", 'temp')
 
 ### Function to read user data, check for errors and pass.
 def user_data_check(data_file):
@@ -723,16 +728,9 @@ def user_data_volcano_plot(phos_table):
     }
     
     # Define plot as html variable for calling at Flask level.
-
-    tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
-    time = str(datetime.now())  # get time now
-    # get date last 3 digits (milliseconds) as "unique" no for download
-    id = time[-4:]
-    date = time[:10]
-    outfile = os.path.join(tempdir,f"{date}-_volcano_id{id}.html")
-
+    plotfilename = create_userfilename('volcano_plot','html')
+    outfile = os.path.join(tempdir, plotfilename)
     plot(fig, filename=outfile, auto_open=False)
-
     #open file and read lines into variable
     with open(outfile,'r') as f:
         html = f.read()
