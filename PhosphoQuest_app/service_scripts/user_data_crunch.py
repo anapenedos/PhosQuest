@@ -801,14 +801,15 @@ def kinase_analysis(db_kin_dict):
     kinase_target_freq =\
              kinase_target_freq.sort_values(ascending=False)
              
-    # Take top 10 and pass to variable.
+    # Take top 30 and pass to variable.
     kinase_target_freq =\
              kinase_target_freq.head(n=30)
     
     # Compute frequency of duplicate kinases matched to user data.
     # Represents the total number of unique kinases 
     # targeting a susb_site matched from db.
-    kinase_freq = kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 0]]).size()
+    kinase_freq =\
+             kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 0]]).size()
     
     # Compute sum of subs_sites frequencies.
     Kinase_entry_num = sum(kinase_freq) 
@@ -816,7 +817,7 @@ def kinase_analysis(db_kin_dict):
     # Sort frequencies - highest to lowest.
     kinase_freq = kinase_freq.sort_values(ascending=False)
     
-    # Take top 10 and pass to variable.
+    # Take top 30 and pass to variable.
     kinase_freq = kinase_freq.head(n=30)
     
     # Parse subset of df corresponding to kinases & subs_sites.
@@ -859,34 +860,34 @@ def kinase_analysis(db_kin_dict):
     
     # Plot kinase frequency - top10
     plt.figure(figsize=(10,7))
-    kinase_freq.sort_values(ascending=False).plot.bar(width=0.85, alpha=0.75)
+    kinase_freq.sort_values(ascending=False).\
+                plot.bar(width=0.85, alpha=0.75)
     plt.xticks(rotation=75)
-    plt.xlabel("Kinase", fontsize="large", fontstyle="italic", fontweight="bold")
-    plt.ylabel("Frequency", fontsize="large", fontstyle="italic", fontweight="bold")
-    kin_freq_bar_plt = plt.savefig("kin_frequency_top20.png", bbox_inches = "tight", dpi=300)
-#    plt.show()
+    plt.xlabel("Kinase", fontsize="large", 
+               fontstyle="italic", fontweight="bold")
+    plt.ylabel("Frequency", fontsize="large", 
+               fontstyle="italic", fontweight="bold")
+    kin_freq_bar_plt = plt.savefig("kin_frequency_top20.png", 
+                                   bbox_inches = "tight", 
+                                   dpi=300)
     
     # Plot subs_sites frequency - top10
     plt.figure(figsize=(10,7))
-    kinase_target_freq.sort_values(ascending=False).plot.bar(width=0.85, alpha=0.75)
+    kinase_target_freq.sort_values(ascending=False).\
+                       plot.bar(width=0.85, alpha=0.75)
     plt.xticks(rotation=75)
-    plt.xlabel("Substrate & site", fontsize="large", fontstyle="italic", fontweight="bold")
-    plt.ylabel("Frequency", fontsize="large", fontstyle="italic", fontweight="bold")
-    #plot.tight_layout()
-    subs_sites_freq_bar_plt = plt.savefig("subs_sites_frequency_top20.png", bbox_inches = "tight", dpi=300)
-#    plt.show()
+    plt.xlabel("Substrate & site", fontsize="large", 
+               fontstyle="italic", fontweight="bold")
+    plt.ylabel("Frequency", fontsize="large", 
+               fontstyle="italic", fontweight="bold")
+    subs_sites_freq_bar_plt = plt.savefig("subs_sites_frequency_top20.png", 
+                                          bbox_inches = "tight", dpi=300)
 
     return(kin_wcloud, 
            subs_sites_wcloud, 
            kin_freq_bar_plt, 
            subs_sites_freq_bar_plt,
            kin_subs_site_df)
-
-#kin_wc, \
-#subs_sites_wc, \
-#kin_freq_bar_plt, \
-#subs_sites_freq_bar_plt, \
-#kin_subs_site_df = kinase_analysis(db_kin_dict)
 
 # --------------------------------------------------------------------------- #
 
