@@ -82,7 +82,13 @@ def run_all(df):
 
 
 def create_csv(dataframe, filename):
-    """ function to create full  dataframe as csv"""
+    """
+    function to create full  dataframe as csv
+    :param dataframe: pd.dataframe
+    :param filename: string
+    :return: string
+
+    """
     tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
 
     #capture input file name for output csv
