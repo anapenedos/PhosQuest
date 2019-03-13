@@ -734,7 +734,6 @@ def user_data_volcano_plot(phos_table):
     #open file and read lines into variable
     with open(outfile,'r') as f:
         html = f.read()
-        print(html)
     return html
 
 # --------------------------------------------------------------------------- #
@@ -895,9 +894,7 @@ def kinase_analysis(db_kin_dict):
 if __name__ == "__main__":
 
     #set up runs for testing functions
-    file = phos_sites_path = os.path.join('PhosphoQuest_app', 
-                                          'user_data', 
-                                          'az20.tsv')
+    file = os.path.join('PhosphoQuest_app','user_data', 'az20.tsv')
 
     data_or_error = user_data_check(file)
     
