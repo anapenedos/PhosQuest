@@ -805,7 +805,7 @@ def kinase_analysis(db_kin_dict):
              
     # Take top 10 and pass to variable.
     kinase_target_freq =\
-             kinase_target_freq.head(n=10)
+             kinase_target_freq.head(n=30)
     
     # Compute frequency of duplicate kinases matched to user data.
     # Represents the total number of unique kinases 
@@ -819,7 +819,7 @@ def kinase_analysis(db_kin_dict):
     kinase_freq = kinase_freq.sort_values(ascending=False)
     
     # Take top 10 and pass to variable.
-    kinase_freq = kinase_freq.head(n=10)
+    kinase_freq = kinase_freq.head(n=30)
     
     # Parse subset of df corresponding to kinases & subs_sites.
     kin_word_list = kin_subs_site_df.iloc[:, 0]
@@ -832,52 +832,63 @@ def kinase_analysis(db_kin_dict):
     # Pass string variables to wordcloud function.
     kin_wcloud =\
          WordCloud(collocations=False, 
-                   background_color="gray", 
+                   background_color="gray",
+                   max_words=30,
+                   relative_scaling=0.5,
                    colormap="RdBu").\
                    generate(kin_word_str).\
                    to_file("kin_word_cloud.png")
     
     subs_sites_wcloud =\
          WordCloud(collocations=False, 
-                   background_color="gray", 
+                   background_color="gray",
+                   max_words=30,
+                   relative_scaling=0.5,
                    colormap="RdBu").\
                    generate(subs_sites_word_str).\
                    to_file("subs_sites_word_cloud.png")
     
     # Display the generated images.
     # Kinases.
-    plt.imshow(kin_wcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
+#    plt.imshow(kin_wcloud, interpolation='bilinear')
+#    plt.axis("off")
+#    plt.show()
     
     # Subs_sites.
-    plt.imshow(subs_sites_wcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
+#    plt.imshow(subs_sites_wcloud, interpolation='bilinear')
+#    plt.axis("off")
+#    plt.show()
     
     # Plot kinase frequency - top10
     plt.figure(figsize=(10,7))
-    kinase_freq.sort_values(ascending=False).plot.bar()
-    plt.xticks(rotation=50)
-    plt.xlabel("Kinase")
-    plt.ylabel("Frequency")
-    kin_freq_bar_plt = plt.savefig("kin_frequency_top10.png")
-    plt.show()
+    kinase_freq.sort_values(ascending=False).plot.bar(width=0.85, alpha=0.75)
+    plt.xticks(rotation=75)
+    plt.xlabel("Kinase", fontsize="large", fontstyle="italic", fontweight="bold")
+    plt.ylabel("Frequency", fontsize="large", fontstyle="italic", fontweight="bold")
+    kin_freq_bar_plt = plt.savefig("kin_frequency_top20.png", bbox_inches = "tight", dpi=300)
+#    plt.show()
     
     # Plot subs_sites frequency - top10
     plt.figure(figsize=(10,7))
-    kinase_target_freq.sort_values(ascending=False).plot.bar()
-    plt.xticks(rotation=50)
-    plt.xlabel("Substrate & site")
-    plt.ylabel("Frequency")
-    subs_sites_freq_bar_plt = plt.savefig("subs_sites_frequency_top10.png")
-    plt.show()
+    kinase_target_freq.sort_values(ascending=False).plot.bar(width=0.85, alpha=0.75)
+    plt.xticks(rotation=75)
+    plt.xlabel("Substrate & site", fontsize="large", fontstyle="italic", fontweight="bold")
+    plt.ylabel("Frequency", fontsize="large", fontstyle="italic", fontweight="bold")
+    #plot.tight_layout()
+    subs_sites_freq_bar_plt = plt.savefig("subs_sites_frequency_top20.png", bbox_inches = "tight", dpi=300)
+#    plt.show()
 
     return(kin_wcloud, 
            subs_sites_wcloud, 
            kin_freq_bar_plt, 
            subs_sites_freq_bar_plt,
            kin_subs_site_df)
+
+#kin_wc, \
+#subs_sites_wc, \
+#kin_freq_bar_plt, \
+#subs_sites_freq_bar_plt, \
+#kin_subs_site_df = kinase_analysis(db_kin_dict)
 
 # --------------------------------------------------------------------------- #
 
@@ -945,11 +956,11 @@ if __name__ == "__main__":
 ## Merge significant hits dataframe subset and db query data
 ## by "substrate_site" column.
 #db_ud_merge_df =\
-#     pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
+#    pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
 #
 ## Convert log2 fold changes to absolute values.
 #db_ud_merge_df.loc[:, "Log2 fold change - absolute values"] =\
-#     db_ud_merge_df.iloc[:, 2].abs()     
+#    db_ud_merge_df.iloc[:, 2].abs()     
 #
 ## Parse kinase and subs_sites to new column.
 #kin_subs_only = db_ud_merge_df[[db_ud_merge_df.columns[0],
@@ -957,18 +968,18 @@ if __name__ == "__main__":
 #
 ## Calculate mean of absolute fold change per kinase
 #kin_mean_abs_fold_change =\
-#     db_ud_merge_df.groupby("kinase")\
-#     ["Log2 fold change - absolute values"].mean()
+#    db_ud_merge_df.groupby("kinase")\
+#    ["Log2 fold change - absolute values"].mean()
 #
 ## Calculate mean of absolute fold change per kinase
 #kin_mean_fold_change =\
-#     db_ud_merge_df.groupby("kinase")\
-#     ["Log2 fold change - condition over control"].mean()
+#    db_ud_merge_df.groupby("kinase")\
+#    ["Log2 fold change - condition over control"].mean()
 #     
 ## Calculate sum of log2 fold changes per kinase
 #kin_sum_fold_change =\
-#     db_ud_merge_df.groupby("kinase")\
-#     ["Log2 fold change - condition over control"].sum()
+#    db_ud_merge_df.groupby("kinase")\
+#    ["Log2 fold change - condition over control"].sum()
 #
 ## Concatenate kinase activity estimates.
 #kin_activity_merge = pd.concat([kin_mean_abs_fold_change,
@@ -998,7 +1009,8 @@ if __name__ == "__main__":
 #
 ## Map Kinase activities to the subs_sites from which they are calculated.
 ## Kinase column in df mapped to keys (kinases) in dictionary.
-#kin_activities.loc[:, "Substrate_site"] = kin_activities["kinase"].map(kin_subs_dict)
+#kin_activities.loc[:, "Substrate_site"] =\
+#    kin_activities["kinase"].map(kin_subs_dict)
 #
 ## Reorder columns.
 #kin_activities = kin_activities[["kinase", "Substrate_site", "Kinase activity - mean of absolute fold changes"]]
@@ -1063,13 +1075,3 @@ if __name__ == "__main__":
 #    fp.write(html)
 #
 #    #return html
-#
-#
-## Plot kinase relative activities as barplots.
-#plt.figure(figsize=(10,7))
-#kin_activity_merge.iloc[:, 0].sort_values(ascending=False).plot.bar()
-#plt.xticks(rotation=75)
-#plt.xlabel("Kinase")
-#plt.ylabel("Mean of substrate fold changes")
-#subs_sites_freq_bar_plt = plt.savefig("kinase_activity.png")
-#plt.show()
