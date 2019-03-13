@@ -1,1 +1,4 @@
-This folder is where the csv files of analysed data get put.
+This folder is where the various files of analysed data get saved.
+
+This text file is necessary to get the folder to add to the github repository
+without containing any other committed contents
