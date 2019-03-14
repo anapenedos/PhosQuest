@@ -37,8 +37,5 @@ class Phosphosites(Table):
     phos_modified_residue = Col('Modified Residue')
     phos_site = Col('Phosphorylation Site')
     phos_domain = Col('Domain')
-    phos_p_function = Col('Function')
-    phos_p_processes = Col('Process')
-    phos_prot_interactions = Col('Interactions')
     detail = LinkCol('Detail', 'browse.phosites_detail',
                      url_kwargs=dict(text='phos_group_id'))
