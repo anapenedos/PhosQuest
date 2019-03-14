@@ -47,11 +47,11 @@ def run_all(df):
         user_data_crunch.table_sort_parse(corrected_p)
 
     # run kinase analysis
-    kin_wc, \
-    subs_sites_wc, \
-    kin_freq_bar_plt, \
-    subs_sites_freq_bar_plt, \
-    kin_subs_site_df = user_data_crunch.kinase_analysis(db_kin_dict)
+    kinase_target_freq, \
+    kinase_freq, \
+    kin_word_str, \
+    subs_sites_word_str,\
+    kinase_activities = kinase_analysis(db_kin_dict, parsed_sty_sort) 
 
     # run volcano plot
     volcano = user_data_crunch.user_data_volcano_plot(full_sty_sort)
