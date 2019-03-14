@@ -1,16 +1,15 @@
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase,\
-    Substrate, Inhibitor
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase,\
+    Substrate, Inhibitor, Phosphosite
 
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
-    Substrate_first_results, Inhibitor_first_results
+    Substrate_first_results, Inhibitor_first_results, Phosphosites
 from PhosphoQuest_app.data_access.query_db import searchlike, \
-    searchexact,all_table
+    searchexact, all_table
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.interface_dicts import headers,\
     location_cats, kin_family_cats
 
-
-# TODO finish categories for substrates/inhibitors#
+#Dictionary of relevant tables and fields for browse categories.
 tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                     'Cellular_Location': Kinase.kin_cellular_location},
                         Kinase.kin_accession],
@@ -19,12 +18,12 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                            'Chromosome_Location':
                                Substrate.subs_chrom_location},
                           Substrate.subs_accession]
-
-             }
+                          }
 
 
 def browse_subcat(category):
     """Function to give subcategories results """
+
     table, field = category.split("~")
     #get database field for query
     dbfield = tabledict[table][1][field]
@@ -114,10 +113,20 @@ def browse_substrates():
 
 
 def browse_detail(text, table):
-    """function to do and show individual item detail from link."""
+    """
+    Function to run query and show individual item detail from link
+    :param text: string - eg accession number
+    :param table: database table to search
+    :return: list of tuples containing query results
+    """
     if table == 'Inhibitor':
         dbtable = Inhibitor
         dbfield = Inhibitor.inhib_pubchem_cid
+
+    elif table == 'Phosphosite':
+        dbtable = Phosphosite
+        dbfield = Phosphosite.phos_group_id
+
     else:
         dbtable = tabledict[table][0]
         dbfield = tabledict[table][2]
@@ -126,9 +135,18 @@ def browse_detail(text, table):
     results = query_to_list(results, dbtable)
     return results
 
-
-
-
+def subs_phos_query(subs_accession):
+    """
+    Query to link substrate accession with phosphosites
+    :param subs_accession: string substrate accession
+    :return: query object
+    """
+    session = create_sqlsession()
+    q = session.query(Substrate).filter_by(subs_accession= subs_accession)
+    sub = q.first()
+    subsites = sub.subs_sites
+    table = Phosphosites(subsites)
+    return table
 
 def query_to_list(query_results, table):
     """ Function to parse query output to list of lists for selected attributes
@@ -154,4 +172,7 @@ def query_to_list(query_results, table):
         result.append(resultlist)
 
     return result
+
+
+
 

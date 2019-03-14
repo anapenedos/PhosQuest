@@ -69,16 +69,34 @@ def kin_detail(text):
 
 @browse.route("/sub_detail/<text>")
 def sub_detail(text):
-   """ route to create details"""
-   results = browse_queries.browse_detail(text, 'Substrate')
+    """
+    create list view output of one substrate by accession.
+    :param text: subs-acc no
+    :return: template
+    """
+    #run substrate query
+    results = browse_queries.browse_detail(text, 'Substrate')
+    #run related phosphosite query
+    table = browse_queries.subs_phos_query(text)
 
-   return render_template('search_results.html', title="Browse", style="list",
-                         results=results)
+    return render_template('search_results.html', title="Substrate",
+                           style='double', results=results, table=table)
+
+@browse.route("/phosites_detail/<text>")
+def phosites_detail(text):
+    """
+    create detail view output of phosphosites by accession.
+    :param text: string of accession
+    :return: template
+    """
+    results = browse_queries.browse_detail(text,'Phosphosite')
+    return render_template('search_results.html', title="Phosphosite",
+                           style='list', results=results)
 
 @browse.route("/inh_detail/<text>")
 def inh_detail(text):
     " inhibitor detail"
     results = browse_queries.browse_detail(text, 'Inhibitor')
     cid = results[0][0][1]  # get pubchem CID from results to pass
-    return render_template('search_results.html', title="Detail", style="list",
-                           results=results, cid=cid)
+    return render_template('search_results.html', title="Inhibitor",
+                           style="list", results=results, cid=cid)

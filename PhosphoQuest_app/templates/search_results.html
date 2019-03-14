@@ -7,7 +7,7 @@
     <b> Sorry no results found please try again!</b>
 
 {% elif style == 'list'  %}
-    <H4>Record Detail</H4>
+    <H4>{{title}} Record Detail</H4>
     <br>
     <div
     {% for item in results %}
@@ -17,7 +17,7 @@
                 <b>{{ attr[0] }}</b>
             </div>
             <div class="col-md-10">
-                {{ attr[1] }}
+                {{ attr[1] | safe }}
             </div>
         </div>
     {% endfor %}
@@ -34,6 +34,28 @@
        <br>
     <div class=table>
         {{ results }}
+    </div>
+{% elif style == 'double'  %}
+        <H4>{{title}} Record Detail</H4>
+    <br>
+    <div
+    {% for item in results %}
+         {% for attr in item %}
+           <div class="row">
+            <div class="col-md-2">
+                <b>{{ attr[0] }}</b>
+            </div>
+            <div class="col-md-10">
+                {{ attr[1] }}
+            </div>
+        </div>
+    {% endfor %}
+    {% endfor%}
+    <br>
+        <H4> Table of Phosphosites in Substrate</H4>
+       <br>
+    <div class=table>
+        {{ table }}
     </div>
 </div>
 {% endif %}

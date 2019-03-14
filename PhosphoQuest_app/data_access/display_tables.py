@@ -31,3 +31,14 @@ class Inhibitor_first_results(Table):
     detail = LinkCol('Detail', 'browse.inh_detail',
                      url_kwargs=dict(text='inhib_pubchem_cid'))
 
+class Phosphosites(Table):
+    #"""create table of Phosphosites related to substrate"""
+    phos_group_id = Col('Group ID')
+    phos_modified_residue = Col('Modified Residue')
+    phos_site = Col('Phosphorylation Site')
+    phos_domain = Col('Domain')
+    phos_p_function = Col('Function')
+    phos_p_processes = Col('Process')
+    phos_prot_interactions = Col('Interactions')
+    detail = LinkCol('Detail', 'browse.phosites_detail',
+                     url_kwargs=dict(text='phos_group_id'))
