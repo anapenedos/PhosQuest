@@ -1,16 +1,25 @@
 <!-- inherit template from layout.html-->
-{% extends "layout.html" %}
+{% extends "layout_no_sidebar.html" %}
 {% block content %}
 <div class="container">
-    <H2>Thankyou for using PhosphoQuest!</H2>
-    <br>
-
+    <p style="float:right">
+    <img src="{{url_for('static', filename='fighter.png')}}"
+                     alt="fighter image"/>
+    <img src="{{url_for('static', filename='shapeshifter.png')}}"
+                alt="shapeshifter image"/>
+     <img src="{{url_for('static', filename='mage.png')}}"
+                     alt="fighter image"/>
+    <img src="{{url_for('static', filename='alchemist.png')}}"
+                alt="shapeshifter image"/>
+    <H2>Thankyou for using PhosphoQuest!</H2> </p>
+    <br><hr>
+  <div class ="col-md-10">
     <p> We are <i>Team Giardello</i> a group of part-time Bioinformatics Masters students
     based at Queen Mary College, University of London, School of Biological and Chemical
     Sciences.</p>
     <p>This website is the result of our group project work, we hope you enjoy using it
-    and find it useful. We chose to give the site a mild Quest line theme as, well, we're
-    all total geeks </p>
+    and find it useful. We chose to give the site a Quest line theme as, well, we're
+    all total geeks!</p></div>
     <br>
     <H4><i>Who Are WE? </i></H4>
     <hr>
@@ -88,7 +97,7 @@
                 <div class="row">
             <div class="col-md-2">
                 <center><H6>Ozan</H6>
-                <img src="{{url_for('static', filename='wizard.png')}}"
+                <img src="{{url_for('static', filename='mage.png')}}"
                 alt="mage image"/></center>
             </div>
             <div class="col-md-2">
@@ -106,5 +115,9 @@
 </div>
 
 
-<div>Icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> are licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+<br>
+
+
+
+
 {% endblock content %}
