@@ -16,12 +16,12 @@
     <hr>
         <div class="row">
             <div class="col-md-2">
-              <H5> Name</H5>
+              <center><H5> Name</H5></center>
             </div>
             <div class="col-md-2">
               <H5> Class </H5>
             </div>
-            <div cls="col-md-3">
+            <div class="col-md-3">
               <H5> Special skills</H5>
             </div>
             <div class="col-md-5">
@@ -29,25 +29,29 @@
             </div>
         </div>
     <hr>
-                    <div class="row">
+        <div class="row">
             <div class="col-md-2">
-                <H6>Alex</H6>
+                <center><H6>Alex</H6>
+                <img src="{{url_for('static', filename='fighter.png')}}"
+                     alt="fighter image"/></center>
             </div>
             <div class="col-md-2">
-              <H6> Kungas-fu Master </H6>
+              <H6> Kung-fu Master </H6>
             </div>
             <div class="col-md-3">
-              <H6> Data-wrangling </H6>
+              <H6> Data-combat </H6>
             </div>
             <div class="col-md-5">
-              <H6> He often moves so fast when combating enemy data-foes he appeared to
+              <H6> He often moves so fast when fighting enemy data-foes he appears to
                   grow extra arms and legs.</H6>
             </div>
         </div>
     <hr>
         <div class="row">
             <div class="col-md-2">
-                <H6>Ana</H6>
+               <center><H6>Ana</H6>
+                <img src="{{url_for('static', filename='alchemist.png')}}"
+                alt="alchemist image"/></center>
             </div>
             <div class="col-md-2">
               <H6> Alchemist </H6>
@@ -63,7 +67,10 @@
     <hr>
         <div class="row">
             <div class="col-md-2">
-                <H6>Carmen</H6>
+                <center><H6>Carmen</H6>
+                    <img src="{{url_for('static', filename='shapeshifter.png')}}"
+                alt="shapeshifter image"/></center>
+                </center>
             </div>
             <div class="col-md-2">
               <H6> Shapeshifter </H6>
@@ -80,7 +87,9 @@
 
                 <div class="row">
             <div class="col-md-2">
-                <H6>Ozan</H6>
+                <center><H6>Ozan</H6>
+                <img src="{{url_for('static', filename='wizard.png')}}"
+                alt="mage image"/></center>
             </div>
             <div class="col-md-2">
               <H6> Multilingual Mage </H6>
@@ -96,4 +105,6 @@
     <hr>
 </div>
 
+
+<div>Icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" 			    title="Flaticon">www.flaticon.com</a> are licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
 {% endblock content %}
