@@ -32,10 +32,11 @@ class Inhibitor_first_results(Table):
                      url_kwargs=dict(text='inhib_pubchem_cid'))
 
 class Phosphosites(Table):
-    #"""create table of Phosphosites related to substrate"""
+    """create table of Phosphosites related to substrate"""
     phos_group_id = Col('Group ID')
     phos_modified_residue = Col('Modified Residue')
     phos_site = Col('Phosphorylation Site')
     phos_domain = Col('Domain')
+    phos_p_function = Col('Function')
     detail = LinkCol('Detail', 'browse.phosites_detail',
                      url_kwargs=dict(text='phos_group_id'))

@@ -22,8 +22,13 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
 
 
 def browse_subcat(category):
-    """Function to give subcategories results """
-
+    """
+    Function to give subcategories results from button click
+    :param category:  string text from website
+    :return: category links for browse
+    """
+    #split cateogry text on tilde (future update would make these into
+    # URL variables however too complicated to do in time remaining.)
     table, field = category.split("~")
     #get database field for query
     dbfield = tabledict[table][1][field]
@@ -50,7 +55,11 @@ def browse_subcat(category):
 
 
 def browse_table(subcategory):
-    """ function to take subcategory and display results as flask_table"""
+    """
+    function to take subcategory and display results as flask_table
+    :param subcategory:textstring from website
+    :return: flask_table object
+    """
     #catch inhibitors that skip levels.
     if subcategory == 'Inhibitor':
         out_table = browse_inhibitors()
@@ -59,10 +68,6 @@ def browse_table(subcategory):
     # perform database query for other subcategories
     else:
         table, field, text = subcategory.split("~")
-
-        #return all results for Substrate~All results
-
-
         #get database field for query
         dbtable = tabledict[table][0]
         dbfield = tabledict[table][1][field]

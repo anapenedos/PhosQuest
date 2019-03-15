@@ -44,7 +44,8 @@ def analysis():
 
             #output for significant hits
             table = user_data_crunch.\
-                     style_df(all_data['parsed_sty_sort'])
+                     style_df(all_data['parsed_sty_sort'],
+                              all_data['kinase_activities'])
 
             volcano = all_data['volcano']
 

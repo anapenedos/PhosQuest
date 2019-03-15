@@ -51,7 +51,8 @@ def run_all(df):
     kinase_freq, \
     kin_word_str, \
     subs_sites_word_str,\
-    kinase_activities = user_data_crunch.kinase_analysis(db_kin_dict, parsed_sty_sort) 
+    kinase_activities = \
+        user_data_crunch.kinase_analysis(db_kin_dict, parsed_sty_sort)
 
     # run volcano plot
     volcano = user_data_crunch.user_data_volcano_plot(full_sty_sort)
@@ -63,19 +64,12 @@ def run_all(df):
     datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq]
 
 
-    # This can change depending on what is needed for display in route
+    # Create dictionary of ouput varibles for returning from function
     all_data = {'styno':styno, 'sty':sty, 'corrected_p':corrected_p,
         'full_sty_sort': full_sty_sort, 'parsed_sty_sort':parsed_sty_sort,
-        'datalist':datalist, 'volcano':volcano}
+        'datalist':datalist, 'volcano':volcano,
+        'kinase_activities':kinase_activities}
 
-    """ Upload and analysis Route : run all analyses in crunch script.
-    Produces all date dictionary, with datalist of dataframes for piecharts
-    and further display and html of volcano plot.
-    all_data contains {'styno', 'sty', 'corrected_p','full_sty_sort':,
-    'parsed_sty_sort','datalist'}
-
-    datalist = [phos_enrich, AA_mod_res_freq, multi_phos_res_freq,
-    prot_freq]"""
     #return all outputs and datalist html tables
     return(all_data)
 
