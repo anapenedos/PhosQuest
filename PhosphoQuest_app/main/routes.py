@@ -14,5 +14,19 @@ def home():
 # app route for documentation page
 @main.route("/documentation")
 def documentation():
+    return render_template('documentation_main.html', title='Documentation')
+
+@main.route("/documentation/<doc>")
+def documentation_category(doc):
     """render documentation page"""
-    return render_template('documentation.html', title='Documentation')
+    if doc:
+        return render_template('documentation_main.html', title=doc)
+
+    else:
+     return render_template('documentation_main.html', title='Documentation')
+
+
+@main.route("/about")
+def about():
+    """render home page"""
+    return render_template('about.html', title='About_us')

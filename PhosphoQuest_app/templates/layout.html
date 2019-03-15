@@ -39,6 +39,7 @@
                     <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
                     <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
                     <a class="nav-item nav-link" href="{{ url_for('main.documentation') }}">Documentation</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About Us</a>
                 </div>
             </div>
         </div>
@@ -48,7 +49,7 @@
 <!-- block content from child templates with bootstrap styles-->
 <main role="main" class="container">
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-9">
         <!-- print error messages from form validation-->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -61,21 +62,21 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="content-section">
             <h3>Browse Database</h3>
             <p class='text-muted'>Categories</p>
             <ul class="list-group">
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('browse.browse_cat', category="Kinase")}}>Kinases</a></li>
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('browse.browse_cat', category="Substrate")}}>Substrates</a></li>
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('browse.browse_table', subcategory='Inhibitor')}}>Inhibitors</a></li>
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('main.documentation')}}>Documentation</a></li>
             </ul>
