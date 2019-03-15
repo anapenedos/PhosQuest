@@ -437,7 +437,7 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
         - Extract groupings, totals and frequencies.
         2 - Significant phospho hits and corresponding kinase analysis:
         - Map signifcant phospho hits to matching kinases from db.
-        - Calculate relative acticity"""
+        - Calculate relative activity"""
     # ANALYSIS 1:
     # Call function to extract user/db data alignment as dictionaries.
     # Pass kinase dictionary to dataframe.
@@ -811,16 +811,16 @@ def style_df(phospho_df, kin_activities):
     
     # Render kinase activity table as html and export to wkdir.
     html = styled_kin_activities_df.hide_index().render()
-    with open("style_kin_activities.html","w") as fp:
-        fp.write(html)
+    #with open("style_kin_activities.html","w") as fp:
+        #fp.write(html)
 
     #return html
     # Render user data phospho hits table as html and export to wkdir.
     html = styled_phospho_df.hide_index().render()
-    with open("style_ud_data.html","w") as fp:
-        fp.write(html)
+    #with open("style_ud_data.html","w") as fp:
+        #fp.write(html)
         
-    #return html
+    return html
 
 # --------------------------------------------------------------------------- #
 
