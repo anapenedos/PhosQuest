@@ -5,18 +5,18 @@ from PhosphoQuest_app.data_access.interface_dicts import headers
 from PhosphoQuest_app.data_access import display_tables
 
 # create table dictionary to translate table name for search queries
-tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
+tabledict = {'kinase': Kinase, "phosphosite":Phosphosite,'substrate':Substrate,
                  'inhibitor':Inhibitor}
 
 # create field dictionary to give appropriate field name for search  queries
 # accession no in first index, name in second index.
-#For Phosphosite there is no name so the field phos.site is useds
+#For Phosphosite there is no name so the field phos.site is used
 
 
 def query_switch(text,type, table, option):
     """
     function to switch between different query methods
-    based on the inputs from the website interface options
+    based on the inputs from the website search interface options
     :param text: search text (string)
     :param type: query type ('exact' or 'like')
     :param table: database table ('kinase', 'substrate' or 'inhibitor')
@@ -56,6 +56,7 @@ def query_switch(text,type, table, option):
     #carry out query with exact or like method depending on user choice
     if type == "exact":
         results = searchexact(text, dbtable, field)
+        #output different styles of results depending on number of results
         if 'No results found' in results:
             style = 'None'
             return results, style
@@ -65,14 +66,14 @@ def query_switch(text,type, table, option):
             style = 'list'
             return results, style
 
-        else:
+        else:#like search
             if table == 'kinase':
                 results = display_tables.Kinase_first_results(results)
             elif table == 'inhibitor':
-                for item in results: #shorten name for display table
+                for item in results: # shorten name for display table
                     item.inhib_short_name = item.inhib_short_name[:20]
                 results = display_tables.Inhibitor_first_results(results)
-                #add cid variable to add pubchem widget on website.
+                # add cid variable to add pubchem widget on website.
                 cid='cid'
             else:
                 results = display_tables.Substrate_first_results(results)
@@ -107,8 +108,13 @@ def query_switch(text,type, table, option):
 
 
 def searchlike(text, table, fieldname):
-    """ Test universal LIKE search function for table/field name,
-        returns all fields"""
+    """
+    Universal LIKE search function for table/field name,returns all fields
+    :param text: search text (string)
+    :param table: db table class object
+    :param fieldname: dbtable field object
+    :return: query results
+    """
     text = '%'+ text + '%' # add wildcards for LIKE search
     session = create_sqlsession()
     results = session.query(table).filter(fieldname\
@@ -157,8 +163,13 @@ def all_table(table):
 
 
 def query_to_list(query_results, table):
-    """ Function to parse query output to list of lists for selected attributes
-      for website (results <3)."""
+    """
+    Function to parse query output to list of lists for selected attributes
+      for website (results <3).
+    :param query_results:
+    :param table:
+    :return:
+    """
 
     # get attribute names for this table
     names = table.__table__.columns.keys()
@@ -182,30 +193,3 @@ def query_to_list(query_results, table):
     return result
 
 
-# def query_to_dfhtml(query_results, table):
-#     """ Function to parse query output to pandas dataframe
-#      and create html for website"""
-#
-#     # get attribute names for this table
-#     colnames = table.__table__.columns.keys()
-#     datalist = {}
-#
-#     for col in colnames:
-#         # only parse info for wanted columns
-#         if col in headers:
-#             # find human friendly column header
-#             header = headers[col]
-#             datalist[header] = []
-#             for item in query_results:
-#                 datalist[header].append(getattr(item, col))
-#
-#         else:
-#             datalist[col] = []
-#             # if human friendly version not available
-#             for item in query_results:
-#                 datalist[col].append(getattr(item, col))
-#
-#     df = pd.DataFrame.from_dict(datalist)
-#     df = df.to_html(index=False)
-#     return df
-#

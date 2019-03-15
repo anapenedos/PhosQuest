@@ -4,7 +4,7 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase,\
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
     Substrate_first_results, Inhibitor_first_results, Phosphosites
 from PhosphoQuest_app.data_access.query_db import searchlike, \
-    searchexact, all_table
+    searchexact, all_table, query_to_list
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.interface_dicts import headers,\
     location_cats, kin_family_cats
@@ -51,7 +51,6 @@ def browse_subcat(category):
         links =[subcat[0] for subcat in subcats if subcat[0] != None]
         #remove forward and black slash that cause problems in links
         return links
-
 
 
 def browse_table(subcategory):
@@ -107,7 +106,7 @@ def browse_inhibitors():
         return results
 
 def browse_substrates():
-    """ function to return all inhibitors as FLask table"""
+    """ function to return all substrates as FLask table"""
     results = all_table(Substrate)
         #find table format for output
     if 'No Results Found' not in results:
@@ -142,42 +141,14 @@ def browse_detail(text, table):
 
 def subs_phos_query(subs_accession):
     """
-    Query to link substrate accession with phosphosites
+    Query to pull related phosphosites using substrate accession
     :param subs_accession: string substrate accession
-    :return: query object
+    :return: Flask_Table Phosphosites object
     """
     session = create_sqlsession()
     q = session.query(Substrate).filter_by(subs_accession= subs_accession)
     sub = q.first()
+    #subset of information about substrate phosphosites sites.
     subsites = sub.subs_sites
     table = Phosphosites(subsites)
     return table
-
-def query_to_list(query_results, table):
-    """ Function to parse query output to list of lists for selected attributes
-      for website (results <4). Allows to drop some attributes"""
-
-    # get attribute names for this table
-    names = table.__table__.columns.keys()
-    # initialise result list
-    result = []
-    # iterate through query results checking for names and dropped attrs
-    for item in query_results:
-        resultlist = []
-        for name in names:
-
-            if name in headers:
-                header = headers[name]  # translate to human readable
-                x = (header, getattr(item, name))
-                resultlist.append(x)
-            else:
-                x = (name, getattr(item, name))
-                resultlist.append(x)
-
-        result.append(resultlist)
-
-    return result
-
-
-
-

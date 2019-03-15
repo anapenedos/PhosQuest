@@ -80,7 +80,7 @@ def sub_detail(text):
     table = browse_queries.subs_phos_query(text)
 
     return render_template('search_results.html', title="Substrate",
-                           style='double', results=results, table=table)
+                           style='subphos', results=results, table=table)
 
 @browse.route("/phosites_detail/<text>")
 def phosites_detail(text):
