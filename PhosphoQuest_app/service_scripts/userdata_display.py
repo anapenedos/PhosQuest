@@ -51,11 +51,10 @@ def run_all(df):
     kinase_freq, \
     kin_word_str, \
     subs_sites_word_str,\
-    kinase_activities = kinase_analysis(db_kin_dict, parsed_sty_sort) 
+    kinase_activities = user_data_crunch.kinase_analysis(db_kin_dict, parsed_sty_sort) 
 
     # run volcano plot
     volcano = user_data_crunch.user_data_volcano_plot(full_sty_sort)
-
 
     # collate extracted data as datalist
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
