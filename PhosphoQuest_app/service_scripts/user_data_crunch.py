@@ -13,9 +13,6 @@ from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
 
 # --------------------------------------------------------------------------- #
 
-# define temporary directory location
-tempdir = os.path.join("PhosphoQuest_app","user_data", 'temp')
-
 ### Function to read user data, check for errors and pass.
 def user_data_check(data_file):
     """ 
@@ -120,8 +117,11 @@ def create_filtered_dfs(parsed_data):
                             str.replace(r"\(.*\)", "")
     
     # Parse data that contains Ser, Thr & Tyr phospho-sites only (STY)
+    # Note: setting na = false in contains() function allows code to deal
+    # with subs_sites entries where "(None)" isn't present in the original
+    # susbtrates column.
     ud_df1_sty = parsed_data[parsed_data.iloc[:, 7].
-                            str.contains("S|T|Y", case=False)]
+                            str.contains("S|T|Y", case=False, na=False)]
 
     # Parse data for phospo-sites with valid p-values.
     ud_df1_sty_valid = ud_df1_sty[(ud_df1_sty.iloc[:, 4] > 0)]
