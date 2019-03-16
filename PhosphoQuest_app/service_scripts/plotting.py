@@ -8,60 +8,143 @@ from plotly.offline import plot
 import plotly.graph_objs as go
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from PhosphoQuest_app.service_scripts.userdata_display import\
-    create_userfilename
+from flask import session
 from datetime import datetime
+import os
 
-# --------------------------------------------------------------------------- #
-### Pie chart for phos_enrich.
+#Define temporary directory path for output files
+tempdir = os.path.join("PhosphoQuest_app","static", 'userdata_temp')
 
-# Example data
-# labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# values = [4500,2500,1053,500]
 
-# Import the row heading data as object.
-label0 = pd.Series(phos_enrich.index)
-# Place them into a series (not as objects).
-labels = list(label0)
+def create_userfilename(text, extension):
+    """
+    Function to create userdata_temp user id and store in session cookie
+    and use to create unique file names for user-data incorporating date
+    for cleanup purposes
+    :param text: filename string eg: "plot", " analysed_data"
+    :param extension: file extension to add (as string) eg 'csv'
+    :return: full filename (string) for passing to os functions etc.
+    """
+    # get date time now and convert to string
+    time = str(datetime.now())
+    date = time[:10]
 
-# Import the specific values from the dataframe as a list.
-values = phos_enrich['Total'].tolist()
-values2 = values.pop(2)
 
-# Set core pie.
-trace = go.Pie(labels=labels, values=values)
+    # if session cookie already exists use date and existing id
+    if 'id' in session:
+        id = session['id']
+        outname = f"{date}_{id}_{text}.{extension}"
+        return outname
 
-# Define trace as data.
-data = [trace]
+    # create user id cookie if not already in session
+    else:
+        # get date last 4 digits (milliseconds) as "unique" no for download
+        id = "id" + time[-4:]
+        # store cookie for reuse on other files
+        session['id'] = id
+        #use created id in filename
+        outname = f"{date}_{id}_{text}.{extension}"
+        return outname
 
-# Plot the data in html format.
-plot(data, filename='basicpie.html', auto_open=True)
 
-# --------------------------------------------------------------------------- #
-### Pie chart for AA_mod_res_freq.
+def read_html_to_variable(file):
+    """
+    Function to open savedfile and read lines into variable
+    :param file: string (path of file)
+    :return: string
+    """
+    with open(file,'r') as f:
+        outvar = f.read()
 
-# Example data
-# labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# values = [4500,2500,1053,500]
+    return outvar
 
-# Import the row heading data as object.
-label0 = pd.Series(AA_mod_res_freq.index)
-# Place them into a series (not as objects).
-labels = list(label0)
 
-# Import the specific values from the dataframe as a list.
-values = AA_mod_res_freq['Total number with phospho'].tolist()
+def pie_chart(df, header, name, removed=None):
+    """
+    Function to create piechart from dataframe with header of column for data
+    and name string to add to file name string eg "mod_residue"
+    :param df: pd.dataframe
+    :param header:string
+    :param name:string - name of pie chart eg "modified_residues"
+    :param removed: int item index to remove from list (default none)
+    :return: string - filename
+    """
+    # Import the row heading data as object.
+    label0 = pd.Series(df.index)
+    # Place them into a series (not as objects).
+    labels = list(label0)
+    if removed != None:
+        labels.pop(removed)
 
-# Set core pie.
-trace = go.Pie(labels=labels, values=values)
+    # Import the specific values from the dataframe as a list.
+    values = df[header].tolist()
 
-# Define trace as data.
-data = [trace]
+    # Set core pie.
+    trace = go.Pie(labels=labels, values=values)
 
-# Plot the data in html format.
-plot(data, filename='basicpie2.html', auto_open=True)
+    # Define trace as data.
+    data = [trace]
+    filename = create_userfilename(name, 'html')
+    outfile = os.path.join(tempdir,filename)
 
-# --------------------------------------------------------------------------- #
+    # Plot the data in html format.
+    plot(data, filename=outfile, auto_open=False)
+    #return filename for adding to html template
+
+    html = read_html_to_variable(outfile)
+    print(html)
+    return html
+# # --------------------------------------------------------------------------- #
+# ### Pie chart for phos_enrich.
+#
+# # Example data
+# # labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
+# # values = [4500,2500,1053,500]
+#
+# # Import the row heading data as object.
+# label0 = pd.Series(phos_enrich.index)
+# # Place them into a series (not as objects).
+# labels = list(label0)
+#
+# # Import the specific values from the dataframe as a list.
+# values = phos_enrich['Total'].tolist()
+# values2 = values.pop(2)
+#
+# # Set core pie.
+# trace = go.Pie(labels=labels, values=values)
+#
+# # Define trace as data.
+# data = [trace]
+#
+# # Plot the data in html format.
+# plot(data, filename='basicpie.html', auto_open=True)
+# # --------------------------------------------------------------------------- #
+# ### Pie chart for AA_mod_res_freq.
+#
+# # Example data
+# # labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
+# # values = [4500,2500,1053,500]
+#
+#
+#
+# # Import the row heading data as object.
+# label0 = pd.Series(AA_mod_res_freq.index)
+# # Place them into a series (not as objects).
+# labels = list(label0)
+#
+# # Import the specific values from the dataframe as a list.
+# values = AA_mod_res_freq['Total number with phospho'].tolist()
+#
+# # Set core pie.
+# trace = go.Pie(labels=labels, values=values)
+#
+# # Define trace as data.
+# data = [trace]
+#
+# # Plot the data in html format.
+# plot(data, filename='basicpie2.html', auto_open=True)
+#
+# # --------------------------------------------------------------------------- #
 
 ### Pie chart for Multi_phos_res_freq.
 
@@ -69,23 +152,23 @@ plot(data, filename='basicpie2.html', auto_open=True)
 # labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
 # values = [4500,2500,1053,500]
 
-# Import the row heading data as object.
-label0 = pd.Series(multi_phos_res_freq.index)
-# Place them into a series (not as objects).
-labels = list(label0)
+# # Import the row heading data as object.
+# label0 = pd.Series(multi_phos_res_freq.index)
+# # Place them into a series (not as objects).
+# labels = list(label0)
+#
+# # Import the specific values from the dataframe as a list.
+# values = multi_phos_res_freq['Frequency'].tolist()
+#
+# # Set core pie.
+# trace = go.Pie(labels=labels, values=values)
+#
+# # Define trace as data.
+# data = [trace]
+#
+# # Plot the data in html format.
+# plot(data, filename='basicpie3.html', auto_open=True)
 
-# Import the specific values from the dataframe as a list.
-values = multi_phos_res_freq['Frequency'].tolist()
-
-# Set core pie.
-trace = go.Pie(labels=labels, values=values)
-
-# Define trace as data.
-data = [trace]
-
-# Plot the data in html format.
-plot(data, filename='basicpie3.html', auto_open=True)
-  
 # --------------------------------------------------------------------------- #
 
 ### Function to style table of significant phospho sites and render to html.
@@ -419,34 +502,38 @@ def user_data_volcano_plot(phos_table):
 # --------------------------------------------------------------------------- #
         
 ### Function to create wordcluds and frequency charts.    
-def wordcloud_freq_charts(kin_word_str, 
-                          subs_sites_word_str, 
-                          kinase_freq, 
+def wordcloud_freq_charts(kin_word_str,
+                          subs_sites_word_str,
+                          kinase_freq,
                           kinase_target_freq):
-    """ Pass word strings and frequencies to create wordclouds and 
-    plot frequency charts for kinase and substrate_sites in 
-    the global phospho only data. """
+    """
+    Pass word strings and frequencies to create wordclouds and
+    plot frequency charts for kinase and substrate_sites in
+    the global phospho only data. "
+    :param kin_word_str: string of multiple kinases
+    :param subs_sites_word_str: string of multiple subs_sites
+    :param kinase_freq: int
+    :param kinase_target_freq: int
+    :return: string variables of filenames
+    """
+
     # Create wordcloud for kinases.
+    kin_wcloud= create_userfilename('kin_wordcloud','png')
+    outfile = os.path.join(tempdir,kin_wcloud)
     # Pass string variables to wordcloud function.
-    kin_wcloud = WordCloud(collocations=False, 
-                           background_color="gray",
-                           max_words=30,
-                           relative_scaling=0.5,
-                           colormap="RdBu").\
-                           generate(kin_word_str).\
-                           to_file("kin_word_cloud.png")
-                           
+    WordCloud(collocations=False, background_color="gray", max_words=30,
+                 relative_scaling=0.5, colormap="RdBu").generate(kin_word_str).\
+                           to_file(outfile)
+
     # Create wordcloud for substrate_sites.
-    subs_sites_wcloud = WordCloud(collocations=False, 
-                                  background_color="gray",
-                                  max_words=30,
-                                  relative_scaling=0.5,
-                                  colormap="RdBu").\
-                                  generate(subs_sites_word_str).\
-                                  to_file("subs_sites_word_cloud.png")
+    subs_sites_wcloud = create_userfilename('subs_sites_wordcloud', 'png')
+    outfile = os.path.join(tempdir, subs_sites_wcloud)
+
+    WordCloud(collocations=False, background_color="gray", max_words=30,
+                 relative_scaling=0.5, colormap="RdBu").\
+                 generate(subs_sites_word_str).to_file(outfile)
                                  
     # ----------------------------------------------------------------------- #
-    
     # Plot kinase frequency - top30.
     plt.figure(figsize=(10,7))
     kinase_freq.sort_values(ascending=False).\
@@ -456,7 +543,10 @@ def wordcloud_freq_charts(kin_word_str,
                fontstyle="italic", fontweight="bold")
     plt.ylabel("Frequency", fontsize="large", 
                fontstyle="italic", fontweight="bold")
-    plt.savefig("kin_frequency_top30.png", bbox_inches="tight", dpi=300)
+    kin_freq = create_userfilename('Kinase_freq_top_30_Bar', 'png')
+    outfile = os.path.join(tempdir, subs_sites_wcloud)
+
+    plt.savefig(outfile, bbox_inches="tight", dpi=300)
     
     # Plot subs_sites frequency - top30.
     plt.figure(figsize=(10,7))
@@ -467,15 +557,20 @@ def wordcloud_freq_charts(kin_word_str,
                fontstyle="italic", fontweight="bold")
     plt.ylabel("Frequency", fontsize="large", 
                fontstyle="italic", fontweight="bold")
-    plt.savefig("subs_sites_frequency_top30.png", bbox_inches="tight", dpi=300)
+    kin_target_freq = create_userfilename('Kin_target_freq_top_30_Bar', 'png')
+    outfile = os.path.join(tempdir, subs_sites_wcloud)
 
+    plt.savefig(outfile, bbox_inches="tight", dpi=300)
+
+    #return filenames of plot pngs
+    return kin_wcloud, subs_sites_wcloud, kin_freq, kin_target_freq
 # --------------------------------------------------------------------------- #
+if __name__ == "__main__":
+    style_df(parsed_sty_sort, kinase_activities)
 
-style_df(parsed_sty_sort, kinase_activities)
-    
-ud_volcano = user_data_volcano_plot(full_sty_sort)
-    
-#stuff = wordcloud_freq_charts(kin_word_str, 
-#                              subs_sites_word_str, 
-#                              kinase_freq, 
-#                              kinase_target_freq)
+    ud_volcano = user_data_volcano_plot(full_sty_sort)
+
+    stuff = wordcloud_freq_charts(kin_word_str,
+                                         subs_sites_word_str,
+                                         kinase_freq,
+                                         kinase_target_freq)

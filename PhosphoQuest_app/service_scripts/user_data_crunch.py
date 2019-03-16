@@ -631,7 +631,7 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
 if __name__ == "__main__":
 
     #set up runs for testing functions
-    file = os.path.join('PhosphoQuest_app','user_data', 'az20.tsv')
+    file = os.path.join('user_data', 'az20.tsv')
 
     data_or_error = user_data_check(file)
     

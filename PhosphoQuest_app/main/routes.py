@@ -30,3 +30,4 @@ def documentation_category(doc):
 def about():
     """render home page"""
     return render_template('about.html', title='About_us')
+

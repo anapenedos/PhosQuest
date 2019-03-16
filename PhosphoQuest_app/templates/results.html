@@ -77,27 +77,28 @@
       <ul>
         <li><a href="#analysis-1"><span>Significant results</span></a></li>
         <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
-        <li><a href="#analysis-3"><span>Results Summary</span></a></li>
-        <li><a href="#analysis-4"><span>Download data</span></a></li>
+        <li><a href="#analysis-3"><span>WordCloud and Frequency</span></a></li>
+        <li><a href="#analysis-3"><span>Summary Charts</span></a></li>
+        <li><a href="#analysis-5"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
         <H3> Significant Results</H3>
         <div class=table.dataframe>
-            {{ table|safe }}
+            {{ plots['table']|safe }}
         </div>
       </div>
         <div id="analysis-2">
           <p>Volcano Plot of All Data</p>
           <hr>
-          {{ volcano |safe}}
+          {{ plots['volcano'] |safe}}
           </div>
       <div id="analysis-3">
-          <p>This could be lovely piecharts etc</p>
+          <p>WordCloud and Frequency Charts</p>
           <hr>
           <div class = "row">
           <div class="col-md-8">
-              <img src={{url_for('static', filename='test_piechart.png')}}> </div>
-          <div class="col-md-4">{{ phos_enrich|safe }}</div>
+              <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </div>
+          <div class="col-md-4">TEST<div>
           </div>
       </div>
       <div id="analysis-4">
