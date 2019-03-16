@@ -442,7 +442,7 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
         - Extract groupings, totals and frequencies.
         2 - Significant phospho hits and corresponding kinase analysis:
         - Map signifcant phospho hits to matching kinases from db.
-        - Calculate relative activity"""
+        - Calculate relative activity. """
     # ANALYSIS 1:
     # Call function to extract user/db data alignment as dictionaries.
     # Pass kinase dictionary to dataframe.
@@ -533,9 +533,6 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
                                           parsed_sty_sort.columns[13]]]
     
     # Parse hits with intensity in both conditions.
-    # Necessary as fold changes for single condition hits are "inf or -inf".
-    # x-axis range, for log2 fold changes in volcano plot, 
-    # cannot be set properly with these entries at a later stage.
     signif_hits_subset =\
         signif_hits_subset[(signif_hits_subset.iloc[:, 2] > 0) |\
                            (signif_hits_subset.iloc[:, 2] < 0)]
