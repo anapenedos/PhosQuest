@@ -8,16 +8,7 @@ import pandas as pd
 import numpy as np
 from statsmodels.stats.multitest import fdrcorrection
 
-# Import packages from sqlalchemy.
-from sqlalchemy import and_, or_
-from sqlalchemy.orm import Load
-from sqlalchemy.inspection import inspect
-
-# project imports
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
-    Substrate, Phosphosite, kinases_phosphosites_table
-from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
+### Project imports
 from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
 
 # --------------------------------------------------------------------------- #
@@ -64,8 +55,8 @@ def user_data_check(data_file):
     # Determine number of columns.
     num_col = orig_file_subset.shape[1]
     
-    # Check if number of cols = 5 and append new columns with "empty" entries
-    # for cv calculations that are missing.
+    # Check if number of cols = 5 and append new columns with all entries
+    #  = to 1 for cv calculations that are missing.
     # If number of columns adhere to correct format, data frame unaffected.
     if num_col == 5:
         orig_file_subset["control_cv"] = 1
@@ -93,13 +84,15 @@ def user_data_check(data_file):
     # Define error message if fold calculation matching determines
     # existance of errors.
     error_message = \
-    ("Your incorrect fold change calculations shall not avail you..." +
-     "scourge of webapps!" +
-     " Your data frame SHALL NOT PASS!")
-    #"Anomaly detected..PhosphoQuest will self-destruct in T minus 10 seconds")
+    ("Anomaly detected..PhosphoQuest will self-destruct in T minus 10 seconds"+
+    "...just kidding! Please check your fold change calculations,"+
+    "a discrepancy has been detected")
     
-    # If "sum_matches" equal to length of data frame, then reurn data frame.
-    # If not, then return error message.
+    # If "sum_matches" equal to length of data frame, then return data frame.
+    # If not, return error message.
+    # Note: if first logical test passes, this indicates that fold change
+    # calculations in original user data are correct (within tolerance),
+    # and filtered dataframe returned for further analysis.
     if sum_matches == len(orig_file_subset):
         orig_file_parsed = orig_file_subset.iloc[:, 0:7]
         return orig_file_parsed
@@ -242,7 +235,7 @@ def table_sort_parse(filtered_df):
     # List comprehension to re-order df columns by new index list.
     filtered_df = filtered_df[[filtered_df.columns[i] for i in new_col_order]]
 
-    # Sort level variables for sorting data frame.
+    # Variables for sorting data frame.
     sort_level_1 = filtered_df.columns[15] # Rejected hypotheses.
     sort_level_2 = filtered_df.columns[21] # CV <= 0.25 in control
     sort_level_3 = filtered_df.columns[19] # CV <= 0.25 in both.
@@ -257,15 +250,31 @@ def table_sort_parse(filtered_df):
                                               sort_level_5],
                                               ascending=False)
     
-    # Call function to extract user data/db alignment data as dictionaries.
+    # Call "link_ud_to_db" function to extract user data/db alignment data. 
+    # Dictionaries returned as follows:
+    # "db_ud_dict" = dictionary of 3 lists that match user data to db.
+    # keys = kinase in DB, Phosphosite in DB, Subs_site in DB.
+    # values = 3 lists of length of full phospho only data per key.
+    # "kin_dict" = kinase entries that map to subs_sites in user data.
+    # kinase = keys, subs_sites set per kinase = values.
     db_ud_dict, kin_dict = link_ud_to_db(filtered_df)
     
-    # Pass DB/user data dictionary to dataframe.
+    # Pass "db_ud_dict" dictionary to dataframe.
+    # 3 columns of length of full phospho only data returned.
+    # Note: since "link_ud_to_db()" takes the full phospho data as input,
+    # unpacking of the dictionary to dataframe returns columns, whose entries
+    # match the order of the input. 
     db_ud_df = pd.DataFrame.from_dict(db_ud_dict, orient='index').transpose()
     
-    # concatenate full phospho table with DB user data links.
+    # Concatenate full phospho table with DB user data matches.
+    # Note: input dataframe "Filtered_df" index isn't ordered 1, 2, 3...,
+    # due to previous operations. 
+    # reset_index() extracts index to column, and uses default i.e. 1, 2, 3...,
+    # as new index. Reseting the index is required, as dataframe
+    # concatenation is by column indices!
     filtered_df = pd.concat([filtered_df.reset_index(drop=True),
-                             db_ud_df.reset_index(drop=True)], axis=1)      
+                             db_ud_df.reset_index(drop=True)], 
+                             axis=1)      
     
     # Sum control_cv & condition cv. 
     # User data that didn't contain cv columns upon original upload,
@@ -309,10 +318,13 @@ def data_extract(filtered_df, styno):
         3 - Frequency of single & multiple phosphorylations.
         4 - Total number of proteins represented. """
     ### Data group - 1.
-    # Number of phospho-sites.
+    # Compute length of phospho only dataframe.
+    # Corresponds to number of phospho-sites.
     phos_site_num = len(filtered_df)
 
-    # Number of non-phosporylated peptides.
+    # Compute length of full dataframe (including non-phosphos), 
+    # minus number of phopho-peptides.
+    # Corresponds to number of non-phosporylated peptides.
     non_phos_num = len(styno) - phos_site_num
 
     # Calculate % proportion of phospho-sites in total data-set.
@@ -447,7 +459,7 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
     # stack() - returns series of unique subs_sites per kinase. Index = kinases
     # to_frame() - converts series to dataframe.
     # reset_index() - extracts kinases from index to new column.
-    # drop - removes "level_1" column (remnant of dictionary structure).
+    # drop - removes "level_1" column (remnant of dictionary index structure).
     kin_subs_site_df = kin_subs_site_df.stack().\
                        to_frame().\
                        reset_index().\
@@ -474,8 +486,6 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
     
     # Compute frequency of duplicate "Sub_site_ID" entries.
     # Series represents number of kinases that target a site in the user data.
-    # Sort by highest frequency & extract top 10 sites 
-    # most targetted by kinases in DB.
     kinase_target_freq =\
              kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 1]]).size()
     
@@ -483,16 +493,14 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
     kinase_target_entry_num = sum(kinase_target_freq)
     
     # Sort frequencies - highest to lowest.
-    kinase_target_freq =\
-             kinase_target_freq.sort_values(ascending=False)
+    kinase_target_freq = kinase_target_freq.sort_values(ascending=False)
              
     # Take top 30 and pass to variable.
-    kinase_target_freq =\
-             kinase_target_freq.head(n=30)
+    kinase_target_freq = kinase_target_freq.head(n=30)
     
     # Compute frequency of duplicate kinases matched to user data.
-    # Represents the total number of unique kinases 
-    # targeting a susb_site matched from db.
+    # Represents the total number of unique kinases, 
+    # targeting a subs_site matched from db.
     kinase_freq =\
              kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 0]]).size()
     
@@ -517,7 +525,7 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
     # ----------------------------------------------------------------------- #
     
     # ANALYSIS 2:
-    # Parse significant hits table for gene, site_id,
+    # Parse significant hits table in the following order: gene, site_id,
     # log2 fold change & corrected p-value.
     signif_hits_subset = parsed_sty_sort[[parsed_sty_sort.columns[0],
                                           parsed_sty_sort.columns[1],
@@ -527,7 +535,7 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
     # Parse hits with intensity in both conditions.
     # Necessary as fold changes for single condition hits are "inf or -inf".
     # x-axis range, for log2 fold changes in volcano plot, 
-    # cannot be set properly with these entries at a lter stage.
+    # cannot be set properly with these entries at a later stage.
     signif_hits_subset =\
         signif_hits_subset[(signif_hits_subset.iloc[:, 2] > 0) |\
                            (signif_hits_subset.iloc[:, 2] < 0)]
@@ -600,13 +608,13 @@ def kinase_analysis(db_kin_dict, parsed_sty_sort):
                         "Substrate_site", 
                         "Kinase activity: mean of absolute fold changes"]]
     
-    # Sort values.
+    # Sort values - log2 fold change lowest to highest.
     kin_activities =\
         kin_activities.\
         sort_values(by=["Kinase activity: mean of absolute fold changes"], 
                     ascending=False)
     
-    # Replace convert "Substrate_site" list to string.
+    # Convert "Substrate_site" list entries to string and split by ",".
     # Removes [] & '' characters from column entries.
     kin_activities["Substrate_site"] =\
         kin_activities["Substrate_site"].apply(", ".join)
