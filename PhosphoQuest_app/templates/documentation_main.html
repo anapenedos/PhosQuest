@@ -40,26 +40,69 @@
     </p>
         <b>Column 2: </b>Mean intensity of <em>Control</em> replicate intensities.
     </p>
-        <b>Column 3: </b>Mean intensity of <em>Treatment/condition</em> replicate intensities.
+        <b>Column 3: </b>Mean intensity of <em>Treatment/Condition</em> replicate intensities.
     </p>
         <b>Column 4: </b>Fold change calculation: <em>Treatment over the Control.</em> 
         Note: these should not be log2 fold calculations!
     </p>
         <b>Column 5: </b>T-test P-values. Please use <em>uncorrected</em> values,
-        as the webapp will implement correction for multiple-testing errors. 
+        as PhosphoQuest will implement correction for multiple-testing errors. 
     </p>
-        <b>Column 6-7: </b>Coefficients of variation for the <em>Control</em> 
-         and <em>Treatment/condition</em>, respectively. Please see section -
+        <b>Column 6-7: </b>Coefficients of variation (CV's) for the <em>Control</em> 
+         and <em>Treatment/Condition</em> columns, respectively. PhosphoQuest can also handle
+         data that doesn't have these column entries. Please see section -
          <em>Analysis functions</em> below for further details.
     </p> 
     </p> 
     <hr>
     <br>
-    <H5> Analysis functions</H5>
+    <H5> Data analysis - general summary</H5>
     <br>
     <p>
-        Information here about how the analysis is done
+         The following will be an overview of the strategy employed to analyse
+         your data. Conceptually, the process can be broken down into 6 steps
+         which collate and categorise your data. We then use this analysis to 
+         generate data visualisations, that we hope will help you interpret your
+         phospho-proteomics data.           
     </p>
+         <b>Step 1: </b> Data table structure check and basic filtering. This
+         pre-analysis step implements a basic error check and determines the format
+         of the input table. Data tables without CV columns are processed at this
+         stage. Peptide entries with at least one quantitation event are passed 
+         for further processing. 
+    </p>
+         <b>Step 2: </b> A series of sequential steps, categorise the data into
+         groupings. For example: which hits are unique or appear in both the 
+         <em>Control</em> and <em>Treatment/Condition</em>, which entries are 
+         phoesphorylated peptides, are cvs within a certain tolerance etc. The
+         table is also futher filtered for phospho-sites only.
+     </p>
+         <b>Step 3: </b> P-values corrected for multiple testing errors.
+         A default perimissable error rate of 0.05 is applied, with only the 
+         Benjamini-Hochberg method for multiple testing correction currently implememented.
+         Please see this link for background information: 
+         https://www.nature.com/articles/nbt1209-1135
+    </p>
+         <b>Step 4: </b> Analysis in previous steps used to further categorise 
+         , filter and sort data. It is at this stage that the data table is 
+         queried against the <em>PhosphoQuest</em> database. This analysis
+         determines which substrates and sites map to information held on the database.
+         Data analysis at this stage allows the visualisation of significantly 
+         differentially expressed in the form of a styled table as well as a
+         volcano plot.
+    </p>
+         <b>Step 5: </b> Metrics of the data are extracted for downstream visualisation
+         For example, phospho pull-down enrichment efficiency & distributions of 
+         phosphorylated amino acid residues to name a few categories.
+    </p>
+         <b>Step 6: </b> This analysis step has 2 sub-categories:
+         </p><b>A </b>- Determine global freqencies of substrate/sites and their 
+         corresponding kinases in data table - this data is visualised using
+         wordclouds and frequency charts.
+         </p><b>B </b>- Calculate relative kinase activity, in the subset of the data,
+         whose hits are considered significantly differentially expressed. This 
+         relative activity is determined from the log2 fold changes  
+         <em>(Treatment over Control)</em>, calculated for their substrates/sites.
     <hr>
     <br>
     <H5> Output information and  files</H5>
