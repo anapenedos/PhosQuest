@@ -91,7 +91,7 @@ def plot_all(all_data):
         }
     return all_plots
 
-def create_csv(dataframe, filename):
+def create_csv(dataframe):
     """
     function to create full  dataframe as csv
     :param dataframe: pd.dataframe
@@ -102,10 +102,10 @@ def create_csv(dataframe, filename):
     tempdir = os.path.join('PhosphoQuest_app','static', 'userdata_temp')
 
     #capture input file name for output csv
-    text = f"{filename}_analysed"
+
 
     #run create userfilename function to get used specific filename
-    outname = plotting.create_userfilename(text, 'csv')
+    outname = plotting.create_userfilename('analysed', 'csv')
 
     #SAVE FILE
     dataframe.to_csv(os.path.join(tempdir,outname))

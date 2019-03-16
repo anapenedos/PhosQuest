@@ -10,6 +10,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from flask import session
 from datetime import datetime
+import random
 import os
 
 #Define temporary directory path for output files
@@ -29,20 +30,20 @@ def create_userfilename(text, extension):
     time = str(datetime.now())
     date = time[:10]
 
+    # if session cookie already exists use date and existing id and name of
+    # input file for output files
 
-    # if session cookie already exists use date and existing id
-    if 'id' in session:
+    if 'id' in session and 'file' in session:
         id = session['id']
-        outname = f"{date}_{id}_{text}.{extension}"
+        file = session['file']
+        outname = f"{date}_{file}_{id}_{text}.{extension}"
         return outname
 
-    # create user id cookie if not already in session
+    # create user id  and file cookie if not already in session
     else:
         # get date last 4 digits (milliseconds) as "unique" no for download
-        id = "id" + time[-4:]
-        # store cookie for reuse on other files
-        session['id'] = id
-        #use created id in filename
+        id = "id" + time[-3:]
+            #use created id in filename
         outname = f"{date}_{id}_{text}.{extension}"
         return outname
 
@@ -92,7 +93,6 @@ def pie_chart(df, header, name, removed=None):
     #return filename for adding to html template
 
     html = read_html_to_variable(outfile)
-    print(html)
     return html
 # # --------------------------------------------------------------------------- #
 # ### Pie chart for phos_enrich.

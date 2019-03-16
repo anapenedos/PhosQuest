@@ -1,4 +1,4 @@
-from flask import flash, render_template, Blueprint, send_file
+from flask import flash, render_template, Blueprint, send_file, session
 from PhosphoQuest_app.service_scripts import user_data_crunch
 from PhosphoQuest_app.service_scripts import userdata_display
 from werkzeug.utils import secure_filename
@@ -24,13 +24,16 @@ def analysis():
      #if form validates (correct file types) save file in userdata_temp dir
     if form.validate_on_submit():
         # try:
-        #get file from form and access filename
+        # get file from form and access filename
         f = form.data_file.data
         filename = secure_filename(f.filename)
         #remove file extension - string of name (friendly for reuse later)
         filename = os.path.splitext(filename)[0]
         # replace any spaces in filename input text with underscores
-        filename1 = filename.replace(" ", "_")
+        filename = filename.replace(" ", "_")
+        #create session cookie for filename
+        session['file']= filename
+
 
         #check file and return error string or dataframe
         check_var = user_data_crunch.user_data_check(f)
@@ -46,7 +49,7 @@ def analysis():
 
             # create csv of all data for download
             csvdf = all_data['full_sty_sort']
-            csv = userdata_display.create_csv(csvdf, filename1)
+            csv = userdata_display.create_csv(csvdf)
 
             flash(f'File {filename} successfully analysed', 'success')
             return render_template('results.html',
@@ -78,8 +81,7 @@ def download_analysis(csv):
                      attachment_filename=csv,
                      as_attachment=True)
     except:
-        #TODO update to file handling error page
-        return render_template('404_error.html')
+        return render_template('file_error.html')
 
 @crunch.route('/file_error')
 def file_error():

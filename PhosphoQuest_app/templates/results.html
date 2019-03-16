@@ -78,7 +78,7 @@
         <li><a href="#analysis-1"><span>Significant results</span></a></li>
         <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
         <li><a href="#analysis-3"><span>WordCloud and Frequency</span></a></li>
-        <li><a href="#analysis-3"><span>Summary Charts</span></a></li>
+        <li><a href="#analysis-4"><span>Summary Charts</span></a></li>
         <li><a href="#analysis-5"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
@@ -97,31 +97,47 @@
           <hr>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H3>Kinase WordCloud - Most frequent Kinases in Data</H3>
-                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center></div>
+                  <center><H4>Kinase WordCloud - Most frequent Kinases in Data</H4>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center>
+              </div>
               <div class="col-md-6">
-                  <center><H3>Substrate Sites WordCloud - Most frequent Substrate Sites in Data</H3>
-                      <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}> </div>
-              <div>
+                  <center><H4>Substrate Sites WordCloud - Most frequent Substrate Sites in Data</H4>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}>
+                  </center>
+              </div>
           </div>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H3>Top 30 Kinases - Bar Plot</H3>
-                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}}> </center></div>
+                  <center><H4>Top 30 Kinases - Bar Plot</H4>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}} width="480"> </center>
+              </div>
               <div class="col-md-6">
-                  <center><H3>Top 30 Substrate sites - Bar Plot</H3>
-                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}}> </div>
-              <div>
-          </div>
+                  <center><H4>Top 30 Substrate sites - Bar Plot</H4>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="480"> </center>
+              </div>
           </div>
       </div>
       <div id="analysis-4">
-          <p>Volcano Plot of All Data</p>
-          <hr>
-          {{ plots['volcano'] |safe}}
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H5>Phosphosite Enrichment </H5>
+                      {{ plots["phos_enrich_pie"] | safe}} </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H5>multi phospho residue frequency</H5>
+                      {{ plots["multi_phos_res_freq_pie"] | safe }}</center>
+              </div>
           </div>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H5>Amino Acid modified residue frequency</H5>
+                      {{ plots["AA_mod_res_freq_pie"] |safe }}</center>
+              </div>
+          </div>
+      </div>
       <div id="analysis-5">
           <H4>Download your analysed data:</H4>
+          <p>CSV file containing all of your datapoints with analysis
             <p class="lead">
                 <a class="btn btn-warning btn-sml"
                   href="{{url_for('crunch.download_analysis',

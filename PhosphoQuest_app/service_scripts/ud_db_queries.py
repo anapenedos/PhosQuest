@@ -18,10 +18,13 @@ def records_from_join_res(list_of_tuples):
     :return: dictionary of classes to unique instances set (dict)
              {Class: {inst1, inst2}}
     """
-    class_instances = {}
+    class_instances = {}  # {Class: {inst1, inst2}}
+    # iterate through each substrate/phosphosite/kinase
     for instances_tuple in list_of_tuples:
+        # iterate through each instance inthe tuple
         for instance in instances_tuple:
             if instance:
+                # add a dict key for each type of class
                 class_obj = type(instance)
                 cls_set = class_instances.setdefault(class_obj, set())
                 cls_set.add(instance)
@@ -73,10 +76,9 @@ def format_db_links(db_links, headers=False):
             # a line can be [('Q8WYB5',)] or 'not in DB' or
             # [('Q8WYB6',), ('Q8WYB7',)]
             if type(line) != str:
-                rec_strs = []
+                info_joiner = '/'.join
                 # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
-                for record in line:
-                    rec_strs.append('/'.join(map(str, record)))
+                rec_strs = [info_joiner(map(str, record)) for record in line]
                 new_line = ', '.join(rec_strs)
             else:
                 new_line = line
@@ -113,9 +115,6 @@ def link_ud_to_db(user_data_frame):
     # create dictionary for kinase-centric analysis data frame
     # 'KIN_ACC': {('SUB_GENE', 'RSD'),...}
     kin_to_ud = {}
-
-    # primary key attribute for each class
-    db_key_attrs = get_classes_key_attrs(db_links, single_key=True)
 
     # not found in DB message
     not_in_db = 'not in DB'
@@ -188,6 +187,8 @@ def link_ud_to_db(user_data_frame):
                 else:
                     to_append = not_in_db
                 db_links[class_obj].append(to_append)
+
+    session.close()
 
     # format db_links dict
     # show as strings
