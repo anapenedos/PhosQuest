@@ -96,12 +96,31 @@
           <p>WordCloud and Frequency Charts</p>
           <hr>
           <div class = "row">
-          <div class="col-md-8">
-              <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </div>
-          <div class="col-md-4">TEST<div>
+              <div class="col-md-6">
+                  <center><H3>Kinase WordCloud - Most frequent Kinases in Data</H3>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center></div>
+              <div class="col-md-6">
+                  <center><H3>Substrate Sites WordCloud - Most frequent Substrate Sites in Data</H3>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}> </div>
+              <div>
+          </div>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H3>Top 30 Kinases - Bar Plot</H3>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}}> </center></div>
+              <div class="col-md-6">
+                  <center><H3>Top 30 Substrate sites - Bar Plot</H3>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}}> </div>
+              <div>
+          </div>
           </div>
       </div>
       <div id="analysis-4">
+          <p>Volcano Plot of All Data</p>
+          <hr>
+          {{ plots['volcano'] |safe}}
+          </div>
+      <div id="analysis-5">
           <H4>Download your analysed data:</H4>
             <p class="lead">
                 <a class="btn btn-warning btn-sml"

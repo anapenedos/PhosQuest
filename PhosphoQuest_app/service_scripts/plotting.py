@@ -544,7 +544,7 @@ def wordcloud_freq_charts(kin_word_str,
     plt.ylabel("Frequency", fontsize="large", 
                fontstyle="italic", fontweight="bold")
     kin_freq = create_userfilename('Kinase_freq_top_30_Bar', 'png')
-    outfile = os.path.join(tempdir, subs_sites_wcloud)
+    outfile = os.path.join(tempdir, kin_freq)
 
     plt.savefig(outfile, bbox_inches="tight", dpi=300)
     
@@ -558,7 +558,7 @@ def wordcloud_freq_charts(kin_word_str,
     plt.ylabel("Frequency", fontsize="large", 
                fontstyle="italic", fontweight="bold")
     kin_target_freq = create_userfilename('Kin_target_freq_top_30_Bar', 'png')
-    outfile = os.path.join(tempdir, subs_sites_wcloud)
+    outfile = os.path.join(tempdir, kin_target_freq)
 
     plt.savefig(outfile, bbox_inches="tight", dpi=300)
 
