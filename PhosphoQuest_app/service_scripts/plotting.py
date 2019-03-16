@@ -74,11 +74,12 @@ def pie_chart(df, header, name, removed=None):
     label0 = pd.Series(df.index)
     # Place them into a series (not as objects).
     labels = list(label0)
-    if removed != None:
-        labels.pop(removed)
+
 
     # Import the specific values from the dataframe as a list.
     values = df[header].tolist()
+    if removed != None:
+        values.pop(removed)
 
     # Set core pie.
     trace = go.Pie(labels=labels, values=values)
