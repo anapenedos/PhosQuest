@@ -32,13 +32,27 @@
     </p>   
         ### example table image ###
     </p>
-        Column 1: Substrate<b> column with substrate gene name and site. Note that
-        non-phosphorylated peptides should also be in the format indicated i.e.
-        gene name(None). However, the analysis tool can also handle substrate
-        entries for non-phosphorylated peptides that are only gene names.
+        <b>Column 1: </b><em>Substrate</em> column with gene name and 
+        site. Note that non-phosphorylated peptides should also be in the 
+        format indicated i.e. <em>gene name(None)</em>. However, the analysis 
+        tool can also handle substrate entries for non-phosphorylated peptides 
+        that are <em>only</em> gene names.
     </p>
-        Column 2: Mean intensity of Control replicate intensities.
+        <b>Column 2: </b>Mean intensity of <em>Control</em> replicate intensities.
     </p>
+        <b>Column 3: </b>Mean intensity of <em>Treatment/condition</em> replicate intensities.
+    </p>
+        <b>Column 4: </b>Fold change calculation: <em>Treatment over the Control.</em> 
+        Note: these should not be log2 fold calculations!
+    </p>
+        <b>Column 5: </b>T-test P-values. Please use <em>uncorrected</em> values,
+        as the webapp will implement correction for multiple-testing errors. 
+    </p>
+        <b>Column 6-7: </b>Coefficients of variation for the <em>Control</em> 
+         and <em>Treatment/condition</em>, respectively. Please see section -
+         <em>Analysis functions</em> below for further details.
+    </p> 
+    </p> 
     <hr>
     <br>
     <H5> Analysis functions</H5>
