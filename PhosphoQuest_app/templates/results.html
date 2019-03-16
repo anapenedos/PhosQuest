@@ -97,23 +97,24 @@
           <hr>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H4>Kinase WordCloud - Most frequent Kinases in Data</H4>
+                  <center><H6>Kinase WordCloud - Most frequent Kinases in Data</H6>
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center>
               </div>
               <div class="col-md-6">
-                  <center><H4>Substrate Sites WordCloud - Most frequent Substrate Sites in Data</H4>
+                  <center><H6>Substrate Sites WordCloud - Most frequent Substrate Sites in Data</H6>
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}>
                   </center>
               </div>
           </div>
+          <br>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H4>Top 30 Kinases - Bar Plot</H4>
-                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}} width="480"> </center>
+                  <center><H6>Top 30 Kinases - Bar Plot</H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}} width="500"> </center>
               </div>
               <div class="col-md-6">
-                  <center><H4>Top 30 Substrate sites - Bar Plot</H4>
-                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="480"> </center>
+                  <center><H6>Top 30 Substrate sites - Bar Plot</H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="500"> </center>
               </div>
           </div>
       </div>
