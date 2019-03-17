@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <h3>PhosphoQuest Documentation</h3>
     <hr>
-    <H5> Database Contents</H5>
+    <H5> <b><em>Database Contents</em></b></H5>
     <br>
     <p>
         Resources in this database were obtained from various sites.
@@ -25,19 +25,27 @@
         pages of this website.</p>
     <hr>
     <br>
-    <H5> Experimental Data Analysis</H5>
+    <H5> <b><em>Background</em></b></H5>
     <br>
     <p>
-        What kind of experimental analysis Phosphoquest can handle and why
-        users might want to use PhosphoQuest to do their analysis.
-
+        PhosphoQuests analytical tool is designed to process data generated
+        by phospho-proteomics experiments. Typically, the experimental side 
+        would entail tryptic protein digestion, enrichment for phospho-peptides
+        using pull down methods employing i.e. titanium dioxide followed by 
+        analysis using mass spectrometry.
+    <p>
+        Your downstream data analysis pipeline, whether it be through packages
+        such as MaxQuant, Progenesis QI or in-house tools, should generate 
+        identification as well as relative quantitation reports. These outputs
+        may take different forms, therefore we provide guidance below on the input 
+        format required by the tool. 
     </p>
     <hr>
     <br>
-    <H5> Table format for uploading to PhosphoQuest analysis tool.</H5>
+    <H5> <b><em>Pre-requisites for uploading data to PhosphoQuests analysis tool</em></b></H5>
     <br>
     <p>
-        Please see below for an example of the table format required:
+        Please see below for an example format required by PhosphoQuest:
     </p>   
         ### example table image ###
     </p>
@@ -59,20 +67,19 @@
     </p>
         <b>Column 6-7: </b>Coefficients of variation (CV's) for the <em>Control</em> 
          and <em>Treatment/Condition</em> columns, respectively. PhosphoQuest can also handle
-         data that doesn't have these column entries. Please see section -
-         <em>Analysis functions</em> below for further details.
+         data that doesn't have these column entries. Please see section:
+         <em>Data analysis - general summary</em> below for further details.
     </p> 
     </p> 
     <hr>
     <br>
-    <H5> Data analysis - general summary</H5>
+    <H5> <b><em>Data analysis - general summary</em></b></H5>
     <br>
     <p>
-         The following will be an overview of the strategy employed to analyse
+         The following is an overview of the strategy employed to analyse
          your data. Conceptually, the process can be broken down into 6 steps
          which collate and categorise your data. We then use this analysis to 
-         generate data visualisations, we hope will help you interpret your
-         phospho-proteomics data.           
+         generate data visualisations.           
     </p>
          <b>Step 1: </b> Data table structure check and basic filtering. This
          pre-analysis step implements a basic error check and determines the format
@@ -81,7 +88,7 @@
          for further processing. 
     </p>
          <b>Step 2: </b> A series of sequential steps, categorise the data into
-         groupings. For example: which hits are unique or appear in both the 
+         groupings. For example: which hits are unique to or appear in both the 
          <em>Control</em> and <em>Treatment/Condition</em>, which entries are 
          phosphorylated peptides, are cvs within a certain tolerance etc. The
          table is also further filtered for phospho-sites only.
@@ -90,24 +97,23 @@
          A default permissable error rate of 0.05 is applied, with only the 
          Benjamini-Hochberg method for multiple testing correction currently implememented.
          Please see this link for background information: 
-         https://www.nature.com/articles/nbt1209-1135
+         <a href= "https://www.nature.com/articles/nbt1209-1135"> Reference.</a>
     </p>
-         <b>Step 4: </b> Analysis in previous steps used to further categorise 
-         , filter and sort data. It is at this stage, that the data table is 
-         queried against the <em>PhosphoQuest</em> database, determining
+         <b>Step 4: </b> Analysis implemented in previous steps is used to 
+         further categorise, filter and sort data. The data table is at this
+         stage queried against the <em>PhosphoQuest</em> database, determining
          which substrates and sites map to information held on the database.
-         Data analysis at this stage allows the visualisation of significantly 
-         differentially expressed hits in the form of a styled table and a
-         volcano plot.
+         We can now visualise significantly differentially expressed hits in 
+         the form of a styled table and a volcano plot. Please see section:
+         <em>Data visualisation</em> below for further details.
     </p>
          <b>Step 5: </b> Metrics of the data are extracted for downstream 
-         visualisation. For example, phospho pull-down enrichment efficiency 
-         & distributions of phosphorylated amino acid residues to name 
-         two categories.
+         visualisation. For example, pull-down enrichment efficiency to name
+         one such measure.
     </p>
-         <b>Step 6: </b> This analysis step has 2 sub-categories:
+         <b>Step 6: </b> This step has 2 sub-categories:
          </p><b>A </b>- Determine global freqencies of substrate/sites and their 
-         corresponding kinases in data table - this data is visualised using
+         corresponding kinases in the data table - this data is visualised using
          wordclouds and frequency charts.
          </p><b>B </b>- Calculate relative kinase activity, in the subset of the data,
          whose hits are considered significantly differentially expressed. This 
@@ -115,10 +121,22 @@
          <em>(Treatment over Control)</em>, calculated for their substrates/sites.
     <hr>
     <br>
-    <H5> Output information and  files</H5>
+    <H5> <b><em>Data visualisation</em></b></H5>
     <br>
     <p>
-        Information here about what analysis is produced, and the  output file.
+        We have taken the approach of - <em>more visualisation is a good thing.</em>
+        To this end PhosphoQuest generates a number of visuals, that we hope
+        will help you interpret and understand your data. These take the
+        following form:
     </p>
+        <b>Styled table: </b> Data processing steps described earlier, help us
+        to pare down your data to a subset that meets the following criteria:
+        Significantly differentially expressed with a corrected p-value of 
+        <em><=0.05.</em> If CV data is present in the original table, then a 
+        secondary threshold is applied i.e. hits with CVs <em><=25%.</em>
+    </p>   
+         
+    </p>    
+        
 </div>
 {% endblock content %}

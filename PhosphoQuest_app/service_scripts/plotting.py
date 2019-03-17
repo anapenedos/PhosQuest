@@ -426,8 +426,9 @@ def user_data_volcano_plot(phos_table):
                     'size': 18,
                     'color': '#3e4444'
                     },
-            'height': 1000,
-            'width': 1200,
+            'height': 900,
+            'width': 1100,
+            'hovermode': 'closest',
             'xaxis': {
                         'title': 'Log2 fold change: condition over control',
                         'ticklen': 5,
