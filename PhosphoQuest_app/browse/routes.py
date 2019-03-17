@@ -80,7 +80,9 @@ def sub_detail(text):
     table = browse_queries.subs_phos_query(text)
 
     return render_template('search_results.html', title="Substrate",
-                           style='subphos', results=results, table=table)
+                           style='double', results=results, table=table,
+                           related="Phosphosites")
+
 
 @browse.route("/phosites_detail/<text>")
 def phosites_detail(text):
@@ -95,7 +97,7 @@ def phosites_detail(text):
 
 @browse.route("/inh_detail/<text>")
 def inh_detail(text):
-    " inhibitor detail"
+    " inhibitor detail sets up for adding pubchem widget"
     results = browse_queries.browse_detail(text, 'Inhibitor')
     cid = results[0][0][1]  # get pubchem CID from results to pass
     return render_template('search_results.html', title="Inhibitor",

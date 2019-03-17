@@ -2,7 +2,7 @@ Babel==2.6.0
 Click==7.0
 Flask==1.0.2
 Flask-Babel==0.12.2
-flask-table++0.5.0
+flask-table==0.5.0
 Flask-WTF==0.14.2
 itsdangerous==1.1.0
 Jinja2==2.10

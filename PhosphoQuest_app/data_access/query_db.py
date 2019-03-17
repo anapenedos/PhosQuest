@@ -165,31 +165,40 @@ def all_table(table):
 def query_to_list(query_results, table):
     """
     Function to parse query output to list of lists for selected attributes
-      for website (results <3).
-    :param query_results:
-    :param table:
-    :return:
+      for website (results <3). Creates links for some values
+    :param query_results: query object
+    :param table: Table Class object
+    :return: list containing list of tuples for each attribute for each result
     """
 
     # get attribute names for this table
     names = table.__table__.columns.keys()
     # initialise result list
-    result = []
+    resultlist = []
     # iterate through query results checking for names and dropped attrs
     for item in query_results:
-        resultlist = []
+        result = []
         for name in names:
+            # set attribute variable from query output based on name
+            attrib = getattr(item, name)
 
             if name in headers:
-                header = headers[name]  # translate to human readable
-                x = (header, getattr(item, name))
-                resultlist.append(x)
+                # translate to human readable
+                header = headers[name]
             else:
-                x = (name, getattr(item, name))
-                resultlist.append(x)
+                header = name
 
-        result.append(resultlist)
+            # pass if value is 'None'
+            if attrib == None:
+                continue
+            x = (header, attrib)
 
-    return result
+            # Add tuple to result list
+            result.append(x)
+
+        #add result to result list
+        resultlist.append(result)
+
+    return resultlist
 
 

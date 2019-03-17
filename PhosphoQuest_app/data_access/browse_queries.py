@@ -53,6 +53,7 @@ def browse_subcat(category):
         return links
 
 
+
 def browse_table(subcategory):
     """
     function to take subcategory and display results as flask_table
@@ -86,7 +87,6 @@ def browse_table(subcategory):
                 out_table = Substrate_first_results(items=results)
 
             return out_table
-
 
         else:
             return results
