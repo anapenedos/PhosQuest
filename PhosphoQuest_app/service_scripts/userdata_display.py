@@ -50,7 +50,7 @@ def plot_all(all_data):
     # Analysis tab 1 display - Styled table of significant hits and kinase
     # activity
 
-    table = plotting.style_df(all_data['parsed_sty_sort'],
+    table, kin_act = plotting.style_df(all_data['parsed_sty_sort'],
                  all_data['kinase_activities'])
 
     # Tab 2 run volcano plot on full_sty_sort dataframe
@@ -83,9 +83,10 @@ def plot_all(all_data):
 
 
     all_plots= {
-        'table':table, 'volcano':volcano, 'kin_wcloud':kin_wcloud,
-        'subs_sites_wcloud':subs_sites_wcloud, 'kin_freq':kin_freq,
-        'kin_target_freq':kin_target_freq, 'phos_enrich_pie':phos_enrich_pie,
+        'table':table, 'kin_act':kin_act, 'volcano':volcano,
+        'kin_wcloud':kin_wcloud, 'subs_sites_wcloud':subs_sites_wcloud,
+        'kin_freq':kin_freq,'kin_target_freq':kin_target_freq,
+        'phos_enrich_pie':phos_enrich_pie,
         'multi_phos_res_freq_pie':multi_phos_res_freq_pie,
         'AA_mod_res_freq_pie':AA_mod_res_freq_pie
         }

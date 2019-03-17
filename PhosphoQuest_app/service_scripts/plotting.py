@@ -368,17 +368,17 @@ def style_df(phospho_df, kin_activities):
     # ----------------------------------------------------------------------- #
     
     # Render kinase activity table as html and export to wkdir.
-    html = styled_kin_activities_df.hide_index().render()
+    kin_act = styled_kin_activities_df.hide_index().render()
     #with open("style_kin_activities.html","w") as fp:
         #fp.write(html)
 
     #return html
     # Render user data phospho hits table as html and export to wkdir.
-    html = styled_phospho_df.hide_index().render()
+    table = styled_phospho_df.hide_index().render()
     #with open("style_ud_data.html","w") as fp:
         #fp.write(html)
         
-    return html
+    return  table, kin_act
 
 # --------------------------------------------------------------------------- #
 
@@ -423,7 +423,7 @@ def user_data_volcano_plot(phos_table):
                 size = 10,
                 color=vp_df_subset.iloc[:, 3], # Colour set to -log10(p-value)
                 colorscale='Portland',
-                colorbar=dict(title='log2 fold change (color bar scale)'),
+                colorbar=dict(title='log2 fold change'),
                 showscale=True),             
     )
             
@@ -455,7 +455,7 @@ def user_data_volcano_plot(phos_table):
                         'gridwidth': 2
                     },
             'shapes': [
-                    # Horizontal dashed line to denote permissbale error rate.
+                    # Horizontal dashed line to denote permissible error rate.
                     # Error rate of 0.05 = ~1.3 (-log10 scale).
                      {
                         'type': 'line',
