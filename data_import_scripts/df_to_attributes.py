@@ -84,6 +84,7 @@ mrc_inhib_source_to_class = {
     'Inhibitor'        : [(Inhibitor, 'inhib_short_name')],
     'Brutto'           : [(Inhibitor, 'inhib_brutto')],
     'MW'               : [(Inhibitor, 'inhib_molec_weight')],
+    'MF'               : [(Inhibitor, 'inhib_molec_formula')],
     'Commercial Vendor': [(Inhibitor, 'inhib_vendor')],
     'CAS'              : [(Inhibitor, 'inhib_catalog_number')],
     'InChI'            : [(Inhibitor, 'inhib_int_chem_id')],
@@ -121,7 +122,9 @@ uniprot_subs_to_class = {
 
 pubchem_to_class = {'CID'            : [(Inhibitor, 'inhib_pubchem_cid')],
                     'IUPACName'      : [(Inhibitor, 'inhib_full_name')],
-                    'MolecularWeight': [(Inhibitor, 'inhib_molec_weight')]}
+                    'MolecularWeight': [(Inhibitor, 'inhib_molec_weight')],
+                    'MolecularFormula: [(Inhibitor, 'inhib_molec_formula')]
+}
 
 """
 Class attributes
@@ -170,6 +173,7 @@ inhib_short_name
 inhib_full_name
 inhib_brutto
 inhib_molec_weight
+inhib_molec_formula
 inhib_chem_structure
 inhib_smile
 inhib_int_chem_id
@@ -267,6 +271,7 @@ CNumber
 Inhibitor
 Brutto
 MW
+MF
 Action
 Reference
 Reference 2
