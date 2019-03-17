@@ -13,6 +13,11 @@ from datetime import datetime
 import random
 import os
 
+# project imports
+from PhosphoQuest_app.service_scripts.user_data_crunch import user_data_check,\
+    create_filtered_dfs, correct_pvalue, table_sort_parse, data_extract, \
+    kinase_analysis
+
 #Define temporary directory path for output files
 tempdir = os.path.join("PhosphoQuest_app","static", 'userdata_temp')
 
@@ -574,6 +579,23 @@ def wordcloud_freq_charts(kin_word_str,
     return kin_wcloud, subs_sites_wcloud, kin_freq, kin_target_freq
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
+    # set up runs for testing functions
+    file = os.path.join('user_data', 'az20.tsv')
+
+    data_or_error = user_data_check(file)
+
+    styno, sty = create_filtered_dfs(data_or_error)
+
+    corrected_p = correct_pvalue(sty)
+
+    full_sty_sort, parsed_sty_sort, db_kin_dict = table_sort_parse(corrected_p)
+
+    phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq = \
+        data_extract(full_sty_sort, styno)
+
+    kinase_target_freq, kinase_freq, kin_word_str, subs_sites_word_str, \
+    kinase_activities = kinase_analysis(db_kin_dict, parsed_sty_sort)
+
     style_df(parsed_sty_sort, kinase_activities)
 
     ud_volcano = user_data_volcano_plot(full_sty_sort)
@@ -583,4 +605,4 @@ if __name__ == "__main__":
                                          kinase_freq,
                                          kinase_target_freq)
 
-    pie-chart = pie_chart(AA_mod_res_freq, "Total", "testpie")
+    pie_ch = pie_chart(AA_mod_res_freq, "Total", "testpie")
