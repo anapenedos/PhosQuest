@@ -82,7 +82,11 @@ def pie_chart(df, header, name, removed=None):
         values.pop(removed)
 
     # Set core pie.
-    trace = go.Pie(labels=labels, values=values)
+    trace = go.Pie(labels=labels, values=values,
+                   hoverinfo='label+value', textinfo='percent',
+                   textfont=dict(size=20),
+                   marker=dict(line=dict(color='#000000', width=2))
+                   )
 
     # Define trace as data.
     data = [trace]
@@ -161,8 +165,11 @@ def pie_chart(df, header, name, removed=None):
 # # Import the specific values from the dataframe as a list.
 # values = multi_phos_res_freq['Frequency'].tolist()
 #
-# # Set core pie.
-# trace = go.Pie(labels=labels, values=values)
+#trace = go.Pie(labels=labels, values=values,
+#                hoverinfo='label+percent', textinfo='value',
+#                textfont=dict(size=20),
+#                marker=dict(line=dict(color='#000000', width=2))
+#                )
 #
 # # Define trace as data.
 # data = [trace]
@@ -575,3 +582,5 @@ if __name__ == "__main__":
                                          subs_sites_word_str,
                                          kinase_freq,
                                          kinase_target_freq)
+
+    pie-chart = pie_chart(AA_mod_res_freq, "Total", "testpie")
