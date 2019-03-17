@@ -71,7 +71,7 @@ def get_uniprot_api_data(class_name):
         'to': 'ACC',
         'format': 'tab',
         'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,'
-                   'genes,proteome,comment(DOMAIN)',
+                   'genes,comment(DOMAIN)',
         'query': query_str
     }
 
@@ -93,6 +93,7 @@ def get_uniprot_api_data(class_name):
 
     # Converts a replicate Subcellular location column in string format.
     df['Subcellular location55'] = df['Subcellular location [CC]'].astype(str)
+
 
     # Specfiically extracts the Subcellular location information (and nothing
     # else) from the original column and places is /
