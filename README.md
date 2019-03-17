@@ -54,13 +54,23 @@ The following will be an overview of the strategy employed to analyse your data.
 
 # Information for Developers
 
-## Setting up the Database
-Instructions for using the various python scripts to set up the DB here
-
 ## Software Specifications
 PhosphoQuest is developed in Python 3.6+ using Flask 1.0.2 for web functionality and runs on Windows, Linux and Mac OS. The database is running in sqlite3. The web interface can be viewed in any modern browser; however, we recommend the latest versions of Chrome, Firefox and Edge to ensure correct page rendering (minor differences are seen between browsers due to different handling of css).
 
-Webpage styles are based on Bootstrap CSS 4.2.1 with local tweaks, jqeury 
+Webpage styles are based html5 with Bootstrap CSS 4.2.1 with local tweaks, jquery is used for tabs on results page.
+
+Database functionality uses Sqlite3 and python SqlAlchemy. 
+
+Data analysis uses numpy, pandas, seaborn and statsmodels. Outplut plots are rendered using plotly and matplotlib, with WordCloud to provide visual representations. 
+
+
+## Setting up the Database
+Instructions for using the various python scripts to set up the DB here
+
+## Setting up the PhosphoQuest Application
+
+All the packages required to run the PhosphoQuest web application are in the PhosphoQuest App folder. After installation of all the requirements and set-up of the database run the "Run.py" application `python run.py` from the outer folder level. This will initiate the Flask application and server, navigate to the webpage `127.0.0.1:5000/` to view the web application (run on local computer) 
+
 
 ## Python Package requirements to run the PhosphoQuest Server.
 - Babel 2.6.0
