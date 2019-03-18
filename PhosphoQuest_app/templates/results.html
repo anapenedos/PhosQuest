@@ -73,18 +73,40 @@
       </div>
     </main>
     <div class = 'container'>
-    <H2> Your Phosphorylation Data Analysis Results</H2>
+    <H2><center><b><em>Phospho-proteomics Data Analysis Results</center></b></em></H2>
     <br>
     <div id="tabs">
       <ul>
-        <li><a href="#analysis-1"><span>Significant results</span></a></li>
+        <li><a href="#analysis-1"><span>Processed table</span></a></li>
         <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
         <li><a href="#analysis-3"><span>WordCloud and Frequency</span></a></li>
         <li><a href="#analysis-4"><span>Summary Charts</span></a></li>
         <li><a href="#analysis-5"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
-        <H3> Significant Results</H3>
+        <H3><b>Table guide:</b></H3>
+        </p>
+        <b>General overview: </b> This table corresponds to hits, whose corrected
+        p-values meet an error rate threshold of <=0.05 and have a CV of <=25%. 
+        If the original upload table didn't include CV columns, then only the 
+        p-value threshold is applied.
+        </p>
+        <b>Clickable entries: </b> Try clicking entries in columns: 
+        <em>Substrate/Isoform in DB (gene name)</em>, <em>Phosphosite in DB (ID)</em> and
+        <em>Kinase in DB (gene name)</em>. We guarantee a pleasant journey!
+        </p>  
+        <b>Intensity columns: </b> Original intensity values were transformed 
+        by dividing each substrate/site intensity by the maximum intensity
+        of the row (both conditions). This scaling allows the application of 
+        a heatmap to the cells, for visual clarification of intensity differences.
+        </p> 
+        <b>Log2 fold changes: </b> Barplots are integrated into column, that scale
+        with the fold change in the cell. <em>Note</em>: Cells that are fully coloured
+        denote hits detected in only one condition (see intensity columns). 
+        </p> 
+        <b>Sorting: </b> The Log2 fold changes are used, giving a gradated
+        ordering of hits as you scroll through the table.
+        </p>  
         <div class=table.dataframe>
             {{ plots['table']|safe }}
         </div>
