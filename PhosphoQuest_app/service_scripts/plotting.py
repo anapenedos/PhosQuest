@@ -21,6 +21,7 @@ from PhosphoQuest_app.service_scripts.user_data_crunch import user_data_check,\
 #Define temporary directory path for output files
 tempdir = os.path.join("PhosphoQuest_app","static", 'userdata_temp')
 
+# --------------------------------------------------------------------------- #
 
 def create_userfilename(text, extension):
     """
@@ -52,6 +53,7 @@ def create_userfilename(text, extension):
     outname = f"{date}_{id}_{file}_{text}.{extension}"
     return outname
 
+# --------------------------------------------------------------------------- #
 
 def read_html_to_variable(file):
     """
@@ -64,6 +66,7 @@ def read_html_to_variable(file):
 
     return outvar
 
+# --------------------------------------------------------------------------- #
 
 def pie_chart(df, header, name, removed=None):
     """
@@ -104,90 +107,18 @@ def pie_chart(df, header, name, removed=None):
 
     html = read_html_to_variable(outfile)
     return html
-# # --------------------------------------------------------------------------- #
-# ### Pie chart for phos_enrich.
-#
-# # Example data
-# # labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# # values = [4500,2500,1053,500]
-#
-# # Import the row heading data as object.
-# label0 = pd.Series(phos_enrich.index)
-# # Place them into a series (not as objects).
-# labels = list(label0)
-#
-# # Import the specific values from the dataframe as a list.
-# values = phos_enrich['Total'].tolist()
-# values2 = values.pop(2)
-#
-# # Set core pie.
-# trace = go.Pie(labels=labels, values=values)
-#
-# # Define trace as data.
-# data = [trace]
-#
-# # Plot the data in html format.
-# plot(data, filename='basicpie.html', auto_open=True)
-# # --------------------------------------------------------------------------- #
-# ### Pie chart for AA_mod_res_freq.
-#
-# # Example data
-# # labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# # values = [4500,2500,1053,500]
-#
-#
-#
-# # Import the row heading data as object.
-# label0 = pd.Series(AA_mod_res_freq.index)
-# # Place them into a series (not as objects).
-# labels = list(label0)
-#
-# # Import the specific values from the dataframe as a list.
-# values = AA_mod_res_freq['Total number with phospho'].tolist()
-#
-# # Set core pie.
-# trace = go.Pie(labels=labels, values=values)
-#
-# # Define trace as data.
-# data = [trace]
-#
-# # Plot the data in html format.
-# plot(data, filename='basicpie2.html', auto_open=True)
-#
-# # --------------------------------------------------------------------------- #
-
-### Pie chart for Multi_phos_res_freq.
-
-# Example data
-# labels = ['Oxygen','Hydrogen','Carbon_Dioxide','Nitrogen']
-# values = [4500,2500,1053,500]
-
-# # Import the row heading data as object.
-# label0 = pd.Series(multi_phos_res_freq.index)
-# # Place them into a series (not as objects).
-# labels = list(label0)
-#
-# # Import the specific values from the dataframe as a list.
-# values = multi_phos_res_freq['Frequency'].tolist()
-#
-#trace = go.Pie(labels=labels, values=values,
-#                hoverinfo='label+percent', textinfo='value',
-#                textfont=dict(size=20),
-#                marker=dict(line=dict(color='#000000', width=2))
-#                )
-#
-# # Define trace as data.
-# data = [trace]
-#
-# # Plot the data in html format.
-# plot(data, filename='basicpie3.html', auto_open=True)
 
 # --------------------------------------------------------------------------- #
 
 ### Function to style table of significant phospho sites and render to html.
 def style_df(phospho_df, kin_activities):
     """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
-    and render/export as html. """
+    and render/export as html. 
+    :param phospho_df: Dataframe (significant hits only).
+    :param kin_activities: Dataframe (kinase activity analysis).
+    :return table: Styled table (user data analysis as html table).
+    :return kin_act: Styled table (kinase activity analysis as html table).
+    """
     # stop pandas from truncating strings in columns
     pd.set_option('display.max_colwidth', -1)
 
@@ -388,7 +319,10 @@ def style_df(phospho_df, kin_activities):
 ### Function to generate volcano plot from user data.
 def user_data_volcano_plot(phos_table):
     """ Function to create volcano plot of signifcantly differentially 
-    expressed phosho-sites from user uploaded data """
+    expressed phosho-sites from user uploaded data.
+    :param phos_table: Dataframe (Full table of phospho-sites only).
+    :return html: Volcano plot. 
+    """
     # Parse subset of phospho-sites table.
     vp_df_subset = phos_table[[phos_table.columns[0],   # Substrate.
                                phos_table.columns[1],   # site.
