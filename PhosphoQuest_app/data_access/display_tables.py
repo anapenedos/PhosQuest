@@ -23,11 +23,10 @@ class Substrate_first_results(Table):
 class Inhibitor_first_results(Table):
     """create table of inhibitors for first result display"""
     inhib_pubchem_cid = Col('PubChem no')
-    inhib_short_name = Col('Short name')
+    inhib_short_name = Col('Compound')
+    inhib_full_name = Col('Full Name')
     inhib_brutto = Col('Brutto')
     inhib_molec_weight = Col('Molecular Weight')
-    inhib_vendor = Col('Vendor')
-    inhib_catalog_number = Col('Cat. No')
     detail = LinkCol('Detail', 'browse.inh_detail',
                      url_kwargs=dict(text='inhib_pubchem_cid'))
 

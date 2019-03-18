@@ -31,7 +31,7 @@
     <br>
     <iframe class="pubchem-widget"
             src="https://pubchem.ncbi.nlm.nih.gov/compound/{{cid}}#section=3D-Conformer&embed=true"
-            style="width: 100%; height: 300px;"></iframe>
+            style="width: 100%; height: 500px;"></iframe>
     {% endif %}
 
     {% elif style == 'table' %}
@@ -58,10 +58,43 @@
     {% endfor %}
     {% endfor%}
     <br>
-    <H4> Table of Related {{ related }}</H4>
+    <H4> Table of {{ related }} related to {{ title }}-{{ text }}</H4>
     <br>
     <div class=table>
         {{ table }}
+    </div>
+</div>
+
+{% elif style == 'triple' %}
+    <H4>{{title}} Record Detail</H4>
+    <br>
+    <div
+            {% for item in results %}
+            {% for attr in item %}
+
+    <div class="row">
+        <div class="col-md-2">
+            <b>{{ attr[0] }}</b>
+        </div>
+        <div class="col-md-10">
+            {{ attr[1] }}
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor%}
+    <br>
+    <hr>
+    <H4> Table of {{ related }} related to  {{ title }}-{{ text }}</H4>
+    <br>
+    <div class=table>
+        {{ table }}
+    </div>
+    <hr>
+
+    <H4> Table of {{ related2 }} related to {{ title }}-{{ text }}</H4>
+    <br>
+    <div class=table>
+        {{ table2 }}
     </div>
 </div>
 {% endif %}
