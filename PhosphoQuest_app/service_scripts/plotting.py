@@ -41,16 +41,16 @@ def create_userfilename(text, extension):
     if 'id' in session and 'file' in session:
         id = session['id']
         file = session['file']
-        outname = f"{date}_{file}_{id}_{text}.{extension}"
-        return outname
 
     # create user id  and file cookie if not already in session
     else:
         # get date last 4 digits (milliseconds) as "unique" no for download
         id = "id" + time[-3:]
-            #use created id in filename
-        outname = f"{date}_{id}_{text}.{extension}"
-        return outname
+        # Create "file" id
+        file = random.randint(1,100)
+
+    outname = f"{date}_{id}_{file}_{text}.{extension}"
+    return outname
 
 
 def read_html_to_variable(file):

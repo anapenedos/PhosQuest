@@ -7,7 +7,20 @@
 <div>
     <H3>Online data analysis for your phosphate kinase experiments</H3>
     <br>
-    <H4> Please note analysis takes some time. Please wait.</H4>
+    <p>All analysis on this website is done <i> on the fly</i>, therefore please
+        do not click back or other links (in same tab) unless
+        you have finished looking through your results. A csv file of the analysed
+        data is provided for download when the analysis is finished and individual
+        data charts can be saved from the site.</p>
+    <a>Please see <a href="{{url_for('main.documentation')}}"> the documentation</a>
+    for information about how to format your datafile correctly and for further
+    information about the analysis output results.</p>
+    <br>
+    <p>We hope you enjoy your <i>PhosphoQuest</i>.</p>
+
+    <br>
+ <p><b> Please note large amounts of data-crunching goes on behind the scenes
+     and the analysis takes some time. Please wait.</b></p>
 
 </div>
 <br>
@@ -20,13 +33,12 @@
         {% if form.data_file.errors %}
             {% for error in form.data_file.errors %}
                 <span class="text-danger">{{ error }}</span>
-            {% endfor %}
+          {% endfor %}
         {% endif %}
       </div>
     </fieldset>
     <div class="form-group">
-          {{ form.submit(class="btn btn-outline-info") }}
+          {{ form.submit(class="btn btn-info") }}
       </div>
-    
 </form>
 {% endblock content %}
