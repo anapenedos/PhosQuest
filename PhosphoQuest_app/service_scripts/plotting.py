@@ -377,7 +377,7 @@ def style_df(phospho_df, kin_activities):
 
     #return html
     # Render user data phospho hits table as html and export to wkdir.
-    table = styled_phospho_df.hide_index().render(escape=False)
+    table = styled_phospho_df.hide_index().render()
     #with open("style_ud_data.html","w") as fp:
         #fp.write(html)
         
