@@ -19,7 +19,11 @@ def user_data_check(data_file):
     1 - Check user data file, and if necessary coerce to correct format. 
     2 - Check for fold calculation errors, and if correct, return data frame 
         for passing to later functions. 
-    3 - If incorrect fold calculations detected, error message returned. """
+    3 - If incorrect fold calculations detected, error message returned. 
+    :param data_file: user data table.
+    :return orig_file_parsed: Dataframe (if error checks pass).
+    :return error_message: Text string (error message).
+    """
     # Read user_data and assign to dataframe variable.
     orig_file = pd.read_table(data_file)
     
@@ -100,8 +104,11 @@ def user_data_check(data_file):
 
 ### Function to read user data and sequentially generate data frames.
 def create_filtered_dfs(parsed_data):
-    """ Create data frame subsets of user data and expand
-    with further analysis. """
+    """ Create data frame subsets of user data and expand with further analysis. 
+    :param parsed_data: Dataframe
+    :return parsed_data: Dataframe (hits with at least 1 quantitation).
+    :return ud_df1_sty_valid: Dataframe (phospho-hits and extra analysis).
+    """
     # Rename "Substrate" column to "Substrate (gene name)".
     # Df consists of all peptides with at least 1 quantitation.
     parsed_data.rename(columns={parsed_data.columns[0]: \
@@ -189,7 +196,10 @@ def correct_pvalue(filtered_df):
     - Pass p-value series to "fdrcorrection" function of "statsmdodels" module.
     - Benjamini/Hochberg correction method used.
     - "rej_hyp" = array of rejected null hypotheses as list of boolean values.
-    - "corr_p_value" = array of corrected p-values in original series order."""
+    - "corr_p_value" = array of corrected p-values in original series order.
+    :param filtered_df: Dataframe (phospho-hits only).
+    :return filtered_df: Dataframe (appended with corrected p-value analysis). 
+    """
     # Pass data-frame to "fdrcorrection" function.
     rej_hyp, corr_p_val = fdrcorrection(filtered_df.iloc[:, 4],
                                         alpha=0.05) # permissable error rate.
@@ -226,7 +236,18 @@ def correct_pvalue(filtered_df):
 
 ### Function to sort and parse phospho only data frame.
 def table_sort_parse(filtered_df):
-    """ Sort table, parse most significant hits and export to csv. """
+    """ The following operations carried out
+    1 - Sort table, 
+    2 - Launch query of db against user data, with algnment results appended
+    to user data table.
+    3 - Parse most significant hits, with or without CV filter.
+    :param filtered_df: Dataframe of phospho-hits only.
+    :return filtered_df: Dataframe (significant hits filtered by corrected 
+    p-values only. Output when no CV columns present in user data).
+    :return filtered_signif_df: Dataframe (significant hits dataframe filtered 
+    by corrected p-values and CV threshold of <=25%).
+    :return kin_dict: Dictionary (user data to db query kinase information).
+    """
     # Specify a new list of ordered column indices.
     # Note: not dependent on column names!
     new_col_order = [0, 7, 1, 2, 8, 9, 10, 11, 3, 12, 5, 6,
@@ -313,10 +334,17 @@ def table_sort_parse(filtered_df):
 ### Function to extract and collate info from phospho data frame.
 def data_extract(filtered_df, styno):
     """ Extract data groups as follows:
-        1 - Proportion of phospho-sites in total data & % enrichment.
-        2 - Frequency of phosphorylated residues.
-        3 - Frequency of single & multiple phosphorylations.
-        4 - Total number of proteins represented. """
+    1 - Proportion of phospho-sites in total data & % enrichment.
+    2 - Frequency of phosphorylated residues.
+    3 - Frequency of single & multiple phosphorylations.
+    4 - Total number of proteins represented. 
+    :param filtered_df: dataframe of phospho-hits only.
+    :param styno: dataframe of hits with at least 1 quantitation.
+    :return data_group_1: Dataframe (% enrichment analysis).
+    :return data_group_2: Dataframe (AA residue phosphorylation distribution).
+    :return data_group_3: Dataframe (Number of phosphos per peptide distributions).
+    :return data_group_4: Integer (Number of represented protein groups).
+    """
     ### Data group - 1.
     # Compute length of phospho only dataframe.
     # Corresponds to number of phospho-sites.
@@ -437,12 +465,20 @@ def data_extract(filtered_df, styno):
 ### Function to analyse and visualise kinase data distributions. 
 def kinase_analysis(db_kin_dict, parsed_sty_sort):
     """ Kinase centric analysis:
-        1 - Global kinase and corresponding substrate_sites analysis:
-        - Convert kinase dictionary from "ud_db_queries.py" to dataframe.
-        - Extract groupings, totals and frequencies.
-        2 - Significant phospho hits and corresponding kinase analysis:
-        - Map signifcant phospho hits to matching kinases from db.
-        - Calculate relative activity. """
+    1 - Global kinase and corresponding substrate_sites analysis:
+     - Convert kinase dictionary from "ud_db_queries.py" to dataframe.
+     - Extract groupings, totals and frequencies.
+    2 - Significant phospho hits and corresponding kinase analysis:
+    - Map signifcant phospho hits to matching kinases from db.
+    - Calculate relative activity. 
+    :param db_kin_dict: Dictionary (db query kinase information for user data).
+    :param parsed_sty_sort: Dataframe of signicant phospho-hits.
+    :return kinase_target_freq: Integer series (Substrate_sites frequencies).
+    :return kinase_freq: Integer series (Kinase frequencies).
+    :return kin_word_str: String (Kinase word string).
+    :return subs_sites_word_str: String (Substrate_sites word string).
+    :return kin_activities: Dataframe (Kinase activities for styler).
+    """
     # ANALYSIS 1:
     # Call function to extract user/db data alignment as dictionaries.
     # Pass kinase dictionary to dataframe.
