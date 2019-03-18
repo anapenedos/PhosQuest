@@ -3,7 +3,7 @@
 PhosphoQuest_app/static/userdata_temp/
 
 ## matplotlib
-.matplotlibrc
+matplotlibrc
 
 ## PyCharm files
 .idea
