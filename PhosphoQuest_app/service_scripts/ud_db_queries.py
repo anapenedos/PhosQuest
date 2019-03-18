@@ -266,11 +266,11 @@ def link_ud_to_db(user_data_frame):
     # show as strings
     tidy_db_links = format_db_links(db_links)
     # change key/column names
-    tidy_db_links['Substrate/Isoform in DB (accession)'] = \
+    tidy_db_links['Substrate/Isoform in DB (gene name)'] = \
         tidy_db_links.pop(Substrate)
     tidy_db_links['Phosphosite in DB (ID)'] = \
         tidy_db_links.pop(Phosphosite)
-    tidy_db_links['Kinase in DB\n(gene/accession)'] = \
+    tidy_db_links['Kinase in DB\n(gene name)'] = \
         tidy_db_links.pop(Kinase)
 
     return tidy_db_links, kin_to_ud
