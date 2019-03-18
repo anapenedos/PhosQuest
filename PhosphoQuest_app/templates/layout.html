@@ -39,6 +39,7 @@
                     <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
                     <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
                     <a class="nav-item nav-link" href="{{ url_for('main.documentation') }}">Documentation</a>
+                    <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About Us</a>
                 </div>
             </div>
         </div>
@@ -48,7 +49,7 @@
 <!-- block content from child templates with bootstrap styles-->
 <main role="main" class="container">
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-9">
         <!-- print error messages from form validation-->
         {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -61,27 +62,44 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="content-section">
             <h3>Browse Database</h3>
-            <p class='text-muted'>Categories</p>
+            <br>
+
             <ul class="list-group">
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('browse.browse_cat', category="Kinase")}}>Kinases</a></li>
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('browse.browse_cat', category="Substrate")}}>Substrates</a></li>
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('browse.browse_table', subcategory='Inhibitor')}}>Inhibitors</a></li>
-                <li class="list-group-item list-group-item-dark">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
                        href = {{url_for('main.documentation')}}>Documentation</a></li>
             </ul>
         </div>
+        <br>
+        <p style="float:right">
+        <img src="{{url_for('static', filename='monster.png')}}"
+             alt="monster image">
+        <img src="{{url_for('static', filename='vampire.png')}}"
+             alt="vampire image"></p>
+                        <p style="float:left">
+        <img src="{{url_for('static', filename='knight.png')}}"
+             alt="knight image"></p>
     </div>
 </div>
 </main>
 </body>
+<footer>
+    <hr>
+    <font size="2"><p>PhosphoQuest ©2019</p></font>
+    <font size="1">
+    <div>Icons made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/"title="Flaticon">www.flaticon.com</a> are licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+</font>
+</footer>
 </html>

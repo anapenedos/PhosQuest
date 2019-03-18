@@ -1,0 +1,15 @@
+<!--inherits layout from layout.html-->
+{% extends "layout_no_sidebar.html" %}
+{% block content %}
+<div>
+    <center>  <br>
+        <H3> Sadly the dragons ate your analysis</H3>
+        <H4>An error occurred</H4>
+    <img src="{{url_for('static', filename='oops_kinase.png')}}"
+        alt="file error image"/>
+    <br>
+    <H3>Please restart your PhosphoQuest.
+        <br>
+    <a href="{{url_for('crunch.analysis')}}">Try going back to analysis</a></center></H3>
+</div>
+{% endblock content %}

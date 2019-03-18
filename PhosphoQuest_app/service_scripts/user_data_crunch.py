@@ -6,25 +6,9 @@
 import os
 import pandas as pd
 import numpy as np
-import matplotlib as mpl
 from statsmodels.stats.multitest import fdrcorrection
-from plotly.offline import init_notebook_mode,  plot
-import plotly.graph_objs as go
-from datetime import datetime
-from wordcloud import WordCloud
-import matplotlib.pyplot as plt
-#init_notebook_mode() # ONLY NEEDED FOR IPYTHON NOTEBOOK
 
-# Import packages from sqlalchemy.
-from sqlalchemy import and_, or_
-from sqlalchemy.orm import Load
-from sqlalchemy.inspection import inspect
-
-# project imports
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
-    Substrate, Phosphosite, kinases_phosphosites_table
-from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
+### Project imports
 from PhosphoQuest_app.service_scripts.ud_db_queries import link_ud_to_db
 
 # --------------------------------------------------------------------------- #
@@ -35,7 +19,11 @@ def user_data_check(data_file):
     1 - Check user data file, and if necessary coerce to correct format. 
     2 - Check for fold calculation errors, and if correct, return data frame 
         for passing to later functions. 
-    3 - If incorrect fold calculations detected, error message returned. """
+    3 - If incorrect fold calculations detected, error message returned. 
+    :param data_file: user data table.
+    :return orig_file_parsed: Dataframe (if error checks pass).
+    :return error_message: Text string (error message).
+    """
     # Read user_data and assign to dataframe variable.
     orig_file = pd.read_table(data_file)
     
@@ -68,8 +56,8 @@ def user_data_check(data_file):
     # Determine number of columns.
     num_col = orig_file_subset.shape[1]
     
-    # Check if number of cols = 5 and append new columns with "empty" entries
-    # for cv calculations that are missing.
+    # Check if number of cols = 5 and append new columns with all entries
+    #  = to 1 for cv calculations that are missing.
     # If number of columns adhere to correct format, data frame unaffected.
     if num_col == 5:
         orig_file_subset["control_cv"] = 1
@@ -97,13 +85,15 @@ def user_data_check(data_file):
     # Define error message if fold calculation matching determines
     # existance of errors.
     error_message = \
-    ("Your incorrect fold change calculations shall not avail you..." +
-     "scourge of webapps!" +
-     " Your data frame SHALL NOT PASS!")
-    #"Anomaly detected..PhosphoQuest will self-destruct in T minus 10 seconds")
+    ("Anomaly detected..PhosphoQuest will self-destruct in T minus 10 seconds"+
+    "...just kidding! Please check your fold change calculations, "+
+    "a discrepancy has been detected.")
     
-    # If "sum_matches" equal to length of data frame, then reurn data frame.
-    # If not, then return error message.
+    # If "sum_matches" equal to length of data frame, then return data frame.
+    # If not, return error message.
+    # Note: if first logical test passes, this indicates that fold change
+    # calculations in original user data are correct (within tolerance),
+    # and filtered dataframe returned for further analysis.
     if sum_matches == len(orig_file_subset):
         orig_file_parsed = orig_file_subset.iloc[:, 0:7]
         return orig_file_parsed
@@ -114,8 +104,11 @@ def user_data_check(data_file):
 
 ### Function to read user data and sequentially generate data frames.
 def create_filtered_dfs(parsed_data):
-    """ Create data frame subsets of user data and expand
-    with further analysis. """
+    """ Create data frame subsets of user data and expand with further analysis. 
+    :param parsed_data: Dataframe
+    :return parsed_data: Dataframe (hits with at least 1 quantitation).
+    :return ud_df1_sty_valid: Dataframe (phospho-hits and extra analysis).
+    """
     # Rename "Substrate" column to "Substrate (gene name)".
     # Df consists of all peptides with at least 1 quantitation.
     parsed_data.rename(columns={parsed_data.columns[0]: \
@@ -131,8 +124,11 @@ def create_filtered_dfs(parsed_data):
                             str.replace(r"\(.*\)", "")
     
     # Parse data that contains Ser, Thr & Tyr phospho-sites only (STY)
+    # Note: setting na = false in contains() function allows code to deal
+    # with subs_sites entries where "(None)" isn't present in the original
+    # susbtrates column.
     ud_df1_sty = parsed_data[parsed_data.iloc[:, 7].
-                            str.contains("S|T|Y", case=False)]
+                            str.contains("S|T|Y", case=False, na=False)]
 
     # Parse data for phospo-sites with valid p-values.
     ud_df1_sty_valid = ud_df1_sty[(ud_df1_sty.iloc[:, 4] > 0)]
@@ -200,7 +196,10 @@ def correct_pvalue(filtered_df):
     - Pass p-value series to "fdrcorrection" function of "statsmdodels" module.
     - Benjamini/Hochberg correction method used.
     - "rej_hyp" = array of rejected null hypotheses as list of boolean values.
-    - "corr_p_value" = array of corrected p-values in original series order."""
+    - "corr_p_value" = array of corrected p-values in original series order.
+    :param filtered_df: Dataframe (phospho-hits only).
+    :return filtered_df: Dataframe (appended with corrected p-value analysis). 
+    """
     # Pass data-frame to "fdrcorrection" function.
     rej_hyp, corr_p_val = fdrcorrection(filtered_df.iloc[:, 4],
                                         alpha=0.05) # permissable error rate.
@@ -237,7 +236,18 @@ def correct_pvalue(filtered_df):
 
 ### Function to sort and parse phospho only data frame.
 def table_sort_parse(filtered_df):
-    """ Sort table, parse most significant hits and export to csv. """
+    """ The following operations carried out
+    1 - Sort table, 
+    2 - Launch query of db against user data, with algnment results appended
+    to user data table.
+    3 - Parse most significant hits, with or without CV filter.
+    :param filtered_df: Dataframe of phospho-hits only.
+    :return filtered_df: Dataframe (significant hits filtered by corrected 
+    p-values only. Output when no CV columns present in user data).
+    :return filtered_signif_df: Dataframe (significant hits dataframe filtered 
+    by corrected p-values and CV threshold of <=25%).
+    :return kin_dict: Dictionary (user data to db query kinase information).
+    """
     # Specify a new list of ordered column indices.
     # Note: not dependent on column names!
     new_col_order = [0, 7, 1, 2, 8, 9, 10, 11, 3, 12, 5, 6,
@@ -246,7 +256,7 @@ def table_sort_parse(filtered_df):
     # List comprehension to re-order df columns by new index list.
     filtered_df = filtered_df[[filtered_df.columns[i] for i in new_col_order]]
 
-    # Sort level variables for sorting data frame.
+    # Variables for sorting data frame.
     sort_level_1 = filtered_df.columns[15] # Rejected hypotheses.
     sort_level_2 = filtered_df.columns[21] # CV <= 0.25 in control
     sort_level_3 = filtered_df.columns[19] # CV <= 0.25 in both.
@@ -261,15 +271,31 @@ def table_sort_parse(filtered_df):
                                               sort_level_5],
                                               ascending=False)
     
-    # Call function to extract user data/db alignment data as dictionaries.
+    # Call "link_ud_to_db" function to extract user data/db alignment data. 
+    # Dictionaries returned as follows:
+    # "db_ud_dict" = dictionary of 3 lists that match user data to db.
+    # keys = kinase in DB, Phosphosite in DB, Subs_site in DB.
+    # values = 3 lists of length of full phospho only data per key.
+    # "kin_dict" = kinase entries that map to subs_sites in user data.
+    # kinase = keys, subs_sites set per kinase = values.
     db_ud_dict, kin_dict = link_ud_to_db(filtered_df)
     
-    # Pass DB/user data dictionary to dataframe.
+    # Pass "db_ud_dict" dictionary to dataframe.
+    # 3 columns of length of full phospho only data returned.
+    # Note: since "link_ud_to_db()" takes the full phospho data as input,
+    # unpacking of the dictionary to dataframe returns columns, whose entries
+    # match the order of the input. 
     db_ud_df = pd.DataFrame.from_dict(db_ud_dict, orient='index').transpose()
     
-    # concatenate full phospho table with DB user data links.
+    # Concatenate full phospho table with DB user data matches.
+    # Note: input dataframe "Filtered_df" index isn't ordered 1, 2, 3...,
+    # due to previous operations. 
+    # reset_index() extracts index to column, and uses default i.e. 1, 2, 3...,
+    # as new index. Reseting the index is required, as dataframe
+    # concatenation is by column indices!
     filtered_df = pd.concat([filtered_df.reset_index(drop=True),
-                             db_ud_df.reset_index(drop=True)], axis=1)      
+                             db_ud_df.reset_index(drop=True)], 
+                             axis=1)      
     
     # Sum control_cv & condition cv. 
     # User data that didn't contain cv columns upon original upload,
@@ -308,15 +334,25 @@ def table_sort_parse(filtered_df):
 ### Function to extract and collate info from phospho data frame.
 def data_extract(filtered_df, styno):
     """ Extract data groups as follows:
-        1 - Proportion of phospho-sites in total data & % enrichment.
-        2 - Frequency of phosphorylated residues.
-        3 - Frequency of single & multiple phosphorylations.
-        4 - Total number of proteins represented. """
+    1 - Proportion of phospho-sites in total data & % enrichment.
+    2 - Frequency of phosphorylated residues.
+    3 - Frequency of single & multiple phosphorylations.
+    4 - Total number of proteins represented. 
+    :param filtered_df: dataframe of phospho-hits only.
+    :param styno: dataframe of hits with at least 1 quantitation.
+    :return data_group_1: Dataframe (% enrichment analysis).
+    :return data_group_2: Dataframe (AA residue phosphorylation distribution).
+    :return data_group_3: Dataframe (Number of phosphos per peptide distributions).
+    :return data_group_4: Integer (Number of represented protein groups).
+    """
     ### Data group - 1.
-    # Number of phospho-sites.
+    # Compute length of phospho only dataframe.
+    # Corresponds to number of phospho-sites.
     phos_site_num = len(filtered_df)
 
-    # Number of non-phosporylated peptides.
+    # Compute length of full dataframe (including non-phosphos), 
+    # minus number of phopho-peptides.
+    # Corresponds to number of non-phosporylated peptides.
     non_phos_num = len(styno) - phos_site_num
 
     # Calculate % proportion of phospho-sites in total data-set.
@@ -324,8 +360,8 @@ def data_extract(filtered_df, styno):
                               *100),1)
 
     # Create dictionary of variables.
-    enrich_data_dict = {"Number of phospho sites": phos_site_num,
-                        "Number of non-phospho sites": non_phos_num,
+    enrich_data_dict = {"phosphorylated": phos_site_num,
+                        "Non-phosphorylated": non_phos_num,
                         "% Enrichment": phos_perc_enrich}
     
     # Pass dictionary to dataframe object.
@@ -426,328 +462,24 @@ def data_extract(filtered_df, styno):
 
 # --------------------------------------------------------------------------- #
 
-### Function to style table of significant phospho sites and render to html.
-def style_df(phospho_df):
-    """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
-    and render/export as html. """
-    # Parse subset of significant phospho hits.
-    phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
-                             phospho_df.columns[1],   # Phospho_site_ID.
-                             phospho_df.columns[22],  # Substrate links.
-                             phospho_df.columns[23],  # Phos-site links.
-                             phospho_df.columns[24],  # Kinase links.
-                             phospho_df.columns[4],   # Fold_cont_over_max.
-                             phospho_df.columns[5],   # Fold_cond_over_max.
-                             phospho_df.columns[9],   # Log2 fold change.
-                             phospho_df.columns[13]]] # Corrected p-value.
-    
-    # Insert new column at index 0 to specify row position as integer. 
-    idx = 0 # Set index for inserting column.
-    idx_col = range(1, (len(phospho_df)+1)) # Specify range as 1:len(df)+1
-    phospho_df.insert(loc=idx, column="Number", value=idx_col) # Insert.
-    
-    # Set CSS properties for pandas.style object.
-    # CSS properties for table header/index in dataframe.
-    th_props = [
-      ('font-size', '16px'),
-      ('font-family', 'Calibri'),
-      ('text-align', 'center'),
-      ('font-weight', 'bold'),
-      ('color', '#000000'),
-      ('background-color', '#708090'),
-      ('border', '1px solid black'),
-      ('height', '50px'),
-      ('position', 'sticky'),
-      ('position', '-webkit-sticky'),
-      ('top', '50px'),
-      ('z-index', '999'),
-      ('padding', '5px'),
-      ('background-clip', 'padding-box') # Required for firefox rendering of 
-                                         # of borders on table headers. Header
-                                         # background obscures bordering, hence
-                                         # application of clipping.
-      ]
-    
-    # CSS properties for table data in dataframe.
-    td_props = [
-      ('font-size', '12px'),
-      ('border', '1px solid black'),
-      ('text-align', 'center'),
-      ('font-weight', 'bold'),
-      ('background-clip', 'border-box') # Required for chrome to counter border
-                                        # clipping applied to table headers.
-      ]
-    
-    # Set table styles.
-    styles = [
-      dict(selector="th", props=th_props),
-      dict(selector="td", props=td_props)
-      ]
-    
-    # ----------------------------------------------------------------------- # 
-    
-    ### Sub-functions to ascertain unique phospho-hits, 
-    ### and differentially colour and coerce log2 fold change columns.
-
-    def colour_cond_uniques(phospho_df):
-        """ Function to block fill with green, Log2 fold column cells that
-        correspond to unique hits in control. """
-        # Define colour for filling cells.
-        col1 = "background-color: #5fba7d"
-        col2 = ""
-        # Define boolean mask array. Pre-requisite for indexing a data frame,
-        # that matches boolean criteria. 
-        mask = phospho_df["Fold control intensity over maximum"]==0 
-        # Data frame matching index & and columns of "phospho_df", filled
-        # with empty strings.
-        df =  pd.DataFrame(col2, index=phospho_df.index, 
-                           columns=phospho_df.columns)
-        # Index df by boolean array and apply color to log2 fold cells,
-        # with matching criteria.
-        df.loc[mask, "Log2 fold change - condition over control"] = col1
-        return df
-    
-    def colour_cont_uniques(phospho_df):
-        """ Function to block fill with red, Log2 fold column cells that
-        correspond to unique hits in condition. """
-        # Define colour for filling cells.
-        col1 = "background-color: #d65f5f"
-        col2 = ""
-        # Define boolean mask array. Pre-requisite for indexing a data frame,
-        # that matches boolean criteria.
-        mask = phospho_df["Fold condition intensity over maximum"]==0 
-        # Data frame matching index & and columns of "phospho_df", filled
-        # with empty strings.
-        df =  pd.DataFrame(col2, index=phospho_df.index, 
-                           columns=phospho_df.columns)
-        # Index df by boolean array and apply color to log2 fold cells,
-        # with matching criteria.
-        df.loc[mask, "Log2 fold change - condition over control"] = col1
-        return df
-    
-    def hide_zero_condition(phospho_df):
-        """ Function to hide zero value in log2 fold column for
-        condition only hits. """
-        # Define colour of printed values.
-        col1 = "color: #d65f5f"
-        col2 = ""
-        # Define boolean mask array. Pre-requisite for indexing a data frame,
-        # that matches boolean criteria.
-        mask = phospho_df["Fold condition intensity over maximum"]==0 
-        # Data frame matching index & and columns of "phospho_df", filled
-        # with empty strings.
-        df =  pd.DataFrame(col2, index=phospho_df.index, 
-                           columns=phospho_df.columns)
-        # Index df by boolean array and apply color to log2 fold cells,
-        # with matching criteria.
-        df.loc[mask, "Log2 fold change - condition over control"] = col1
-        return df
-    
-    def hide_zero_control(phospho_df):
-        """ Function to hide zero value in log2 fold column for
-        control only hits. """
-        # Define colour of printed values.
-        col1 = "color: #5fba7d"
-        col2 = ""
-        # Define boolean mask array. Pre-requisite for indexing a data frame,
-        # that matches boolean criteria.
-        mask = phospho_df["Fold control intensity over maximum"]==0 
-        # Data frame matching index & and columns of "phospho_df", filled
-        # with empty strings.
-        df =  pd.DataFrame(col2, index=phospho_df.index, 
-                           columns=phospho_df.columns)
-        # Index df by booelan array and apply color to log2 fold cells,
-        # with matching criteria.
-        df.loc[mask, "Log2 fold change - condition over control"] = col1
-        return df
-        
-    # ----------------------------------------------------------------------- # 
-    # Pass data frame fields to multiple style methods.
-    styled_phospho_df = (phospho_df.style
-      # Use "background_gradient" method to apply heatmap to table
-      # fold control & condition intensity over max values.                    
-      .background_gradient(subset=["Fold control intensity over maximum", 
-                                   "Fold condition intensity over maximum"], 
-                           cmap="YlGnBu",   # Choose colour-map.
-                           low=0, high=0.5) # Set color range .
-                                            # Set "high" arg to low value. 
-                                            # Accentuates differences between
-                                            # low and high intensity values.
-      
-      # Use "bar" method to apply bar-chart styling to log2 fold change field.
-      .bar(subset=["Log2 fold change - condition over control"], 
-           align='mid',                  # Align bars with cells
-           color=['#d65f5f', '#5fba7d']) # Bar color as 2 value/string tuple.
-      
-      # Set float precision for data - 2 significant figures. 
-      .set_precision(2)
-      
-       # Pass CSS styling to styled table.
-      .set_table_styles(styles)
-      
-      # Colour cells with 0 in control log2 fold column as green,
-      # or red if cells with 0 in condition log2 fold column.
-      .apply(colour_cond_uniques, axis=None)
-      .apply(colour_cont_uniques, axis=None)
-      .apply(hide_zero_condition, axis=None)
-      .apply(hide_zero_control, axis=None))
-
-    # Render table as html and export to wkdir.
-    html = styled_phospho_df.hide_index().render()
-    #with open("style_df_rename.html","w") as fp:
-        #fp.write(html)
-
-    return html
-
-# --------------------------------------------------------------------------- #
-
-### Function to generate volcano plot from user data.
-def user_data_volcano_plot(phos_table):
-    """ Function to create volcano plot of signifcantly differentially 
-    expressed phosho-sites from user uploaded data """
-    # Parse subset of phospho-sites table.
-    vp_df_subset = phos_table[[phos_table.columns[0],   # Substrate.
-                               phos_table.columns[1],   # site.
-                               phos_table.columns[2],   # control mean.
-                               phos_table.columns[3],   # condition mean.
-                               phos_table.columns[9],   # Log2 fold change.
-                               phos_table.columns[14]]] # -log10(p-value).
-    
-    # Concatenate "substrate" and "site" fields as single string.
-    vp_df_subset["Sub_site_ID"] = vp_df_subset.iloc[:, 0].astype(str)+"_"+\
-                                                    vp_df_subset.iloc[:, 1] 
-                                              
-    # Parse substrate_sitID, log2 fold change and p-value only.                          
-    vp_df_subset = vp_df_subset[[ vp_df_subset.columns[6],  # subs_site id.
-                                  vp_df_subset.columns[2],  # control mean .
-                                  vp_df_subset.columns[3],  # condition mean.
-                                  vp_df_subset.columns[4],  # log2 fold change.
-                                  vp_df_subset.columns[5]]] # -log10(p-value)
-    
-    # Parse hits with intensity in both conditions.
-    # Necessary as fold changes for single condition hits are "inf or -inf".
-    # x-axis range, for log2 fold changes in volcano plot, 
-    # cannot be set properly with these entries at a lter stage.
-    vp_df_subset = vp_df_subset[(vp_df_subset.iloc[:, 1] > 0) &\
-                                (vp_df_subset.iloc[:, 2] > 0)]
-    
-    # Set core plot.
-    trace = go.Scatter(
-            x=vp_df_subset.iloc[:, 3],    # log2 fold change.
-            y=vp_df_subset.iloc[:, 4],    # -log10(p-value).
-            text=vp_df_subset.iloc[:, 0], # Set subs_id for hovering on points.
-            opacity=0.9,                  # Point transparency: range = 0-1.
-            mode='markers',               # Set drawing method for plot.
-            marker=dict(                  # Set marker styling.
-                size = 10,
-                color=vp_df_subset.iloc[:, 3], # Colour set to -log10(p-value)
-                colorscale='Portland',
-                colorbar=dict(title='log2 fold change (color bar scale)'),
-                showscale=True),             
-    )
-            
-    # Define trace as data.        
-    data = [trace]
-    
-    # Pass styling to wider plot.
-    layout = {
-            'title': 'Volcano plot - significance of differential expression',
-            'font': {
-                    'family': 'Droid Serif',
-                    'size': 18,
-                    'color': '#3e4444'
-                    },
-            'height': 1000,
-            'width': 1200,
-            'xaxis': {
-                        'title': 'Log2 fold change: condition over control',
-                        'ticklen': 5,
-                        'gridwidth': 2,
-                        'nticks': 15,
-                        'showline': True,
-                        'zeroline': False
-                    },
-            'yaxis': {
-                        'title': '-log10(corrected p-value)',
-                        'ticklen': 5,
-                        'gridwidth': 2
-                    },
-            'shapes': [
-                    # Horizontal dashed line to denote permissbale error rate.
-                    # Error rate of 0.05 = ~1.3 (-log10 scale).
-                     {
-                        'type': 'line',
-                        'x0': min(vp_df_subset.iloc[:, 3]),
-                        'y0': 1.3,
-                        'x1': max(vp_df_subset.iloc[:, 3]),
-                        'y1': 1.3,
-                        'line':{
-                            'color': 'Black',
-                            'width': 1.5,
-                            'dash': 'dot'
-                        },
-                     },    
-                    # Vertical dashed line to denote log2 fold change = -1.
-                     {
-                        'type': 'line',
-                        'x0': -1,
-                        'y0': min(vp_df_subset.iloc[:, 4]),
-                        'x1': -1,
-                        'y1': max(vp_df_subset.iloc[:, 4]),
-                        'line':{
-                            'color': 'Black',
-                            'width': 1.5,
-                            'dash': 'dot'
-                        },
-                     },    
-                    # Vertical dashed line to denote log2 fold change = +1.
-                     {
-                        'type': 'line',
-                        'x0': 1,
-                        'y0': min(vp_df_subset.iloc[:, 4]),
-                        'x1': 1,
-                        'y1': max(vp_df_subset.iloc[:, 4]),
-                        'line':{
-                            'color': 'Black',
-                            'width': 1.5,
-                            'dash': 'dot'
-                        },                                        
-                },
-            ]        
-    }
-    
-    # Define figure paramters.
-    fig = {
-          'data': data,
-          'layout': layout,
-    }
-    
-    # Define plot as html variable for calling at Flask level.
-
-    tempdir = os.path.join("PhosphoQuest_app/user_data", 'temp')
-    time = str(datetime.now())  # get time now
-    # get date last 3 digits (milliseconds) as "unique" no for download
-    id = time[-4:]
-    date = time[:10]
-    outfile = os.path.join(tempdir,f"{date}-_volcano_id{id}.html")
-
-    plot(fig, filename=outfile, auto_open=False)
-
-    #open file and read lines into variable
-    with open(outfile,'r') as f:
-        html = f.read()
-        print(html)
-    return html
-
-# --------------------------------------------------------------------------- #
-
 ### Function to analyse and visualise kinase data distributions. 
-def kinase_analysis(db_kin_dict):
+def kinase_analysis(db_kin_dict, parsed_sty_sort):
     """ Kinase centric analysis:
-        1 - Convert kinase dictionary from "ud_db_queries.py" to dataframe.
-        2 - Extract groupings, totals and frequencies.
-        3 - Create wordcloud for kinases and subs-sites.
-        4 - Create frequency bar charts to compliment wordcloud analysis."""
+    1 - Global kinase and corresponding substrate_sites analysis:
+     - Convert kinase dictionary from "ud_db_queries.py" to dataframe.
+     - Extract groupings, totals and frequencies.
+    2 - Significant phospho hits and corresponding kinase analysis:
+    - Map signifcant phospho hits to matching kinases from db.
+    - Calculate relative activity. 
+    :param db_kin_dict: Dictionary (db query kinase information for user data).
+    :param parsed_sty_sort: Dataframe of signicant phospho-hits.
+    :return kinase_target_freq: Integer series (Substrate_sites frequencies).
+    :return kinase_freq: Integer series (Kinase frequencies).
+    :return kin_word_str: String (Kinase word string).
+    :return subs_sites_word_str: String (Substrate_sites word string).
+    :return kin_activities: Dataframe (Kinase activities for styler).
+    """
+    # ANALYSIS 1:
     # Call function to extract user/db data alignment as dictionaries.
     # Pass kinase dictionary to dataframe.
     # Df: index = kinases, columns = matching ("subs","site") string tuple(s).
@@ -763,7 +495,7 @@ def kinase_analysis(db_kin_dict):
     # stack() - returns series of unique subs_sites per kinase. Index = kinases
     # to_frame() - converts series to dataframe.
     # reset_index() - extracts kinases from index to new column.
-    # drop - removes "level_1" column (remnant of dictionary structure).
+    # drop - removes "level_1" column (remnant of dictionary index structure).
     kin_subs_site_df = kin_subs_site_df.stack().\
                        to_frame().\
                        reset_index().\
@@ -784,15 +516,12 @@ def kinase_analysis(db_kin_dict):
     kin_subs_site_df_dict = kin_subs_site_df.groupby("substrate_site").\
                             kinase.agg(list).to_dict()
     
-    # Pass sunstrates dictionary keys to list variable and compute length.
-    # This is the number of unique subs_sites whose kinases are detected
-    # in the user data.
+    # Pass substrates dictionary keys to list variable and compute length.
+    # This is the number of unique subs_sites whose kinases are in the db.
     unique_subs_lst_len = len(list(kin_subs_site_df_dict.keys()))
     
     # Compute frequency of duplicate "Sub_site_ID" entries.
     # Series represents number of kinases that target a site in the user data.
-    # Sort by highest frequency & extract top 10 sites 
-    # most targetted by kinases in DB.
     kinase_target_freq =\
              kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 1]]).size()
     
@@ -800,17 +529,16 @@ def kinase_analysis(db_kin_dict):
     kinase_target_entry_num = sum(kinase_target_freq)
     
     # Sort frequencies - highest to lowest.
-    kinase_target_freq =\
-             kinase_target_freq.sort_values(ascending=False)
+    kinase_target_freq = kinase_target_freq.sort_values(ascending=False)
              
-    # Take top 10 and pass to variable.
-    kinase_target_freq =\
-             kinase_target_freq.head(n=10)
+    # Take top 30 and pass to variable.
+    kinase_target_freq = kinase_target_freq.head(n=30)
     
     # Compute frequency of duplicate kinases matched to user data.
-    # Represents the total number of unique kinases 
-    # targeting a susb_site matched from db.
-    kinase_freq = kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 0]]).size()
+    # Represents the total number of unique kinases, 
+    # targeting a subs_site matched from db.
+    kinase_freq =\
+             kin_subs_site_df.groupby([kin_subs_site_df.iloc[:, 0]]).size()
     
     # Compute sum of subs_sites frequencies.
     Kinase_entry_num = sum(kinase_freq) 
@@ -818,76 +546,125 @@ def kinase_analysis(db_kin_dict):
     # Sort frequencies - highest to lowest.
     kinase_freq = kinase_freq.sort_values(ascending=False)
     
-    # Take top 10 and pass to variable.
-    kinase_freq = kinase_freq.head(n=10)
+    # Take top 30 and pass to variable.
+    kinase_freq = kinase_freq.head(n=30)
     
     # Parse subset of df corresponding to kinases & subs_sites.
     kin_word_list = kin_subs_site_df.iloc[:, 0]
     subs_sites_word_list = kin_subs_site_df.iloc[:, 1]
     
     # Convert subsets to string variables.
-    kin_word_str  = ' '.join(kin_word_list)
-    subs_sites_word_str  = ' '.join(subs_sites_word_list)
+    # Format required to feed into wordcloud function.
+    kin_word_str  = ' '.join(kin_word_list)               # Kinases.
+    subs_sites_word_str  = ' '.join(subs_sites_word_list) # Substrate_sites.
     
-    # Pass string variables to wordcloud function.
-    kin_wcloud =\
-         WordCloud(collocations=False, 
-                   background_color="gray", 
-                   colormap="RdBu").\
-                   generate(kin_word_str).\
-                   to_file("kin_word_cloud.png")
+    # ----------------------------------------------------------------------- #
     
-    subs_sites_wcloud =\
-         WordCloud(collocations=False, 
-                   background_color="gray", 
-                   colormap="RdBu").\
-                   generate(subs_sites_word_str).\
-                   to_file("subs_sites_word_cloud.png")
+    # ANALYSIS 2:
+    # Parse significant hits table in the following order: gene, site_id,
+    # log2 fold change & corrected p-value.
+    signif_hits_subset = parsed_sty_sort[[parsed_sty_sort.columns[0],
+                                          parsed_sty_sort.columns[1],
+                                          parsed_sty_sort.columns[9],
+                                          parsed_sty_sort.columns[13]]]
     
-    # Display the generated images.
-    # Kinases.
-    plt.imshow(kin_wcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
+    # Parse hits with intensity in both conditions.
+    signif_hits_subset =\
+        signif_hits_subset[(signif_hits_subset.iloc[:, 2] > 0) |\
+                           (signif_hits_subset.iloc[:, 2] < 0)]
+        
+    # Add column to signif phospho-sites table of 
+    # concatenated substrate and site id.
+    signif_hits_subset.loc[:,"substrate_site"] =\
+        signif_hits_subset.iloc[:, 0].astype(str)+"_"+\
+        signif_hits_subset.iloc[:, 1]
+            
+    # Drop 1st 2 columns.
+    signif_hits_subset = signif_hits_subset.drop(["Substrate (gene name)", 
+                                                  "Phospho site ID"], axis=1)
     
-    # Subs_sites.
-    plt.imshow(subs_sites_wcloud, interpolation='bilinear')
-    plt.axis("off")
-    plt.show()
+    # Merge significant hits dataframe subset and db query data
+    # by "substrate_site" column.
+    db_ud_merge_df =\
+        pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
     
-    # Plot kinase frequency - top10
-    plt.figure(figsize=(10,7))
-    kinase_freq.sort_values(ascending=False).plot.bar()
-    plt.xticks(rotation=50)
-    plt.xlabel("Kinase")
-    plt.ylabel("Frequency")
-    kin_freq_bar_plt = plt.savefig("kin_frequency_top10.png")
-    plt.show()
+    # Convert log2 fold changes to absolute values.
+    db_ud_merge_df.loc[:, "Log2 fold change: absolute values"] =\
+        db_ud_merge_df.iloc[:, 2].abs()     
     
-    # Plot subs_sites frequency - top10
-    plt.figure(figsize=(10,7))
-    kinase_target_freq.sort_values(ascending=False).plot.bar()
-    plt.xticks(rotation=50)
-    plt.xlabel("Substrate & site")
-    plt.ylabel("Frequency")
-    subs_sites_freq_bar_plt = plt.savefig("subs_sites_frequency_top10.png")
-    plt.show()
-
-    return(kin_wcloud, 
-           subs_sites_wcloud, 
-           kin_freq_bar_plt, 
-           subs_sites_freq_bar_plt,
-           kin_subs_site_df)
-
+    # Parse kinase and subs_sites to new column.
+    kin_subs_only = db_ud_merge_df[[db_ud_merge_df.columns[0],
+                                    db_ud_merge_df.columns[1]]]        
+    
+    # Calculate mean of absolute fold change per kinase
+    kin_mean_abs_fold_change =\
+        db_ud_merge_df.groupby("kinase")\
+        ["Log2 fold change: absolute values"].mean()
+         
+    # Calculate sum of log2 fold changes per kinase
+    kin_sum_fold_change =\
+        db_ud_merge_df.groupby("kinase")\
+        ["Log2 fold change - condition over control"].sum()
+    
+    # Concatenate kinase activity estimates.
+    kin_activity_merge = pd.concat([kin_mean_abs_fold_change,
+                                    kin_sum_fold_change], axis=1)
+    
+    # Change column names.
+    kin_activity_merge.columns = ["Kinase activity: mean of absolute fold changes",
+                                  "Kinase activity: sum of fold changes"]
+    
+    # Change sign of mean absolute fold changes by the sign in the
+    # sum of fold changes and parse to new variable.
+    kin_activity_merge.iloc[:, 0][kin_activity_merge.iloc[:, 1]<0] *= -1
+    
+    # Parse mean of absolute fold changes with sign change to new column.
+    kin_activities = kin_activity_merge[[kin_activity_merge.columns[0]]]
+    
+    # Set kinase names to column instead of index.
+    kin_activities.reset_index(level=0, inplace=True)
+    
+    # Group kinases in db & user data merged df as dictionary:
+    # Keys = Kinases
+    # values = subs_sites
+    kin_subs_dict = kin_subs_only.groupby("kinase").\
+                                substrate_site.agg(list).to_dict()
+    
+    # Map Kinase activities to the subs_sites from which they are calculated.
+    # Kinase column in df mapped to keys (kinases) in dictionary.
+    kin_activities.loc[:, "Substrate_site"] =\
+        kin_activities["kinase"].map(kin_subs_dict)
+    
+    # Reorder columns.
+    kin_activities =\
+        kin_activities[["kinase", 
+                        "Substrate_site", 
+                        "Kinase activity: mean of absolute fold changes"]]
+    
+    # Sort values - log2 fold change lowest to highest.
+    kin_activities =\
+        kin_activities.\
+        sort_values(by=["Kinase activity: mean of absolute fold changes"], 
+                    ascending=False)
+    
+    # Convert "Substrate_site" list entries to string and split by ",".
+    # Removes [] & '' characters from column entries.
+    kin_activities["Substrate_site"] =\
+        kin_activities["Substrate_site"].apply(", ".join)
+        
+    return(kinase_target_freq,  # Substrate_sites frequencies.
+           kinase_freq,         # Kinase frequencies.
+           kin_word_str,        # Kinase word string for wordcloud.
+           subs_sites_word_str, # Substrate_sites word string for wordcloud.
+           kin_activities)      # Kinase activities for styler.
+        
 # --------------------------------------------------------------------------- #
 
 # set up run if running this script only
 if __name__ == "__main__":
 
     #set up runs for testing functions
-    file = phos_sites_path = os.path.join('PhosphoQuest_app', 
-                                          'user_data', 
-                                          'az20.tsv')
+    file = os.path.join('user_data', 'az20.tsv')
 
     data_or_error = user_data_check(file)
     
@@ -899,79 +676,8 @@ if __name__ == "__main__":
 
     phos_enrich, AA_mod_res_freq, multi_phos_res_freq, prot_freq =\
     data_extract(full_sty_sort, styno)
-
-    style_df(parsed_sty_sort)
-
-    style_df(full_sty_sort)
     
-    ud_volcano = user_data_volcano_plot(full_sty_sort)
-    
-    kin_wc, \
-    subs_sites_wc, \
-    kin_freq_bar_plt, \
-    subs_sites_freq_bar_plt, \
-    kin_subs_site_df = kinase_analysis(db_kin_dict)
-
-    full_sty_sort.to_csv("../user_data/full_sorted_hits.csv")
-
-    parsed_sty_sort.to_csv("../user_data/significant_sorted_hits.csv")
+    kinase_target_freq, kinase_freq, kin_word_str, subs_sites_word_str,\
+    kinase_activities = kinase_analysis(db_kin_dict, parsed_sty_sort)
     
 # --------------------------------------------------------------------------- #
-
-#### Test code for relative kinase activity analysis.
-# Parse significant hits table for gene, site_id,
-# log2 fold change & corrected p-value.
-
-#signif_hits_subset = parsed_sty_sort[[parsed_sty_sort.columns[0],
-#                                      parsed_sty_sort.columns[1],
-#                                      parsed_sty_sort.columns[9],
-#                                      parsed_sty_sort.columns[13]]]
-#
-## Parse hits with intensity in both conditions.
-## Necessary as fold changes for single condition hits are "inf or -inf".
-## x-axis range, for log2 fold changes in volcano plot, 
-## cannot be set properly with these entries at a lter stage.
-#signif_hits_subset = signif_hits_subset[(signif_hits_subset.iloc[:, 2] > 0) |\
-#                            (signif_hits_subset.iloc[:, 2] < 0)]
-#    
-## Add column to signif phos_sites table of concatenated substrate and site id.
-#signif_hits_subset.loc[:,"substrate_site"] =\
-#    signif_hits_subset.iloc[:, 0].astype(str)+"_"+signif_hits_subset.iloc[:, 1]
-#        
-## Drop 1st 2 columns.
-#signif_hits_subset = signif_hits_subset.drop(["Substrate (gene name)", 
-#                                              "Phospho site ID"], axis=1)
-#
-## Merge significant hits dataframe subset and db query data
-## by "substrate_site" column.
-#db_ud_merge_df =\
-#     pd.merge(kin_subs_site_df, signif_hits_subset, on="substrate_site")
-#
-## Convert log2 fold changes to absolute values.
-#db_ud_merge_df.loc[:, "Log2 fold change - absolute values"] =\
-#     db_ud_merge_df.iloc[:, 2].abs()             
-#
-## Calculate mean of absolute fold change per kinase
-#kin_mean_abs_fold_change =\
-#     db_ud_merge_df.groupby("kinase")\
-#     ["Log2 fold change - absolute values"].mean()
-#
-## Calculate mean of absolute fold change per kinase
-#kin_mean_fold_change =\
-#     db_ud_merge_df.groupby("kinase")\
-#     ["Log2 fold change - condition over control"].mean()
-#     
-## Calculate sum of log2 fold changes per kinase
-#kin_sum_fold_change =\
-#     db_ud_merge_df.groupby("kinase")\
-#     ["Log2 fold change - condition over control"].sum()
-#
-## Concatenate kinase activity estimates.
-#kin_activity_merge = pd.concat([kin_mean_abs_fold_change,
-#                                kin_mean_fold_change,
-#                                kin_sum_fold_change], axis=1)
-#
-## Change column names
-#kin_activity_merge.columns = ["Kinase activity - mean of absolute fold changes",
-#                              "kinase activity - mean of fold changes",
-#                              "Kinase activity - sum of fold changes"]

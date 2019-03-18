@@ -19,15 +19,15 @@ headers = {
     'phos_p_processes':'Processes',
         'phos_prot_interactions':'Protein Interactions',
     'other_interactions':'Other interactions',
+        'phos_other_interactions':'Other interactions',
     'phos_bibl_references':'References','phos_notes':'Notes',
-    'phos_in_substrate':'In substrate',
+    'phos_in_substrate':'Related substrate',
     'inhib_pubchem_cid':'PubChem CID', 'inhib_short_name':'Short name',
     'inhib_full_name':'Full name', 'inhib_brutto':'Brutto',
     'inhib_molec_weight':'molec. weight (g/mol)', 'inhib_smile':'SMILE',
     'inhib_int_chem_id':'InChI', 'inhib_int_chem_id_key':'InChI key',
     'inhib_bibl_references':'References', 'inhib_vendor':'vendor',
     'inhib_catalog_number':'Cat. No.'
-
 }
 
 #Location categories for Browse etc

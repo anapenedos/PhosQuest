@@ -75,23 +75,3 @@ def split_multi_value_rows_in_df(data_frame, column_heading, separator):
     # resets index so no index warnings follow data frame
     reset_df_index(single_val_df)
     return single_val_df
-
-
-def create_db_kin_links(accessions_set):
-    """
-    From a set of kinase accessions, produce url links to detail page of each
-    kinase. If 'not in DB', 'not in DB' is returned
-
-    :param accessions_set: set of kinase accessions (set of str)
-    :return: string containing links to each kinase (str)
-    """
-    if accessions_set != 'not in DB':
-        link_collection = ''
-        for acc in sorted(accessions_set):
-            link_collection += "<a href='/kin_detail/%s'>%s</a> " % (acc, acc)
-    else:
-        link_collection = 'not in DB'
-    return link_collection
-
-
-'http://127.0.0.1:5000/sub_detail/Q9UQL6'

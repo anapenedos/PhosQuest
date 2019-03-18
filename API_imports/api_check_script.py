@@ -1,8 +1,9 @@
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from data_import_scripts.api_import import get_uniprot_api_data, \
-    get_pubchem_api_data, get_table_values_for_search
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
+    get_pubchem_api_data
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
     Substrate, Inhibitor
 
+
+kin_uniprot_df = get_uniprot_api_data(Kinase)
 subs_uniprot_df = get_uniprot_api_data(Substrate)
-# inh_pubch_df = get_pubchem_api_data(Inhibitor)
+inh_pubch_df = get_pubchem_api_data(Inhibitor)

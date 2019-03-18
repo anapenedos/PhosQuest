@@ -71,7 +71,7 @@ def get_uniprot_api_data(class_name):
         'to': 'ACC',
         'format': 'tab',
         'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,'
-                   'genes,proteome,comment(DOMAIN)',
+                   'genes',
         'query': query_str
     }
 
@@ -85,25 +85,23 @@ def get_uniprot_api_data(class_name):
     # Requests the URL and and data (which has already been encoded above).
     request = urllib.request.Request(url, data)
 
-    # Opens the URL with paramters.
+    # Opens the URL with parameters.
     response = urllib.request.urlopen(request)
 
     # Places the data into a dataframe.
     df = pd.read_table(response)
 
-    # Converts a replicate Subcellular location column in string format.
-    df['Subcellular location55'] = df['Subcellular location [CC]'].astype(str)
-
-    # Specfiically extracts the Subcellular location information (and nothing
-    # else) from the original column and places is /
-    # within the new Subcellular loation columns.
-    df['Subcellular location55'] = df['Subcellular location55'].str.extract(
-        '(?<=SUBCELLULAR LOCATION: )(.*?)(?={)', expand=True)
+    # Extracts the Subcellular location information from the original column
+    # and places it in the new Subcellular loation column.
+    df['Subcellular location'] = df['Subcellular location [CC]'].str.extract(
+       '^(?:SUBCELLULAR LOCATION: )(.+)', expand=False)
 
     # extract single protein name
-    df['Protein name'] = df['Protein names'].astype(str)
-    df['Protein name'] = df['Protein name'].str.extract(
-        '^([^(]*?)(?: *\(.*)?$', expand=False)
+    df['Protein name'] = df['Protein names'].str.extract(
+       '^([^(]*?)(?: *\(.*)?$', expand=False)
+
+    # extract 1st gene of the gene list, assuming it is the most common
+    df['Genes'] = df['Gene names'].str.extract('^([^ ;]+)', expand=False)
 
     print('UniProt data obtained for %i %s records'
           % (len(keys_list), class_name.__name__))

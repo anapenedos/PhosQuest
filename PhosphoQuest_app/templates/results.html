@@ -1,3 +1,5 @@
+<!--Due to problems rendering the layout template with the jquery the styles were added again on this template-->
+<!--To be fixed for production-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -45,6 +47,7 @@
               <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
               <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
               <a class="nav-item nav-link" href="{{ url_for('main.documentation') }}">Documentation</a>
+              <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About Us</a>
             </div>
           </div>
         </div>
@@ -76,31 +79,75 @@
       <ul>
         <li><a href="#analysis-1"><span>Significant results</span></a></li>
         <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
-        <li><a href="#analysis-3"><span>Results Summary</span></a></li>
-        <li><a href="#analysis-4"><span>Download data</span></a></li>
+        <li><a href="#analysis-3"><span>WordCloud and Frequency</span></a></li>
+        <li><a href="#analysis-4"><span>Summary Charts</span></a></li>
+        <li><a href="#analysis-5"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
         <H3> Significant Results</H3>
         <div class=table.dataframe>
-            {{ table|safe }}
+            {{ plots['table']|safe }}
         </div>
       </div>
         <div id="analysis-2">
           <p>Volcano Plot of All Data</p>
           <hr>
-          {{ volcano |safe}}
-          </div>
+            {{ plots['volcano'] |safe}}
+        </div>
       <div id="analysis-3">
-          <p>This could be lovely piecharts etc</p>
+          <p>WordCloud and Frequency Charts</p>
           <hr>
           <div class = "row">
-          <div class="col-md-8">
-              <img src={{url_for('static', filename='test_piechart.png')}}> </div>
-          <div class="col-md-4">{{ phos_enrich|safe }}</div>
+              <div class="col-md-6">
+                  <center><H6>Most frequent Kinases in Data</H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H6>Most frequent Substrate Sites in Data</H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}>
+                  </center>
+              </div>
+          </div>
+          <br>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H6>Top 30 Kinases - Bar Plot</H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}} width="500"> </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H6>Top 30 Substrate sites - Bar Plot</H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="500"> </center>
+              </div>
+          </div>
+          <br>
+          <div class = "col-md-2">
+          </div>
+          <div class = "col-md-8">
+              <center><H6>Kinases Relative Activity</H6></center>
+                  <center>{{ plots['kin_act'] | safe}} </center>
           </div>
       </div>
       <div id="analysis-4">
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H5>Phosphosite Enrichment </H5>
+                      {{ plots["phos_enrich_pie"] | safe}} </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H5>multi phospho residue frequency</H5>
+                      {{ plots["multi_phos_res_freq_pie"] | safe }}</center>
+              </div>
+          </div>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H5>Amino Acid modified residue frequency</H5>
+                      {{ plots["AA_mod_res_freq_pie"] |safe }}</center>
+              </div>
+          </div>
+      </div>
+      <div id="analysis-5">
           <H4>Download your analysed data:</H4>
+          <p>CSV file containing all of your datapoints with analysis
             <p class="lead">
                 <a class="btn btn-warning btn-sml"
                   href="{{url_for('crunch.download_analysis',
@@ -113,6 +160,10 @@
     </script>
     </div>
 </body>
+<footer>
+    <hr>
+    <p>PhosphoQuest ©2019</p>
+</footer>
 </html>
 
 

@@ -1,12 +1,11 @@
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
     Substrate, Inhibitor, Phosphosite
-import pandas as pd
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.interface_dicts import headers
 from PhosphoQuest_app.data_access import display_tables
 
 # create table dictionary to translate table name for search queries
-tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
+tabledict = {'kinase': Kinase, "phosphosite":Phosphosite,'substrate':Substrate,
                  'inhibitor':Inhibitor}
 
 # create field dictionary to give appropriate field name for search  queries
@@ -14,16 +13,18 @@ tabledict = {'kinase': Kinase, "phosphosite":Phosphosite, 'substrate':Substrate,
 #For Phosphosite there is no name so the field phos.site is used
 
 
-#dictionary for human friendly attribute names
-#TODO finish adding Inhibitors to this dict as will be helpful for other things
-
-
 def query_switch(text,type, table, option):
-    """function to switch between different query methods
-    based on the inputs from the website interface options"""
-    # TODO update to long name when available for Kinase
+    """
+    function to switch between different query methods
+    based on the inputs from the website search interface options
+    :param text: search text (string)
+    :param type: query type ('exact' or 'like')
+    :param table: database table ('kinase', 'substrate' or 'inhibitor')
+    :param option: search field ('acc_no' or 'name')
+    :return: query result object and string representing style of output
+                'list', 'table', or 'None' and 'cid' if for inhibitor
+    """
     #find right field to search based on selected table and name or acc_no
-    #using short name for now until long name avail
     fielddict = {'kinase': [Kinase.kin_accession, Kinase.kin_full_name],
                  'substrate': [Substrate.subs_accession,
                                Substrate.subs_full_name],
@@ -55,6 +56,7 @@ def query_switch(text,type, table, option):
     #carry out query with exact or like method depending on user choice
     if type == "exact":
         results = searchexact(text, dbtable, field)
+        #output different styles of results depending on number of results
         if 'No results found' in results:
             style = 'None'
             return results, style
@@ -64,13 +66,14 @@ def query_switch(text,type, table, option):
             style = 'list'
             return results, style
 
-        else:
+        else:#like search
             if table == 'kinase':
                 results = display_tables.Kinase_first_results(results)
             elif table == 'inhibitor':
-                for item in results: #shorten name
+                for item in results: # shorten name for display table
                     item.inhib_short_name = item.inhib_short_name[:20]
                 results = display_tables.Inhibitor_first_results(results)
+                # add cid variable to add pubchem widget on website.
                 cid='cid'
             else:
                 results = display_tables.Substrate_first_results(results)
@@ -105,8 +108,13 @@ def query_switch(text,type, table, option):
 
 
 def searchlike(text, table, fieldname):
-    """ Test universal LIKE search function for table/field name,
-        returns all fields"""
+    """
+    Universal LIKE search function for table/field name,returns all fields
+    :param text: search text (string)
+    :param table: db table class object
+    :param fieldname: dbtable field object
+    :return: query results
+    """
     text = '%'+ text + '%' # add wildcards for LIKE search
     session = create_sqlsession()
     results = session.query(table).filter(fieldname\
@@ -120,7 +128,13 @@ def searchlike(text, table, fieldname):
 
 
 def searchexact(text, table, fieldname):
-    """ Test universal exact search function for table/field name"""
+    """
+    Universal exact search function for table/field name
+    :param text: search text (string)
+    :param table: db table class object
+    :param fieldname: dbtable field object
+    :return: query results
+    """
     session = create_sqlsession()
     results = session.query(table).filter(fieldname == text).all()
     session.close()
@@ -131,6 +145,11 @@ def searchexact(text, table, fieldname):
         return ['No results found']
 
 def all_table(table):
+    """
+    Function to return all results from one db table
+    :param table: dbtable object
+    :return: query output
+    """
     session = create_sqlsession()
     results = session.query(table).all()
     session.close()
@@ -144,55 +163,42 @@ def all_table(table):
 
 
 def query_to_list(query_results, table):
-    """ Function to parse query output to list of lists for selected attributes
-      for website (results <3)."""
+    """
+    Function to parse query output to list of lists for selected attributes
+      for website (results <3). Creates links for some values
+    :param query_results: query object
+    :param table: Table Class object
+    :return: list containing list of tuples for each attribute for each result
+    """
 
     # get attribute names for this table
     names = table.__table__.columns.keys()
     # initialise result list
-    result = []
+    resultlist = []
     # iterate through query results checking for names and dropped attrs
     for item in query_results:
-        resultlist = []
+        result = []
         for name in names:
+            # set attribute variable from query output based on name
+            attrib = getattr(item, name)
 
             if name in headers:
-                header = headers[name]  # translate to human readable
-                x = (header, getattr(item, name))
-                resultlist.append(x)
+                # translate to human readable
+                header = headers[name]
             else:
-                x = (name, getattr(item, name))
-                resultlist.append(x)
+                header = name
 
-        result.append(resultlist)
+            # pass if value is 'None'
+            if attrib == None:
+                continue
+            x = (header, attrib)
 
-    return result
+            # Add tuple to result list
+            result.append(x)
+
+        #add result to result list
+        resultlist.append(result)
+
+    return resultlist
 
 
-# def query_to_dfhtml(query_results, table):
-#     """ Function to parse query output to pandas dataframe
-#      and create html for website"""
-#
-#     # get attribute names for this table
-#     colnames = table.__table__.columns.keys()
-#     datalist = {}
-#
-#     for col in colnames:
-#         # only parse info for wanted columns
-#         if col in headers:
-#             # find human friendly column header
-#             header = headers[col]
-#             datalist[header] = []
-#             for item in query_results:
-#                 datalist[header].append(getattr(item, col))
-#
-#         else:
-#             datalist[col] = []
-#             # if human friendly version not available
-#             for item in query_results:
-#                 datalist[col].append(getattr(item, col))
-#
-#     df = pd.DataFrame.from_dict(datalist)
-#     df = df.to_html(index=False)
-#     return df
-#

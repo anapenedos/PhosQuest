@@ -1,16 +1,15 @@
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase,\
-    Substrate, Inhibitor
+from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase,\
+    Substrate, Inhibitor, Phosphosite
 
 from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
-    Substrate_first_results, Inhibitor_first_results
+    Substrate_first_results, Inhibitor_first_results, Phosphosites
 from PhosphoQuest_app.data_access.query_db import searchlike, \
-    searchexact,all_table
+    searchexact, all_table, query_to_list
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
 from PhosphoQuest_app.data_access.interface_dicts import headers,\
     location_cats, kin_family_cats
 
-
-# TODO finish categories for substrates/inhibitors#
+#Dictionary of relevant tables and fields for browse categories.
 tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                     'Cellular_Location': Kinase.kin_cellular_location},
                         Kinase.kin_accession],
@@ -19,12 +18,17 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                            'Chromosome_Location':
                                Substrate.subs_chrom_location},
                           Substrate.subs_accession]
-
-             }
+                          }
 
 
 def browse_subcat(category):
-    """Function to give subcategories results """
+    """
+    Function to give subcategories results from button click
+    :param category:  string text from website
+    :return: category links for browse
+    """
+    #split cateogry text on tilde (future update would make these into
+    # URL variables however too complicated to do in time remaining.)
     table, field = category.split("~")
     #get database field for query
     dbfield = tabledict[table][1][field]
@@ -51,7 +55,11 @@ def browse_subcat(category):
 
 
 def browse_table(subcategory):
-    """ function to take subcategory and display results as flask_table"""
+    """
+    function to take subcategory and display results as flask_table
+    :param subcategory:textstring from website
+    :return: flask_table object
+    """
     #catch inhibitors that skip levels.
     if subcategory == 'Inhibitor':
         out_table = browse_inhibitors()
@@ -60,10 +68,6 @@ def browse_table(subcategory):
     # perform database query for other subcategories
     else:
         table, field, text = subcategory.split("~")
-
-        #return all results for Substrate~All results
-
-
         #get database field for query
         dbtable = tabledict[table][0]
         dbfield = tabledict[table][1][field]
@@ -84,7 +88,6 @@ def browse_table(subcategory):
 
             return out_table
 
-
         else:
             return results
 
@@ -103,7 +106,7 @@ def browse_inhibitors():
         return results
 
 def browse_substrates():
-    """ function to return all inhibitors as FLask table"""
+    """ function to return all substrates as FLask table"""
     results = all_table(Substrate)
         #find table format for output
     if 'No Results Found' not in results:
@@ -114,10 +117,20 @@ def browse_substrates():
 
 
 def browse_detail(text, table):
-    """function to do and show individual item detail from link."""
+    """
+    Function to run query and show individual item detail from link
+    :param text: string - eg accession number
+    :param table: database table to search
+    :return: list of tuples containing query results
+    """
     if table == 'Inhibitor':
         dbtable = Inhibitor
         dbfield = Inhibitor.inhib_pubchem_cid
+
+    elif table == 'Phosphosite':
+        dbtable = Phosphosite
+        dbfield = Phosphosite.phos_group_id
+
     else:
         dbtable = tabledict[table][0]
         dbfield = tabledict[table][2]
@@ -126,32 +139,16 @@ def browse_detail(text, table):
     results = query_to_list(results, dbtable)
     return results
 
-
-
-
-
-def query_to_list(query_results, table):
-    """ Function to parse query output to list of lists for selected attributes
-      for website (results <4). Allows to drop some attributes"""
-
-    # get attribute names for this table
-    names = table.__table__.columns.keys()
-    # initialise result list
-    result = []
-    # iterate through query results checking for names and dropped attrs
-    for item in query_results:
-        resultlist = []
-        for name in names:
-
-            if name in headers:
-                header = headers[name]  # translate to human readable
-                x = (header, getattr(item, name))
-                resultlist.append(x)
-            else:
-                x = (name, getattr(item, name))
-                resultlist.append(x)
-
-        result.append(resultlist)
-
-    return result
-
+def subs_phos_query(subs_accession):
+    """
+    Query to pull related phosphosites using substrate accession
+    :param subs_accession: string substrate accession
+    :return: Flask_Table Phosphosites object
+    """
+    session = create_sqlsession()
+    q = session.query(Substrate).filter_by(subs_accession= subs_accession)
+    sub = q.first()
+    #subset of information about substrate phosphosites sites.
+    subsites = sub.subs_sites
+    table = Phosphosites(subsites)
+    return table
