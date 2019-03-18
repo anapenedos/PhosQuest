@@ -375,8 +375,8 @@ def user_data_volcano_plot(phos_table):
                     'size': 18,
                     'color': '#3e4444'
                     },
-            'height': 900,
-            'width': 1100,
+            'height': 950,
+            'width': 1050,
             'hovermode': 'closest',
             'xaxis': {
                         'title': 'Log2 fold change: condition over control',
@@ -449,6 +449,8 @@ def user_data_volcano_plot(phos_table):
     with open(outfile,'r') as f:
         html = f.read()
     return html
+
+#    plot(fig, filename = 'vp.html', auto_open=False)
 
 # --------------------------------------------------------------------------- #
         
