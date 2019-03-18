@@ -2,6 +2,9 @@
 ## temporary files
 PhosphoQuest_app/static/userdata_temp/
 
+## matplotlib
+matplotlibrc
+
 ## PyCharm files
 .idea
 

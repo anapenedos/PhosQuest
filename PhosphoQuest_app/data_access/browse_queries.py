@@ -71,6 +71,7 @@ def browse_table(subcategory):
         #get database field for query
         dbtable = tabledict[table][0]
         dbfield = tabledict[table][1][field]
+
         #translate any slash characters passed in link
         text = text.replace("&F&","/")
         text = text.replace("&B&","\\")

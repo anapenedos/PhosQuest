@@ -36,11 +36,13 @@ def browse_cat(category):
         links = browse_queries.browse_subcat(category)
 
         if type(links) == list:
+
             cleansedlinks = []
             # remove forward slashes
             for item in links:
                 item = item.replace("/","&F&")
                 cleansedlinks.append(item)
+
 
             return render_template('browse_cat.html', title="Browse",
                                    links=cleansedlinks, cat="subcat",
