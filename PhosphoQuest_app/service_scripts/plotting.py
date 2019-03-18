@@ -188,6 +188,9 @@ def pie_chart(df, header, name, removed=None):
 def style_df(phospho_df, kin_activities):
     """ Apply pandas "df.style" methods to subset of phospho hits dataframe 
     and render/export as html. """
+    # stop pandas from truncating strings in columns
+    pd.set_option('display.max_colwidth', -1)
+
     # Parse subset of significant phospho hits.
     phospho_df = phospho_df[[phospho_df.columns[0],   # Substrate.
                              phospho_df.columns[1],   # Phospho_site_ID.
@@ -374,7 +377,7 @@ def style_df(phospho_df, kin_activities):
 
     #return html
     # Render user data phospho hits table as html and export to wkdir.
-    table = styled_phospho_df.hide_index().render()
+    table = styled_phospho_df.hide_index().render(escape=False)
     #with open("style_ud_data.html","w") as fp:
         #fp.write(html)
         

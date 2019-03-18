@@ -51,7 +51,7 @@ def extract_record_info(instances, info_needed_tuple):
     return sorted(records_info)
 
 
-def format_db_links(db_links, headers=False):
+def format_db_strs(db_links, headers=False):
     """
     Formats a db_links dictionary to show in web app.
 
@@ -83,6 +83,77 @@ def format_db_links(db_links, headers=False):
             else:
                 new_line = line
             tidy_db_links[col].append(new_line)
+
+        if headers:
+            # rename db_links keys to present as str
+            new_name = col.__name__ + ' DB links'
+            tidy_db_links[new_name] = tidy_db_links.pop(col)
+    return tidy_db_links
+
+
+def create_db_links(txt_link_iter, detail_page):
+    """
+    From a set of kinase accessions, produce url links to detail page of each
+    kinase. If 'not in DB', 'not in DB' is returned.
+
+    :param txt_link_iter: an iterable of tuples where the 0 element of the
+                          tuple is the text to display in the link and element
+                          1 is the key value to build the link (iter of tuples)
+    :detail_page: the details page relevant to the entries being processed
+                  (str)
+    :return: string containing links to each entry (str)
+    """
+    if txt_link_iter != 'not in DB':
+        line_links = []
+        for txt, key in sorted(txt_link_iter):
+            line_links.append('<a target="_blank" href="/%s/%s">%s</a>'
+                               % (detail_page, key, txt))
+            line = ', '.join(line_links)
+    else:
+        line = 'not in DB'
+    return line
+
+
+def format_db_links(db_links, headers=False):
+    """
+    Formats a db_links dictionary to show in web app as links to detail pages.
+
+    :param db_links: dictionary listing processed query results matching each
+                     line of a user data frame (dict)
+                     col: [[('Q8WYB5',)],
+                           'not in DB',
+                           [('Q8WYB6',), ('Q8WYB7',)]]
+    :headers: convert dict keys (column headers) to string when column headers
+              are class objects (boolean)
+    :return: dictionary with more readable lines (dict)
+             col: ['Q8WYB5', 'not in DB', 'Q8WYB6 Q8WYB7']
+    """
+    # [('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]
+    tidy_db_links = {}
+
+    # detail page route for each column
+    detail_pages = {Kinase: 'kin_detail',
+                    Substrate: 'sub_detail',
+                    Phosphosite: 'phosites_detail'}
+
+    for col in db_links:
+        # a column is of format
+        # [[('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]]
+        # format lines of each column to show as str
+        tidy_db_links[col] = [create_db_links(line, detail_pages[col])
+                              for line in db_links[col]]
+
+        # for line in db_links[col]:
+        #     # a line can be [('Q8WYB5',)] or 'not in DB' or
+        #     # [('Q8WYB6',), ('Q8WYB7',)]
+        #     if type(line) != str:
+        #         info_joiner = '/'.join
+        #         # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
+        #         rec_strs = [info_joiner(map(str, record)) for record in line]
+        #         new_line = ', '.join(rec_strs)
+        #     else:
+        #         new_line = line
+        #     tidy_db_links[col].append(new_line)
 
         if headers:
             # rename db_links keys to present as str
@@ -165,11 +236,12 @@ def link_ud_to_db(user_data_frame):
             record_info = {}
             # substrates (always present)
             record_info[Substrate] = extract_record_info(
-                class_records[Substrate], ('subs_accession',))
+                class_records[Substrate], ('subs_gene', 'subs_accession'))
             # if phosphosites were found add info to substrate-centric dict
             if Phosphosite in class_records:
                 record_info[Phosphosite] = extract_record_info(
-                    class_records[Phosphosite], ('phos_group_id',))
+                    class_records[Phosphosite], ('phos_modified_residue',
+                                                 'phos_group_id'))
             # if kinases were found add the kinase gene(s) to both
             # substrate-centric and kinase-centric dictionaries
             if Kinase in class_records:
