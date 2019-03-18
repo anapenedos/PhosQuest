@@ -487,28 +487,28 @@ def wordcloud_freq_charts(kin_word_str,
                  generate(subs_sites_word_str).to_file(outfile)
                                  
     # ----------------------------------------------------------------------- #
-    # Plot kinase frequency - top30.
+    # Plot most active kinases - top30.
     plt.figure(figsize=(10,7))
     kinase_freq.sort_values(ascending=False).\
                 plot.bar(width=0.85, alpha=0.75)
     plt.xticks(rotation=75)
-    plt.xlabel("Kinase", fontsize="large", 
+    plt.xlabel("Kinase", fontsize="x-large", 
                fontstyle="italic", fontweight="bold")
-    plt.ylabel("Frequency", fontsize="large", 
+    plt.ylabel("Frequency (Number of Substrate/sites)", fontsize="x-large", 
                fontstyle="italic", fontweight="bold")
     kin_freq = create_userfilename('Kinase_freq_top_30_Bar', 'png')
     outfile = os.path.join(tempdir, kin_freq)
 
     plt.savefig(outfile, bbox_inches="tight", dpi=300)
     
-    # Plot subs_sites frequency - top30.
+    # Plot most targetted substrates - top30.
     plt.figure(figsize=(10,7))
     kinase_target_freq.sort_values(ascending=False).\
                        plot.bar(width=0.85, alpha=0.75)
     plt.xticks(rotation=75)
-    plt.xlabel("Substrate & site", fontsize="large", 
+    plt.xlabel("Substrate & site", fontsize="x-large", 
                fontstyle="italic", fontweight="bold")
-    plt.ylabel("Frequency", fontsize="large", 
+    plt.ylabel("Frequency (Number of Kinases)", fontsize="x-large", 
                fontstyle="italic", fontweight="bold")
     kin_target_freq = create_userfilename('Kin_target_freq_top_30_Bar', 'png')
     outfile = os.path.join(tempdir, kin_target_freq)
