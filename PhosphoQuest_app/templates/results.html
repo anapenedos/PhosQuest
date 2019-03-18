@@ -84,31 +84,31 @@
         <li><a href="#analysis-5"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
-        </p>
+
         <b>General overview: </b> This table corresponds to hits, whose corrected
         p-values meet an error rate threshold of <=0.05 and have a CV of <=25%. 
         If the original upload table didn't include CV columns, then only the 
         p-value threshold is applied.
-        </p>
+
         <b>Clickable entries: </b> Try clicking entries in columns: 
         <em>Substrate/Isoform in DB (gene name)</em>, <em>Phosphosite in DB (ID)</em> and
         <em>Kinase in DB (gene name)</em>. We guarantee a pleasant journey!
-        </p>
-        <em><u>TIP</u></em>: right click on entries and open link in a new tab,
-        otherwise analysis will need to be re-started.
-        </p>  
+
+        <!--<em><u>TIP</u></em>: right click on entries and open link in a new tab,-->
+        <!--otherwise analysis will need to be re-started.-->
+
         <b>Intensity columns: </b> Original intensity values were transformed 
         by dividing each substrate/site intensity by the maximum intensity
         of the row (both conditions). This scaling allows the application of 
         a heatmap to the cells, for visual clarification of intensity differences.
-        </p> 
+
         <b>Log2 fold changes: </b> Barplots are integrated into the column, that scale
         with the fold change values. <em>Note</em>: Cells that are fully coloured
         denote hits detected in only one condition (see intensity columns). 
-        </p> 
+
         <b>Sorting: </b> The Log2 fold changes are used, giving a gradated
         ordering of hits as you scroll through the table.
-        </p>  
+
         <div class=table.dataframe>
             {{ plots['table']|safe }}
         </div>
@@ -181,6 +181,9 @@
               </div>
           </div>
           <div class = "row">
+              <div class="col-md-2">
+                  <!--div just to add space and make table centered-->
+              </div>
               <div class="col-md-6">
                   <center><H5>Amino Acid modified residue frequency</H5>
                       {{ plots["AA_mod_res_freq_pie"] |safe }}</center>
