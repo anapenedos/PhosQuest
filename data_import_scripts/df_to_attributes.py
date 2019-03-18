@@ -106,24 +106,26 @@ bindingDB_human_to_class = {
 }
 
 uniprot_kin_to_class = {
-    'Entry'                 : [(Kinase,           'kin_accession')],
-    'Subcellular location55': [(Kinase,           'kin_cellular_location'),
-                               (CellularLocation, 'loc_name')],
-    'Protein name'          : [(Kinase,           'kin_full_name')],
-    'Protein families'      : [(Kinase,           'kin_family')]
+    'Entry'               : [(Kinase,           'kin_accession')],
+    'Subcellular location': [(Kinase,           'kin_cellular_location'),
+                             (CellularLocation, 'loc_name')],
+    'Protein name'        : [(Kinase,           'kin_full_name')],
+    'Protein families'    : [(Kinase,           'kin_family')],
+    'Genes'               : [(Kinase,           'kin_gene')]
 }
 
 uniprot_subs_to_class = {
-    'Entry'                 : [(Substrate,        'subs_accession')],
-    'Protein name'          : [(Substrate,        'subs_full_name')],
-    'Protein families'      : [(Substrate,        'subs_protein_type')]
+    'Entry'           : [(Substrate,        'subs_accession')],
+    'Protein name'    : [(Substrate,        'subs_full_name')],
+    'Protein families': [(Substrate,        'subs_protein_type')],
+    'Genes'           : [(Substrate,        'subs_gene')]
 }
 
 pubchem_to_class = {
-    'CID'                   : [(Inhibitor, 'inhib_pubchem_cid')],
-    'IUPACName'             : [(Inhibitor, 'inhib_full_name')],
-    'MolecularWeight'       : [(Inhibitor, 'inhib_molec_weight')],
-    'MolecularFormula'      : [(Inhibitor, 'inhib_brutto')]
+    'CID'             : [(Inhibitor, 'inhib_pubchem_cid')],
+    'IUPACName'       : [(Inhibitor, 'inhib_full_name')],
+    'MolecularWeight' : [(Inhibitor, 'inhib_molec_weight')],
+    'MolecularFormula': [(Inhibitor, 'inhib_brutto')]
 }
 
 """
