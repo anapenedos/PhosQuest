@@ -77,14 +77,13 @@
     <br>
     <div id="tabs">
       <ul>
-        <li><a href="#analysis-1"><span>Processed table</span></a></li>
+        <li><a href="#analysis-1"><span>Processed Table</span></a></li>
         <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
-        <li><a href="#analysis-3"><span>WordCloud and Frequency</span></a></li>
+        <li><a href="#analysis-3"><span>Kinase & Substrate Frequencies</span></a></li>
         <li><a href="#analysis-4"><span>Summary Charts</span></a></li>
         <li><a href="#analysis-5"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
-        <H3><b>Table guide:</b></H3>
         </p>
         <b>General overview: </b> This table corresponds to hits, whose corrected
         p-values meet an error rate threshold of <=0.05 and have a CV of <=25%. 
@@ -94,14 +93,17 @@
         <b>Clickable entries: </b> Try clicking entries in columns: 
         <em>Substrate/Isoform in DB (gene name)</em>, <em>Phosphosite in DB (ID)</em> and
         <em>Kinase in DB (gene name)</em>. We guarantee a pleasant journey!
+        </p>
+        <em><u>TIP</u></em>: right click on entries and open link in a new tab,
+        otherwise analysis will need to be re-started.
         </p>  
         <b>Intensity columns: </b> Original intensity values were transformed 
         by dividing each substrate/site intensity by the maximum intensity
         of the row (both conditions). This scaling allows the application of 
         a heatmap to the cells, for visual clarification of intensity differences.
         </p> 
-        <b>Log2 fold changes: </b> Barplots are integrated into column, that scale
-        with the fold change in the cell. <em>Note</em>: Cells that are fully coloured
+        <b>Log2 fold changes: </b> Barplots are integrated into the column, that scale
+        with the fold change values. <em>Note</em>: Cells that are fully coloured
         denote hits detected in only one condition (see intensity columns). 
         </p> 
         <b>Sorting: </b> The Log2 fold changes are used, giving a gradated
@@ -112,20 +114,38 @@
         </div>
       </div>
         <div id="analysis-2">
-          <p>Volcano Plot of All Data</p>
+        </p>
+        <b>General overview: </b> Scatter of Log2 fold changes vs -log10(corrected p-values).
+        </p>
+        <b>Interactivity: </b> Hovering cursor over individual points will
+        display substrate/site and exact X/Y-axis values. Please also note the extra
+        extra interaction options on the top right hand corner of the plot.  
+        </p>
+        <b>Thresholds (dashed lines): </b> 
+        </p>
+        <em><u>Vertical line</u></em>: denotes a +/- Log2 fold change of 1 (actual fold change = 2).
+        </p>
+        <em><u>Horizontal line</u></em>: denotes a -log10(correctedp-value) of 1.3 (actual value = 0.05).
+        </p>
           <hr>
             {{ plots['volcano'] |safe}}
         </div>
       <div id="analysis-3">
-          <p>WordCloud and Frequency Charts</p>
+          <p>
+            <b>General overview: </b> These visualisations correspond to analysis
+            of the full list of phosphorylated-sites in your data. By drawing  
+            on information in <em>PhosphoQuest's</em> database, we can generate 
+            WordClouds paired with frequency charts. We hope this will help you 
+            gauge how some hits are strongly emphasised in the WordClouds.
+            </p>
           <hr>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H6>Most frequent Kinases in Data</H6>
+                  <center><H6><b>Most active Kinases - Top 30</b></H6>
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center>
               </div>
               <div class="col-md-6">
-                  <center><H6>Most frequent Substrate Sites in Data</H6>
+                  <center><H6><b>Most targetted Substrate/Sites - Top 30</b></H6>
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}>
                   </center>
               </div>
@@ -133,11 +153,11 @@
           <br>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H6>Top 30 Kinases - Bar Plot</H6>
+                  <center><H6><b>Frequency Chart</b></H6>
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}} width="500"> </center>
               </div>
               <div class="col-md-6">
-                  <center><H6>Top 30 Substrate sites - Bar Plot</H6>
+                  <center><H6><b>Frequency Chart</b></H6>
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="500"> </center>
               </div>
           </div>
@@ -145,7 +165,7 @@
           <div class = "col-md-2">
           </div>
           <div class = "col-md-8">
-              <center><H6>Kinases Relative Activity</H6></center>
+              <center><H6><b>Kinases Relative Activity</b></H6></center>
                   <center>{{ plots['kin_act'] | safe}} </center>
           </div>
       </div>
