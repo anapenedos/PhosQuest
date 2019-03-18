@@ -82,8 +82,8 @@ def user_data_check(data_file):
     # existance of errors.
     error_message = \
     ("Anomaly detected..PhosphoQuest will self-destruct in T minus 10 seconds"+
-    "...just kidding! Please check your fold change calculations,"+
-    "a discrepancy has been detected")
+    "...just kidding! Please check your fold change calculations, "+
+    "a discrepancy has been detected.")
     
     # If "sum_matches" equal to length of data frame, then return data frame.
     # If not, return error message.
@@ -332,8 +332,8 @@ def data_extract(filtered_df, styno):
                               *100),1)
 
     # Create dictionary of variables.
-    enrich_data_dict = {"Number of phospho sites": phos_site_num,
-                        "Number of non-phospho sites": non_phos_num,
+    enrich_data_dict = {"phosphorylated": phos_site_num,
+                        "Non-phosphorylated": non_phos_num,
                         "% Enrichment": phos_perc_enrich}
     
     # Pass dictionary to dataframe object.
