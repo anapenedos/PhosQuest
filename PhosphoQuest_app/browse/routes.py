@@ -63,11 +63,23 @@ def browse_table(subcategory):
 
 @browse.route("/kin_detail/<text>")
 def kin_detail(text):
-    """ route to create details from browse"""
-    # add function to search for other info her""
+    """ route to create details from browse ,render template with triple
+     results,   kinase detail + tables of phosphosites and inhibitors"""
+
+    #Run kinase detail query
     results = browse_queries.browse_detail(text, 'Kinase')
-    return render_template('search_results.html', title="Browse", style="list",
-                           results=results)
+
+    # run related phosphosites query
+    phos = browse_queries.kin_phos_query(text)
+
+    #run related inhibitors query
+    inh = browse_queries.kin_inhib_query(text)
+
+
+    return render_template('search_results.html', title="Kinase",
+                           style="triple", results=results, table= phos,
+                           related="Phosphosites", table2 = inh,
+                           related2="Inhibitors", text=text)
 
 @browse.route("/sub_detail/<text>")
 def sub_detail(text):
@@ -83,7 +95,7 @@ def sub_detail(text):
 
     return render_template('search_results.html', title="Substrate",
                            style='double', results=results, table=table,
-                           related="Phosphosites")
+                           related="Phosphosites", text=text)
 
 
 @browse.route("/phosites_detail/<text>")

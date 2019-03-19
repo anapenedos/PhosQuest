@@ -18,7 +18,7 @@ tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
                            'Chromosome_Location':
                                Substrate.subs_chrom_location},
                           Substrate.subs_accession]
-                          }
+                            }
 
 
 def browse_subcat(category):
@@ -60,7 +60,7 @@ def browse_table(subcategory):
     :param subcategory:textstring from website
     :return: flask_table object
     """
-    #catch inhibitors that skip levels.
+    #catch inhibitors that skip subcat levels.
     if subcategory == 'Inhibitor':
         out_table = browse_inhibitors()
         return out_table
@@ -140,6 +140,7 @@ def browse_detail(text, table):
     results = query_to_list(results, dbtable)
     return results
 
+
 def subs_phos_query(subs_accession):
     """
     Query to pull related phosphosites using substrate accession
@@ -152,4 +153,32 @@ def subs_phos_query(subs_accession):
     #subset of information about substrate phosphosites sites.
     subsites = sub.subs_sites
     table = Phosphosites(subsites)
+    return table
+
+def kin_phos_query(kin_accession):
+    """
+    Query to pull related phosphosites using kinase accession
+    :param kin_accession: string kinase accession
+    :return: Flask_Table Phosphosites object
+    """
+    session = create_sqlsession()
+    q = session.query(Kinase).filter_by(kin_accession= kin_accession)
+    kin = q.first()
+    #subset of information about substrate phosphosites sites.
+    subsets = kin.kin_phosphorylates
+    table = Phosphosites(subsets)
+    return table
+
+def kin_inhib_query(kin_accession):
+    """
+    Query to pull related inhibitors using kinase accession
+    :param sukinaccession: string kinase accession
+    :return: Flask_Table Phosphosites object
+    """
+    session = create_sqlsession()
+    q = session.query(Kinase).filter_by(kin_accession= kin_accession)
+    kin = q.first()
+    #subset of information about substrate phosphosites sites.
+    subsets = kin.kin_inhibitors
+    table = Inhibitor_first_results(subsets)
     return table
