@@ -80,17 +80,18 @@
         <li><a href="#analysis-1"><span>Processed Table</span></a></li>
         <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
         <li><a href="#analysis-3"><span>Kinase & Substrate Frequencies</span></a></li>
-        <li><a href="#analysis-4"><span>Summary Charts</span></a></li>
-        <li><a href="#analysis-5"><span>Download data</span></a></li>
+        <li><a href="#analysis-4"><span>Kinase activities</span></a></li>
+        <li><a href="#analysis-5"><span>Summary Charts</span></a></li>
+        <li><a href="#analysis-6"><span>Download data</span></a></li>
       </ul>
       <div id="analysis-1">
 
-        <p></p><b>General overview: </b> This table corresponds to hits, whose corrected
+        <p><b>General overview: </b> This table corresponds to hits, whose corrected
         p-values meet an error rate threshold of <=0.05 and have a CV of <=25%. 
         If the original upload table didn't include CV columns, then only the 
-          p-value threshold is applied.</p
+          p-value threshold is applied.</p>
 
-        <p></p><b>Clickable entries: </b> Try clicking entries in columns:
+        <p><b>Clickable entries: </b> Try clicking entries in columns:
         <em>Substrate/Isoform in DB (gene name)</em>, <em>Phosphosite in DB (ID)</em> and
         <em>Kinase in DB (gene name)</em>. We guarantee a pleasant journey!
         </p>  
@@ -105,7 +106,7 @@
         <p>
         <b>Sorting: </b> The Log2 fold changes are used, giving a gradated
           ordering of hits as you scroll through the table.</p>
-
+        <hr>
         <div class=table.dataframe>
             {{ plots['table']|safe }}
         </div>
@@ -158,36 +159,49 @@
                       <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="500"> </center>
               </div>
           </div>
-          <br>
-          <div class = "col-md-2">
           </div>
-          <div class = "col-md-8">
-              <center><H6><b>Kinases Relative Activity</b></H6></center>
-                  <center>{{ plots['kin_act'] | safe}} </center>
-          </div>
-      </div>
       <div id="analysis-4">
+        <p><b>General overview: </b> <em>PhosphoQuest's</em> query of the database
+        and cross-referencing to your data, allows us to collate all kinases that
+        match to particular substrate/site(s).  Since we know that the log2 fold 
+        changes serve as a measure of kinase activity, we can amalgamate
+        these values to generate a measure of relative kinase activity.
+        </p>
+        <hr>
+        <div class=table.dataframe>
+            <center>{{ plots['kin_act'] | safe}} </center>
+        </div>
+        </div>
+      <div id="analysis-5">
+      <p><b>General overview: </b> The piecharts below summarise various metrics
+      and distributions in your data. We hope these will help you to characterise
+      your enrichment procedure.
+      </p><b>Interactivity: </b> Hovering your cursor over the charts will
+      highlight further details. As in the volcano plot, the top right hand
+      side of each chart contain further interaction options.
+      </p>
+        <hr>
           <div class = "row">
               <div class="col-md-6">
-                  <center><H5>Phosphosite Enrichment </H5>
-                      {{ plots["phos_enrich_pie"] | safe}} </center>
+                  <center><H5><b>% Enrichment efficiency</b></H5></center>
+                      <center>{{ plots["phos_enrich_pie"] | safe}} </center>
               </div>
               <div class="col-md-6">
-                  <center><H5>multi phospho residue frequency</H5>
-                      {{ plots["multi_phos_res_freq_pie"] | safe }}</center>
+                  <center><H5><b>% of multiply-phosphorylated residues</b></H5></center>
+                      <center>{{ plots["multi_phos_res_freq_pie"] | safe }}</center>
               </div>
           </div>
           <div class = "row">
-              <div class="col-md-2">
+              <div class="col-md-3">
                   <!--div just to add space and make table centered-->
               </div>
               <div class="col-md-6">
-                  <center><H5>Amino Acid modified residue frequency</H5>
-                      {{ plots["AA_mod_res_freq_pie"] |safe }}</center>
+                  <center><H5><b>% residue phosphorylation</b></H5></center>
+                      <center>{{ plots["AA_mod_res_freq_pie"] |safe }}</center>
               </div>
           </div>
       </div>
-      <div id="analysis-5">
+      <div id="analysis-6">
           <H4>Download your analysed data:</H4>
           <p>CSV file containing all of your datapoints with analysis
             <p class="lead">
