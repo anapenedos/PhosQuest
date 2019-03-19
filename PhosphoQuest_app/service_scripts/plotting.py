@@ -88,7 +88,11 @@ def pie_chart(df, header, name, removed=None):
     values = df[header].tolist()
     if removed != None:
         values.pop(removed)
-
+    
+    # Define layout parameters for piechart.
+    layout = go.Layout(
+            legend=dict(orientation="h")
+            )
     # Set core pie.
     trace = go.Pie(labels=labels, values=values,
                    hoverinfo='label+value', textinfo='percent',
@@ -98,11 +102,19 @@ def pie_chart(df, header, name, removed=None):
 
     # Define trace as data.
     data = [trace]
+    
+    # Define figure paramters.
+    fig = {
+          'data': data,
+          'layout': layout,
+    }
+    
+    # Create file names and define path to temp directory.
     filename = create_userfilename(name, 'html')
     outfile = os.path.join(tempdir,filename)
 
     # Plot the data in html format.
-    plot(data, filename=outfile, auto_open=False)
+    plot(fig, filename=outfile, auto_open=False)
     #return filename for adding to html template
 
     html = read_html_to_variable(outfile)
