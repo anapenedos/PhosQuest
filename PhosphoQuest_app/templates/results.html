@@ -161,11 +161,20 @@
           </div>
           </div>
       <div id="analysis-4">
-        <p><b>General overview: </b> <em>PhosphoQuest's</em> query of the database
+        <p>
+        <b>General overview: </b> <em>PhosphoQuest's</em> query of the database
         and cross-referencing to your data, allows us to collate all kinases that
         match to particular substrate/site(s).  Since we know that the log2 fold 
-        changes serve as a measure of kinase activity, we can amalgamate
-        these values to generate a measure of relative kinase activity.
+        changes <em>(Treatment/Condition over Control)</em> serve as a proxy of 
+        kinase activity, we can amalgamate these values to generate a measure
+        of relative kinase activity.
+        </p>
+        <b>Table: </b> We have again utilised the styled table format, with 
+        super-imposed barplots implemented. We also apply sorting to the table 
+        based on the values in the last column.
+        </p>
+        <b>Note: </b> If substrate/sites in your data don't match to kinases in 
+        the database, no table will be displayed.
         </p>
         <hr>
         <div class=table.dataframe>
@@ -173,10 +182,12 @@
         </div>
         </div>
       <div id="analysis-5">
-      <p><b>General overview: </b> The piecharts below summarise various metrics
+      <p>
+      <b>General overview: </b> The piecharts below summarise various metrics
       and distributions in your data. We hope these will help you to characterise
       your enrichment procedure.
-      </p><b>Interactivity: </b> Hovering your cursor over the charts will
+      </p>
+      <b>Interactivity: </b> Hovering your cursor over the charts will
       highlight further details. As in the volcano plot, the top right hand
       side of each chart contain further interaction options.
       </p>
