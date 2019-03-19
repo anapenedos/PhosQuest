@@ -2,46 +2,56 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class ='container'>
-<H3>Search by name or accession number for Kinases, Substrates or Inhibitors.</H3>
-
-<br>
-
-<form method='POST' action="">
-    <h5>Select which information to search.</h5>
-        <div>
-            {% for subfield in form.table %}
-        <tr>
-            <td>{{ subfield }}</td>
-           <b><td>{{ subfield.label }}&nbsp;&nbsp;&nbsp;&nbsp;</td></b>
-        </tr>
-        {% endfor %}
-      </div>
-<hr>
-    <h5> Select which to search by accession number (ID) or name</h5>
-      <div>
-          <b>{% for subfield in form.option %}</b>
-        <tr>
-           <b> <td>{{ subfield }}</td></b>
-           <b> <td>{{ subfield.label }}&nbsp;&nbsp;&nbsp;&nbsp;</td></b>
-        </tr>
-        {% endfor %}
-      </div>
-<hr>
-    <fieldset class="form-group">
-      <div class="form-group">
-       <h5>{{ form.search.label(class="form-control-label") }}</h5>
-          <b>{{ form.search(class="form-control form-control-lg") }}</b>
-
-      </div>
-    </fieldset>
-    <div class="form-group">
-       <b>{{ form.select.label() }}</b>
-          {{ form.select }}
-      </div>
-     <div class="form-group">
-          {{ form.submit(class="btn btn-outline-info") }}
-      </div>
+    <div class="row">
+        <div class="col-md-1">
+        <img src="{{url_for('static', filename='alchemist.png')}}"
+                            alt="alchemist image"/>
+        </div>
+        <div class="col-md-10">
+            <H3>Search by name or accession number for Kinases, Substrates or Inhibitors.</H3>
+        </div>
+    </div>
     <br>
+    <p> This search function allows you to search the PhosphoQuest database useing the parameters
+    below. from the results pages of the search you will be able to continue your Quest by following
+    links to further related information.</p>
+
+    <form method='POST' action="">
+        <h5>Select which information to search.</h5>
+            <div>
+                {% for subfield in form.table %}
+            <tr>
+                <td>{{ subfield }}</td>
+               <b><td>{{ subfield.label }}&nbsp;&nbsp;&nbsp;&nbsp;</td></b>
+            </tr>
+            {% endfor %}
+          </div>
+    <hr>
+        <h5> Select search by accession number (ID) or name</h5>
+          <div>
+              <b>{% for subfield in form.option %}</b>
+            <tr>
+               <b> <td>{{ subfield }}</td></b>
+               <b> <td>{{ subfield.label }}&nbsp;&nbsp;&nbsp;&nbsp;</td></b>
+            </tr>
+            {% endfor %}
+          </div>
+    <hr>
+        <fieldset class="form-group">
+          <div class="form-group">
+           <h5>{{ form.search.label(class="form-control-label") }}</h5>
+              <b>{{ form.search(class="form-control form-control-lg") }}</b>
+
+          </div>
+        </fieldset>
+        <div class="form-group">
+           <b>{{ form.select.label() }}</b>
+              {{ form.select }}
+          </div>
+         <div class="form-group">
+              {{ form.submit(class="btn btn-outline-info") }}
+          </div>
+        <br>
 
 </div>
 </form>

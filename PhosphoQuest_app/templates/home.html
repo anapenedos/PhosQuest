@@ -2,14 +2,18 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="container">
-    <p style="float:left">
-    <img src="{{url_for('static', filename='knight.png')}}"
-           alt="knight image"/></p>
+    <div class = row>
+        <div class="col-md-2">
+        <p style="float:left">
+            <img src="{{url_for('static', filename='mage.png')}}"
+                   alt="mage image"/></p>
+        </div>
     <H2>Welcome to PhosphoQuest!</H2>
     <br>
+    </div>
 
-    <H5><i>Begin your quest for Human kinases and their targets, related information
-    and analyse your phospho-proteomics data </i></H5>
+    <H5><i>Begin your quest for Human kinases, their targets and related information
+    and analyse your phospho-proteomics data. Slay your data-foes! </i></H5>
     <hr>
         <div class="row">
             <div class="col-md-8">
@@ -30,7 +34,12 @@
                 We hope you find this website useful.
               </p>
             </div>
-
+            <div class="col-md-4">
+                <img src="{{url_for('static', filename='knight.png')}}"
+                    alt="knight image"/>
+                <img src="{{url_for('static', filename='data_foes.png')}}"
+                    alt="data_foes image"/>
+            </div>
         </div>
 </div>
 {% endblock content %}
