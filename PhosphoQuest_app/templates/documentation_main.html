@@ -6,6 +6,8 @@
     <meta charset="UTF-8">
     <h3>PhosphoQuest Documentation</h3>
     <hr>
+
+    <br>
     <H5> <b><em>Database Contents</em></b></H5>
     <br>
     <p>
@@ -27,131 +29,133 @@
         pages of this website.</p>
     <hr>
     <br>
-    <H5> <b><em>Background - data analysis tool</em></b></H5>
-    <br>
-    <p>
-        PhosphoQuests analytical tool is designed to process data generated
-        by phospho-proteomics experiments. Typically, the experimental side 
-        would entail tryptic protein digestion, enrichment for phospho-peptides
-        using pull down methods employing i.e. titanium dioxide followed by 
-        analysis using mass spectrometry.
-    <p>
-        Your downstream data analysis pipeline, whether it be through packages
-        such as MaxQuant, Progenesis QI or in-house tools, should generate 
-        identification as well as relative quantitation reports. These outputs
-        may take different forms, we therefore provide guidance below on the input 
-        format required by the tool. 
-    </p>
-    <hr>
-    <br>
-    <H5> <b><em>Pre-requisites for uploading data to PhosphoQuest</em></b></H5>
-    <br>
-    <p>
-        Please see below for an example format required by PhosphoQuest:
-    </p>   
-        <img src="{{url_for('static', filename='example_table_webapp.png')}}"/>
-    </p>
-        <b>Column 1: </b><em>Substrate</em> column with gene name and 
-        site. Note that non-phosphorylated peptides should also be in the 
-        format indicated i.e. <em>gene name(None)</em>. However, the analysis 
-        tool can also handle substrate entries for non-phosphorylated peptides 
-        that are <em>only</em> gene names.
-    </p>
-        <b>Column 2: </b>Mean intensity of <em>Control</em> replicate intensities.
-    </p>
-        <b>Column 3: </b>Mean intensity of <em>Treatment/Condition</em> replicate intensities.
-    </p>
-        <b>Column 4: </b>Fold change calculations of <em>Treatment over the Control.</em> 
-        Note: these should not be log2 fold change calculations!
-    </p>
-        <b>Column 5: </b>T-test P-values. Please use <em>uncorrected</em> values,
-        as <em>PhosphoQuest</em> will implement correction for multiple-testing errors. 
-    </p>
-        <b>Column 6-7: </b>Coefficients of variation (CV's) for the <em>Control</em> 
-         and <em>Treatment/Condition</em> columns, respectively. <em>PhosphoQuest</em> 
-         can also handle data that doesn't have these column entries. Please 
-         see section: <em>Data analysis - general summary</em> below for further details.
-    </p> 
-    </p> 
-    <hr>
-    <br>
-    <H5> <b><em>Data analysis - general summary</em></b></H5>
-    <br>
-    <p>
-         The following is an overview of the strategy employed to analyse
-         your data. Conceptually, the process can be broken down into 6 steps
-         which collate and categorise your data. We then use this analysis to 
-         generate data visualisations.           
-    </p>
-         <b>Step 1: </b> Data table structure check and basic filtering. This
-         pre-analysis step implements a basic error check and determines the format
-         of the input table. Data tables without CV columns are processed at this
-         stage. Peptide entries with at least one quantitation event are passed 
-         for further processing. 
-    </p>
-         <b>Step 2: </b> A series of sequential steps, categorise the data into
-         groupings. For example - which hits are unique to or appear in both the 
-         <em>Control</em> and <em>Treatment/Condition</em> and which entries are 
-         phosphorylated peptides to name a few. The table is also further 
-         filtered for phospho-sites only.
-     </p>
-         <b>Step 3: </b> P-values corrected for multiple testing errors.
-         A default permissible error rate of 0.05 is applied, with only the 
-         Benjamini-Hochberg method for multiple testing correction currently implemented.
-         Please see this link for background information: 
-         <a target="_blank" href="https://www.nature.com/articles/nbt1209-1135"> 
-         Noble WS, Nature Biotechnology, 2009.</a>
-    </p>
-         <b>Step 4: </b> Analysis implemented in previous steps is used to 
-         further categorise, filter and sort data. The data table is at this
-         stage queried against the <em>PhosphoQuest</em> database, determining
-         which substrates and sites map to information held there.
-    </p>
-         <b>Step 5: </b> Metrics of the data are extracted for downstream 
-         visualisation. For example, pull-down enrichment efficiency to name
-         one such measure.
-    </p>
-         <b>Step 6: </b> This step has 2 sub-categories:
-         </p><b>A </b>- Some substrate/sites in the uploaded data, will map 
-         to kinase entries in the <em>PhosphoQuest</em> database. Global 
-         freqencies of substrate/sites and their corresponding kinases can 
-         therefore be determined.
-         </p><b>B </b>- Calculate relative kinase activity, in the subset of the 
-         data, whose hits are considered significantly differentially expressed. 
-         This relative activity is determined from the log2 fold changes  
-         <em>(Treatment/Condition over Control)</em>, calculated for their 
-         substrates/sites.
-    <hr>
-    <br>
-    <H5> <b><em>Data visualisation</em></b></H5>
-    <br>
-    <p>
-        <em>PhosphoQuest</em> generates a number of visuals, that we hope
-        will help you interpret and understand your data. These take the
-        following form:
-    </p>
-        <b>Styled tables: </b> Your analysed, filtered and sorted data is 
-        uploaded in the form of a styled table. We have implemented visual cues
-        such as super-imposed heatmaps and barplots to clarify the groupings
-        in your data. Both the standard data and kinase activity analysis take
-        this form.
-    </p>   
-        <b>Volcano plot: </b> We can also visualise significantly differentially
-        expressed hits by plotting a scatter of log2 fold changes vs the
-        corrected p-value for each phospho-site.
-    </p>
-        <b>WordCouds and Frequency charts: </b>By using the analysis briefly 
-        described in <b><em>Step 6A</em></b> above, we can visualise the frequency
-        with which substrates/sites and their kinases appear.       
-    </p> 
-        <b>Summary Metrics: </b>We visualise your data in a series of piecharts,
-        that aim to summarise distributions in a number of categories. 
-        For example, by taking the proportion of phospho-peptides detected in the
-        whole data, we can determine the efficiency of your pull-down strategy.  
-    </p>   
-        <b>Note: </b>please see relevant analysis tabs for more detailed
-        information on the visuals employed.  
-    </p>  
-        
+       <h5> <a href="{{url_for('main.documentation_category', doc='analysis')}}">
+           Click here for Analysis documentation</a></h5>
+    <!--<H5> <b><em>Background - data analysis tool</em></b></H5>-->
+    <!--<br>-->
+    <!--<p>-->
+        <!--PhosphoQuests analytical tool is designed to process data generated-->
+        <!--by phospho-proteomics experiments. Typically, the experimental side -->
+        <!--would entail tryptic protein digestion, enrichment for phospho-peptides-->
+        <!--using pull down methods employing i.e. titanium dioxide followed by -->
+        <!--analysis using mass spectrometry.-->
+    <!--<p>-->
+        <!--Your downstream data analysis pipeline, whether it be through packages-->
+        <!--such as MaxQuant, Progenesis QI or in-house tools, should generate -->
+        <!--identification as well as relative quantitation reports. These outputs-->
+        <!--may take different forms, we therefore provide guidance below on the input -->
+        <!--format required by the tool. -->
+    <!--</p>-->
+    <!--<hr>-->
+    <!--<br>-->
+    <!--<H5> <b><em>Pre-requisites for uploading data to PhosphoQuest</em></b></H5>-->
+    <!--<br>-->
+    <!--<p>-->
+        <!--Please see below for an example format required by PhosphoQuest:-->
+    <!--</p>   -->
+        <!--<img src="{{url_for('static', filename='example_table_webapp.png')}}"/>-->
+    <!--</p>-->
+        <!--<b>Column 1: </b><em>Substrate</em> column with gene name and -->
+        <!--site. Note that non-phosphorylated peptides should also be in the -->
+        <!--format indicated i.e. <em>gene name(None)</em>. However, the analysis -->
+        <!--tool can also handle substrate entries for non-phosphorylated peptides -->
+        <!--that are <em>only</em> gene names.-->
+    <!--</p>-->
+        <!--<b>Column 2: </b>Mean intensity of <em>Control</em> replicate intensities.-->
+    <!--</p>-->
+        <!--<b>Column 3: </b>Mean intensity of <em>Treatment/Condition</em> replicate intensities.-->
+    <!--</p>-->
+        <!--<b>Column 4: </b>Fold change calculations of <em>Treatment over the Control.</em> -->
+        <!--Note: these should not be log2 fold change calculations!-->
+    <!--</p>-->
+        <!--<b>Column 5: </b>T-test P-values. Please use <em>uncorrected</em> values,-->
+        <!--as <em>PhosphoQuest</em> will implement correction for multiple-testing errors. -->
+    <!--</p>-->
+        <!--<b>Column 6-7: </b>Coefficients of variation (CV's) for the <em>Control</em> -->
+         <!--and <em>Treatment/Condition</em> columns, respectively. <em>PhosphoQuest</em> -->
+         <!--can also handle data that doesn't have these column entries. Please -->
+         <!--see section: <em>Data analysis - general summary</em> below for further details.-->
+    <!--</p> -->
+    <!--</p> -->
+    <!--<hr>-->
+    <!--<br>-->
+    <!--<H5> <b><em>Data analysis - general summary</em></b></H5>-->
+    <!--<br>-->
+    <!--<p>-->
+         <!--The following is an overview of the strategy employed to analyse-->
+         <!--your data. Conceptually, the process can be broken down into 6 steps-->
+         <!--which collate and categorise your data. We then use this analysis to -->
+         <!--generate data visualisations.           -->
+    <!--</p>-->
+         <!--<b>Step 1: </b> Data table structure check and basic filtering. This-->
+         <!--pre-analysis step implements a basic error check and determines the format-->
+         <!--of the input table. Data tables without CV columns are processed at this-->
+         <!--stage. Peptide entries with at least one quantitation event are passed -->
+         <!--for further processing. -->
+    <!--</p>-->
+         <!--<b>Step 2: </b> A series of sequential steps, categorise the data into-->
+         <!--groupings. For example - which hits are unique to or appear in both the -->
+         <!--<em>Control</em> and <em>Treatment/Condition</em> and which entries are -->
+         <!--phosphorylated peptides to name a few. The table is also further -->
+         <!--filtered for phospho-sites only.-->
+     <!--</p>-->
+         <!--<b>Step 3: </b> P-values corrected for multiple testing errors.-->
+         <!--A default permissible error rate of 0.05 is applied, with only the -->
+         <!--Benjamini-Hochberg method for multiple testing correction currently implemented.-->
+         <!--Please see this link for background information: -->
+         <!--<a target="_blank" href="https://www.nature.com/articles/nbt1209-1135"> -->
+         <!--Noble WS, Nature Biotechnology, 2009.</a>-->
+    <!--</p>-->
+         <!--<b>Step 4: </b> Analysis implemented in previous steps is used to -->
+         <!--further categorise, filter and sort data. The data table is at this-->
+         <!--stage queried against the <em>PhosphoQuest</em> database, determining-->
+         <!--which substrates and sites map to information held there.-->
+    <!--</p>-->
+         <!--<b>Step 5: </b> Metrics of the data are extracted for downstream -->
+         <!--visualisation. For example, pull-down enrichment efficiency to name-->
+         <!--one such measure.-->
+    <!--</p>-->
+         <!--<b>Step 6: </b> This step has 2 sub-categories:-->
+         <!--</p><b>A </b>- Some substrate/sites in the uploaded data, will map -->
+         <!--to kinase entries in the <em>PhosphoQuest</em> database. Global -->
+         <!--freqencies of substrate/sites and their corresponding kinases can -->
+         <!--therefore be determined.-->
+         <!--</p><b>B </b>- Calculate relative kinase activity, in the subset of the -->
+         <!--data, whose hits are considered significantly differentially expressed. -->
+         <!--This relative activity is determined from the log2 fold changes  -->
+         <!--<em>(Treatment/Condition over Control)</em>, calculated for their -->
+         <!--substrates/sites.-->
+    <!--<hr>-->
+    <!--<br>-->
+    <!--<H5> <b><em>Data visualisation</em></b></H5>-->
+    <!--<br>-->
+    <!--<p>-->
+        <!--<em>PhosphoQuest</em> generates a number of visuals, that we hope-->
+        <!--will help you interpret and understand your data. These take the-->
+        <!--following form:-->
+    <!--</p>-->
+        <!--<b>Styled tables: </b> Your analysed, filtered and sorted data is -->
+        <!--uploaded in the form of a styled table. We have implemented visual cues-->
+        <!--such as super-imposed heatmaps and barplots to clarify the groupings-->
+        <!--in your data. Both the standard data and kinase activity analysis take-->
+        <!--this form.-->
+    <!--</p>   -->
+        <!--<b>Volcano plot: </b> We can also visualise significantly differentially-->
+        <!--expressed hits by plotting a scatter of log2 fold changes vs the-->
+        <!--corrected p-value for each phospho-site.-->
+    <!--</p>-->
+        <!--<b>WordCouds and Frequency charts: </b>By using the analysis briefly -->
+        <!--described in <b><em>Step 6A</em></b> above, we can visualise the frequency-->
+        <!--with which substrates/sites and their kinases appear.       -->
+    <!--</p> -->
+        <!--<b>Summary Metrics: </b>We visualise your data in a series of piecharts,-->
+        <!--that aim to summarise distributions in a number of categories. -->
+        <!--For example, by taking the proportion of phospho-peptides detected in the-->
+        <!--whole data, we can determine the efficiency of your pull-down strategy.  -->
+    <!--</p>   -->
+        <!--<b>Note: </b>please see relevant analysis tabs for more detailed-->
+        <!--information on the visuals employed.  -->
+    <!--</p>  -->
+        <!---->
 </div>
 {% endblock content %}

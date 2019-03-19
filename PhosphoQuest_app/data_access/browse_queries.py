@@ -98,9 +98,6 @@ def browse_inhibitors():
     results = all_table(Inhibitor)
         #find table format for output
     if 'No Results Found' not in results:
-        for item in results:
-            #make short name up to 20 characters
-            item.inhib_short_name = item.inhib_short_name[:20]
         out_table = Inhibitor_first_results(items=results)
         return out_table
     else:

@@ -10,6 +10,12 @@ crunch = Blueprint('crunch', __name__)
 
 
 # route for upload page with file handling method
+@crunch.route('/upload', methods=['GET', 'POST'])
+def upload_check():
+    pass
+
+
+# route to handle analysis
 @crunch.route('/analysis', methods=['GET', 'POST'])
 def analysis():
     """ Upload and analysis Route : run all analyses in crunch script.

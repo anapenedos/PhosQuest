@@ -19,8 +19,11 @@ def documentation():
 @main.route("/documentation/<doc>")
 def documentation_category(doc):
     """render documentation page"""
-    if doc:
-        return render_template('documentation_main.html', title=doc)
+    if doc == "":
+        return render_template('documentation_main.html', title="Main")
+
+    elif doc == "analysis":
+        return render_template('documentation_analysis.html', title="Analysis")
 
     else:
      return render_template('documentation_main.html', title='Documentation')
