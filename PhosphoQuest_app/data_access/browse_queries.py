@@ -189,7 +189,7 @@ def phos_kin_query(phos_group_id):
 def kin_inhib_query(kin_accession):
     """
     Query to pull related inhibitors using kinase accession
-    :param sukinaccession: string kinase accession
+    :param kin_accession: string kinase accession
     :return: Flask_Table Phosphosites object
     """
     session = create_sqlsession()
@@ -198,4 +198,18 @@ def kin_inhib_query(kin_accession):
     #subset of information about substrate phosphosites sites.
     subsets = kin.kin_inhibitors
     table = Inhibitor_first_results(subsets)
+    return table
+
+def inhib_kin_query(inhib_pubchem_cid):
+    """
+    Query to pull targeted kinases using inhib CID
+    :param inhib_pubchem_cid: string inhib CID
+    :return: Flask_Table Kinase object
+    """
+    session = create_sqlsession()
+    q = session.query(Inhibitor).filter_by(inhib_pubchem_cid= inhib_pubchem_cid)
+    inh = q.first()
+    #subset of information about substrate phosphosites sites.
+    subsets = inh.inhib_target_kinases
+    table = Kinase_first_results(subsets)
     return table

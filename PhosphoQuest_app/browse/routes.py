@@ -116,6 +116,9 @@ def phosites_detail(text):
 def inh_detail(text):
     " inhibitor detail sets up for adding pubchem widget"
     results = browse_queries.browse_detail(text, 'Inhibitor')
-    cid = results[0][0][1]  # get pubchem CID from results to pass
+    table = browse_queries.inhib_kin_query(text)
+   # cid = results[0][0][1]  # get pubchem CID from results to pass
+
     return render_template('search_results.html', title="Inhibitor",
-                           style="list", results=results, cid=cid)
+                           style="double", results=results, cid=text, text=text,
+                           table=table, related="Targeted Kinases")

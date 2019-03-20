@@ -7,7 +7,7 @@
     <b> Sorry no results found please try again!</b>
 
     {% elif style == 'list' %}
-    <H4>{{title}} Record Detail</H4>
+    <H3>{{title}} Record Detail</H3>
     <br>
     <div>
          {% for item in results %}
@@ -35,7 +35,7 @@
     {% endif %}
 
     {% elif style == 'table' %}
-    <H4> List of Matching Records</H4>
+    <H3> List of Matching Records</H3>
     <br>
     <div class=table>
         {{ results }}
@@ -43,25 +43,34 @@
     {% elif style == 'double' %}
     <H4>{{title}} Record Detail</H4>
     <br>
-    <div
-            {% for item in results %}
+    <div>
+        {% for item in results %}
             {% for attr in item %}
 
-    <div class="row">
-        <div class="col-md-2">
-            <b>{{ attr[0] }}</b>
-        </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <b>{{ attr[0] }}</b>
+                </div>
 
-        <div class="col-md-10">
-            {% if attr[0] == 'Related substrate'%}
-                <a href="{{url_for('browse.sub_detail',text=attr[1])}}">{{attr[1]}}</a>
-            {% else %}
-                {{ attr[1] }}
-            {% endif %}
-        </div>
-    </div>
-    {% endfor %}
-    {% endfor%}
+                <div class="col-md-10">
+                    {% if attr[0] == 'Related substrate'%}
+                        <a href="{{url_for('browse.sub_detail',text=attr[1])}}">{{attr[1]}}</a>
+                    {% else %}
+                        {{ attr[1] }}
+                    {% endif %}
+                </div>
+            </div>
+
+            {% endfor %}
+        {% endfor%}
+    {% if cid %}
+    <br>
+     Scroll down below widget for related {{ related }}
+    <br>
+    <iframe class="pubchem-widget"
+            src="https://pubchem.ncbi.nlm.nih.gov/compound/{{cid}}#section=3D-Conformer&embed=true"
+            style="width: 100%; height: 500px;"></iframe>
+    {% endif %}
     <hr>
     <br>
     <H4> {{ related }} related to {{ title }}-{{ text }}</H4>
@@ -72,7 +81,7 @@
 </div>
 
 {% elif style == 'triple' %}
-    <H4>{{title}} Record Detail</H4>
+        <em><H3>{{title}} Record Detail</H3></em>
     <br>
     <div>
 
