@@ -1,5 +1,5 @@
 <!-- inherit template from layout.html-->
-{% extends "layout_no_sidebar.html" %}
+{% extends "layout_docs.html" %}
 {% block content %}
 
 <div class="container">
@@ -29,7 +29,7 @@
     <p>
         Please see below for an example format required by PhosphoQuest:
     </p>
-        <img src="{{url_for('static', filename='example_table_webapp.png')}}"/>
+        <img src="{{url_for('static', filename='example_table_webapp.png')}}" width="800px">
     </p>
         <b>Column 1: </b><em>Substrate</em> column with gene name and
         site. Note that non-phosphorylated peptides should also be in the
@@ -134,8 +134,6 @@
     </p>
 
     <br>
-       <h5> <a href="{{url_for('main.documentation')}}">
-           Click here for documentation main page</a></h5>
 
 </div>
 {% endblock content %}

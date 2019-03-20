@@ -102,13 +102,11 @@ def create_csv(dataframe):
     """
     tempdir = os.path.join('PhosphoQuest_app','static', 'userdata_temp')
 
-    #capture input file name for output csv
-
-
     #run create userfilename function to get used specific filename
     outname = plotting.create_userfilename('analysed', 'csv')
 
-    #SAVE FILE
+    #TODO SAVE FILE and ANA to change back to nice lovely string!!!
+
     dataframe.to_csv(os.path.join(tempdir,outname))
 
     # clean up old files in userdata_temp folder >1 day old
@@ -118,7 +116,6 @@ def create_csv(dataframe):
     # get date from file name
     for oldfile in oldfiles:
         date = oldfile[:10]
-        # ignore tempfolder file
 
         try:
             # reformat to datetime object
