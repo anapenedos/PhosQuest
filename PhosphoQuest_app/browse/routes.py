@@ -102,12 +102,15 @@ def sub_detail(text):
 def phosites_detail(text):
     """
     create detail view output of phosphosites by accession.
-    :param text: string of accession
+    :param text: string of phos group ID
     :return: template
     """
     results = browse_queries.browse_detail(text,'Phosphosite')
+    table = browse_queries.phos_kin_query(text)
+
     return render_template('search_results.html', title="Phosphosite",
-                           style='list', results=results)
+                           style='double', results=results, table=table,
+                           related="Kinases", text=text)
 
 @browse.route("/inh_detail/<text>")
 def inh_detail(text):

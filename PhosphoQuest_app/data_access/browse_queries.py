@@ -138,6 +138,11 @@ def browse_detail(text, table):
     return results
 
 
+
+### The following  four functions could be mde into a generic related information
+#   function however in the time available and due to the confusing nature of
+#   the queries it was easier to leave as specific functions
+
 def subs_phos_query(subs_accession):
     """
     Query to pull related phosphosites using substrate accession
@@ -165,6 +170,21 @@ def kin_phos_query(kin_accession):
     subsets = kin.kin_phosphorylates
     table = Phosphosites(subsets)
     return table
+
+def phos_kin_query(phos_group_id):
+    """
+    Query to pull related kinases using phosphosite accession
+    :param phos_group_id: string phosphosite group ID
+    :return: Flask_Table Kinase object
+    """
+    session = create_sqlsession()
+    q = session.query(Phosphosite).filter_by(phos_group_id= phos_group_id)
+    phos = q.first()
+    #subset of information about related kinases.
+    subsets = phos.phosphorylated_by
+    table = Kinase_first_results(subsets)
+    return table
+
 
 def kin_inhib_query(kin_accession):
     """
