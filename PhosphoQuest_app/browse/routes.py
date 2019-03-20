@@ -75,9 +75,10 @@ def kin_detail(text):
     #run related inhibitors query
     inh = browse_queries.kin_inhib_query(text)
 
-
+    # pass tables, results and style indicator to template for rendering, plus
+    # variables for title info (related, related2 and text of acc no)
     return render_template('search_results.html', title="Kinase",
-                           style="triple", results=results, table= phos,
+                           style="triple", results=results, table=phos,
                            related="Phosphosites", table2 = inh,
                            related2="Inhibitors", text=text)
 
@@ -93,6 +94,8 @@ def sub_detail(text):
     #run related phosphosite query
     table = browse_queries.subs_phos_query(text)
 
+    # pass tables, results and style indicator to template for rendering, plus
+    # variables for title info (related and text of acc no)
     return render_template('search_results.html', title="Substrate",
                            style='double', results=results, table=table,
                            related="Phosphosites", text=text)
@@ -108,6 +111,8 @@ def phosites_detail(text):
     results = browse_queries.browse_detail(text,'Phosphosite')
     table = browse_queries.phos_kin_query(text)
 
+    # pass tables, results and style indicator to template for rendering, plus
+    # variables for title info (related and text of acc no)
     return render_template('search_results.html', title="Phosphosite",
                            style='double', results=results, table=table,
                            related="Kinases", text=text)
@@ -117,8 +122,9 @@ def inh_detail(text):
     " inhibitor detail sets up for adding pubchem widget"
     results = browse_queries.browse_detail(text, 'Inhibitor')
     table = browse_queries.inhib_kin_query(text)
-   # cid = results[0][0][1]  # get pubchem CID from results to pass
-
+    # pass tables, results and style indicator to template for rendering, plus
+    # variables for title info (related and text of acc no) and cid variable
+    #for rendering of PubChem widget iframe
     return render_template('search_results.html', title="Inhibitor",
                            style="double", results=results, cid=text, text=text,
                            table=table, related="Targeted Kinases")
