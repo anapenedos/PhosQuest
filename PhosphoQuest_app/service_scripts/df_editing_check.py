@@ -7,33 +7,7 @@ from PhosphoQuest_app.service_scripts.df_editing import create_db_kin_links
 # sdf = split_multi_value_rows_in_df(df, 'C', ',')
 # print(sdf)
 
-# # making pd links
-# data = [dict(name='Google', url='http://www.google.com'),
-#         dict(name='Stackoverflow', url='http://stackoverflow.com')]
-#
-# df = pd.DataFrame(data)
-#
-#
-# def make_clickable(val):
-#     # target _blank to open new window
-#     return '<a target="_blank" href="{}">{}</a>'.format(val, val)
-#
-#
-# df.style.format({'url': make_clickable})
-#
-# print(df.to_html())
-#
-#
-# df1 = df.copy()
-# df1['nameurl'] = df1['name'] + '#' + df1['url']
-#
-#
-# def make_clickable_both(val):
-#     name, url = val.split('#')
-#     return f'<a href="{url}">{name}</a>'
-#
-#
-# df1.style.format({'nameurl': make_clickable_both})
+# TODO rm or update test
 
 def create_db_kin_links_test():
     # test sets
