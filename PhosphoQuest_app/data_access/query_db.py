@@ -68,15 +68,15 @@ def query_switch(text,type, table, option):
 
         else:#like search
             if table == 'kinase':
-                results = display_tables.Kinase_first_results(results)
+                results = display_tables.Kinase_results(results)
             elif table == 'inhibitor':
                 for item in results: # shorten name for display table
                     item.inhib_short_name = item.inhib_short_name[:20]
-                results = display_tables.Inhibitor_first_results(results)
+                results = display_tables.Inhibitor_results(results)
                 # add cid variable to add pubchem widget on website.
                 cid='cid'
             else:
-                results = display_tables.Substrate_first_results(results)
+                results = display_tables.Substrate_results(results)
             style = 'table'
             return results, style, cid
 
@@ -94,14 +94,14 @@ def query_switch(text,type, table, option):
         else:
             # if more results display as table for each type
             if table == 'kinase':
-                results = display_tables.Kinase_first_results(results)
+                results = display_tables.Kinase_results(results)
             elif table == 'inhibitor':
                 # make short name up to 20 characters to avoid long table
                 for item in results:
                     item.inhib_short_name = item.inhib_short_name[:20]
-                results = display_tables.Inhibitor_first_results(results)
+                results = display_tables.Inhibitor_results(results)
             else:
-                results = display_tables.Substrate_first_results(results)
+                results = display_tables.Substrate_results(results)
             style = 'table'
 
             return results,style

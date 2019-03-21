@@ -61,6 +61,11 @@ def browse_table(subcategory):
     return render_template('browse_table.html', title=subcategory,
                                             table=table)
 
+
+### create detail routes for viewing a single Kinase, Inhibitor, Substrate, or
+# phosphosite and with tables or links of related information
+
+
 @browse.route("/kin_detail/<text>")
 def kin_detail(text):
     """ route to create details from browse ,render template with triple
@@ -79,7 +84,7 @@ def kin_detail(text):
     # variables for title info (related, related2 and text of acc no)
     return render_template('search_results.html', title="Kinase",
                            style="triple", results=results, table=phos,
-                           related="Phosphosites", table2 = inh,
+                           related="Phosphosite_results", table2 = inh,
                            related2="Inhibitors", text=text)
 
 @browse.route("/sub_detail/<text>")
@@ -98,7 +103,7 @@ def sub_detail(text):
     # variables for title info (related and text of acc no)
     return render_template('search_results.html', title="Substrate",
                            style='double', results=results, table=table,
-                           related="Phosphosites", text=text)
+                           related="Phosphosite_results", text=text)
 
 
 @browse.route("/phosites_detail/<text>")
@@ -125,6 +130,6 @@ def inh_detail(text):
     # pass tables, results and style indicator to template for rendering, plus
     # variables for title info (related and text of acc no) and cid variable
     #for rendering of PubChem widget iframe
-    return render_template('search_results.html', title="Inhibitor",
-                           style="double", results=results, cid=text, text=text,
+    return render_template('search_results.html', title="Inhibitor", text=text,
+                           style="double", results=results, cid=text,
                            table=table, related="Targeted Kinases")

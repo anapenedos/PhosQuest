@@ -2,7 +2,8 @@ from flask_table import Table, Col, LinkCol
 
 # Tables for browse and search results
 
-class Kinase_first_results(Table):
+
+class Kinase_results(Table):
     """create Kinase results part info table format"""
     kin_accession = Col('Accession no')
     kin_full_name = Col('Full name')
@@ -10,7 +11,8 @@ class Kinase_first_results(Table):
     detail = LinkCol('Detail', 'browse.kin_detail',
                             url_kwargs=dict(text='kin_accession'))
 
-class Substrate_first_results(Table):
+
+class Substrate_results(Table):
     """create Substrates part info  results table format"""
     subs_accession = Col('Accession no')
     subs_full_name = Col('Full name')
@@ -20,15 +22,17 @@ class Substrate_first_results(Table):
     detail = LinkCol('Detail', 'browse.sub_detail',
                      url_kwargs=dict(text='subs_accession'))
 
-class Inhibitor_first_results(Table):
+
+class Inhibitor_results(Table):
     """create table of inhibitors for first result display"""
     inhib_pubchem_cid = Col('PubChem no')
     inhib_short_name = Col('Compound')
     detail = LinkCol('Detail', 'browse.inh_detail',
                      url_kwargs=dict(text='inhib_pubchem_cid'))
 
-class Phosphosites(Table):
-    """create table of Phosphosites related to substrate"""
+
+class Phosphosite_results(Table):
+    """create table of Phosphosite_results related to substrate"""
     phos_group_id = Col('Group ID')
     phos_modified_residue = Col('Modified Residue')
     phos_site = Col('Phosphorylation Site')

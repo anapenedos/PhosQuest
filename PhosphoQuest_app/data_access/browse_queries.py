@@ -1,8 +1,8 @@
 from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase,\
     Substrate, Inhibitor, Phosphosite
 
-from PhosphoQuest_app.data_access.display_tables import Kinase_first_results, \
-    Substrate_first_results, Inhibitor_first_results, Phosphosites
+from PhosphoQuest_app.data_access.display_tables import Kinase_results, \
+    Substrate_results, Inhibitor_results, Phosphosite_results
 from PhosphoQuest_app.data_access.query_db import searchlike, \
     searchexact, all_table, query_to_list
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
@@ -82,10 +82,10 @@ def browse_table(subcategory):
         #find table format for output
         if 'No Results Found' not in results:
             if table == 'Kinase':
-                out_table = Kinase_first_results(items=results)
+                out_table = Kinase_results(items=results)
 
             elif table =='Substrate':
-                out_table = Substrate_first_results(items=results)
+                out_table = Substrate_results(items=results)
 
             return out_table
 
@@ -98,7 +98,7 @@ def browse_inhibitors():
     results = all_table(Inhibitor)
         #find table format for output
     if 'No Results Found' not in results:
-        out_table = Inhibitor_first_results(items=results)
+        out_table = Inhibitor_results(items=results)
         return out_table
     else:
         return results
@@ -108,7 +108,7 @@ def browse_substrates():
     results = all_table(Substrate)
         #find table format for output
     if 'No Results Found' not in results:
-        out_table = Substrate_first_results(items=results)
+        out_table = Substrate_results(items=results)
         return out_table
     else:
         return results
@@ -147,28 +147,28 @@ def subs_phos_query(subs_accession):
     """
     Query to pull related phosphosites using substrate accession
     :param subs_accession: string substrate accession
-    :return: Flask_Table Phosphosites object
+    :return: Flask_Table Phosphosite_results object
     """
     session = create_sqlsession()
     q = session.query(Substrate).filter_by(subs_accession= subs_accession)
     sub = q.first()
     #subset of information about substrate phosphosites sites.
     subsites = sub.subs_sites
-    table = Phosphosites(subsites)
+    table = Phosphosite_results(subsites)
     return table
 
 def kin_phos_query(kin_accession):
     """
     Query to pull related phosphosites using kinase accession
     :param kin_accession: string kinase accession
-    :return: Flask_Table Phosphosites object
+    :return: Flask_Table Phosphosite_results object
     """
     session = create_sqlsession()
     q = session.query(Kinase).filter_by(kin_accession= kin_accession)
     kin = q.first()
     #subset of information about substrate phosphosites sites.
     subsets = kin.kin_phosphorylates
-    table = Phosphosites(subsets)
+    table = Phosphosite_results(subsets)
     return table
 
 def phos_kin_query(phos_group_id):
@@ -182,7 +182,7 @@ def phos_kin_query(phos_group_id):
     phos = q.first()
     #subset of information about related kinases.
     subsets = phos.phosphorylated_by
-    table = Kinase_first_results(subsets)
+    table = Kinase_results(subsets)
     return table
 
 
@@ -190,14 +190,14 @@ def kin_inhib_query(kin_accession):
     """
     Query to pull related inhibitors using kinase accession
     :param kin_accession: string kinase accession
-    :return: Flask_Table Phosphosites object
+    :return: Flask_Table Phosphosite_results object
     """
     session = create_sqlsession()
     q = session.query(Kinase).filter_by(kin_accession= kin_accession)
     kin = q.first()
     #subset of information about substrate phosphosites sites.
     subsets = kin.kin_inhibitors
-    table = Inhibitor_first_results(subsets)
+    table = Inhibitor_results(subsets)
     return table
 
 def inhib_kin_query(inhib_pubchem_cid):
@@ -211,5 +211,5 @@ def inhib_kin_query(inhib_pubchem_cid):
     inh = q.first()
     #subset of information about substrate phosphosites sites.
     subsets = inh.inhib_target_kinases
-    table = Kinase_first_results(subsets)
+    table = Kinase_results(subsets)
     return table
