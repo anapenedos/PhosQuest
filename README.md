@@ -7,16 +7,16 @@
 * [Data sources](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-sources)
 * [Data analysis file upload format](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-analysis-file-upload-format)
 * [Data analysis - general summary](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-analysis---general-summary)
-* [Website functionality - Basic overview]()
+* [Data analysis output data information](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-analysis-output-information)
 
 ### Information for Developers
-* [Setting up the Database]()
-* [Software Specifications]()
-* [Setting up the PhosphoQuest Application]()
-* [Python Package requirements to run the PhosphoQuest Server]()
-* [Software architecture]()
-* [About the developers]()
-* [Wish list for future updates]()
+* [Setting up the Database](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#setting-up-the-database)
+* [Software Specifications](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#software-specifications)
+* [Setting up the PhosphoQuest Application](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#setting-up-the-phosphoquest-application)
+* [Python Package requirements to run the PhosphoQuest Server](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#python-package-requirements-to-run-the-phosphoquest-server)
+* [Software architecture](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#software-architecture)
+* [About the developers](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#about-the-developers)
+* [Wish list for future updates](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#wish-list-for-future-updates)
 
 # Information for Web Page Users
 
@@ -72,6 +72,7 @@ The following will be an overview of the strategy employed to analyse your data.
 ## Data analysis output information 
 Add info about what information is presented to the user etc here
 
+
 # Information for Developers
 
 ## Setting up the Database
@@ -115,9 +116,11 @@ All the packages required to run the PhosphoQuest web application are in the Pho
 - xlrd  1.2.0
 
 ## Software architecture
-The structure of the software consists of a PhopshoQuest App folder containing 
+The structure of the software consists of a PhosphoQuest App folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing pythons scripts used in user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest database.
 
-Further information regarding the script functions is available in the following md documents and in comments in the scripts:
+Outside of the app folder 'data_import_scripts` folder contains scripts used in the set up of the database *****UPDATE AS APPROPRIATE***. `run.py` is the python script used to initiate the PhosphoQuest application.
+
+Further information regarding the script functions is available in the following md documents and in comments in the scripts themselves:
 
 * [Overview PhosphoQuest app script structure](****ADD LINK****)
 * [Set up scripts for the PhosphoQuest database ](****ADD LINK****)
@@ -133,7 +136,7 @@ We are a group of part-time MSc Bioinformatics students at Queen Mary College Un
 * Further categories added to browse and search functionality. 
 * Update design of browse categories pages
 * Use url variables for passing browse and search variables back to query functions instead of string-split method
-* Utilise browser cookies for further functionality 
-* Consider adding option for users to be able to store 
+* Utilise browser cookies for further functionality with user data upload
+* Consider adding option for users to be able to store data analysis in database for a short period of time
 
 
