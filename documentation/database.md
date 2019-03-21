@@ -1,6 +1,25 @@
+# The database
+## Tools
+The DB was setup in SQLite (version 3). SqLite is suitable to low- to 
+medium-traffic websites and the one file approach of this type of DBs makes them 
+reliable and portable. Its limitations in terms of user management and 
+performance optimisation are unlikely to be felt in this project.
+
+Python library SQLalchemy was employed to create and populate the DB. This makes
+the PhosphoQuest DB and WebApp more portable and allows for performance 
+improvements in the python-SQLite interactions. With SQLalchemy, the DB can be 
+transferred to other DB systems, with minimal changes to the 
+`sqlalchemy_declarative` (table changes), `db_sessions` (DB path and connections) 
+and `db_setup` (creation of tables and data import) scripts, all in the 
+`data_import_scripts` directory.
+
+## Data Sources
+### Databse exports
+  
 ### API (Application Programming Interface) Documentation
 
-API functionality was dependent on the pandas module to allow handling of data structures. The API scripts were also dependent on the urllib module to allow utilization of URLs. For our database, we required access to UniProt and PubChem websites with the ability to search multiple accession numbers and output as a dataframe for population of the SQLite database. 
+API functionality was dependent on the pandas module to allow handling of data 
+structures. The API scripts were also dependent on the urllib module to allow utilization of URLs. For our database, we required access to UniProt and PubChem websites with the ability to search multiple accession numbers and output as a dataframe for population of the SQLite database. 
 
 To enable population of the database, we utilised APIs from three different websites:-
 
