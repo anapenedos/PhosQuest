@@ -6,8 +6,9 @@ from PhosphoQuest_app.data_access.display_tables import Kinase_results, \
 from PhosphoQuest_app.data_access.query_db import searchlike, \
     searchexact, all_table, query_to_list
 from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-from PhosphoQuest_app.data_access.interface_dicts import headers,\
-    location_cats, kin_family_cats
+from PhosphoQuest_app.data_access.interface_dicts import location_cats, \
+    kin_family_cats
+import re
 
 #Dictionary of relevant tables and fields for browse categories.
 tabledict = {'Kinase': [Kinase, {'Family': Kinase.kin_family,
@@ -52,6 +53,32 @@ def browse_subcat(category):
         #remove forward and black slash that cause problems in links
         return links
 
+def clean_links(links, category):
+    """
+    clean up query fields for display as category buttons to browse by
+    :param links: list of query outputs
+    :param category: category of search from route
+    :return: list of cleansed links
+    """
+    cleansedlinks = []
+    for item in links:
+        # remove blanks
+        if item == "" or item == "-":
+            continue
+
+        else:
+            #crop chromosome location output to eg 13p (check if substrate)
+            if category[:3] == 'Sub':
+                item =  re.search("[\d|X|Y]+[pq]", item).group(0)
+
+        # remove forward slashes
+        item = item.replace("/", "&F&")
+        if item not in cleansedlinks:
+            cleansedlinks.append(item)
+    # sort the links
+    cleansedlinks.sort()
+
+    return cleansedlinks
 
 
 def browse_table(subcategory):

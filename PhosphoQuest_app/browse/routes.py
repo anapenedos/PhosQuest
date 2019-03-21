@@ -1,6 +1,8 @@
 from flask import render_template, Blueprint
 from PhosphoQuest_app.data_access import browse_queries
+
 browse = Blueprint('browse', __name__)
+
 
 @browse.route("/browse")
 def browse_main():
@@ -33,21 +35,20 @@ def browse_cat(category):
                                table=table)
 
     else: # if this is the subcategory level (requiring query)
+        #query database to obtain links for browse subcategories
         links = browse_queries.browse_subcat(category)
 
+        #check if the links output is a list of items
         if type(links) == list:
-
-            cleansedlinks = []
-            # remove forward slashes
-            for item in links:
-                item = item.replace("/","&F&")
-                cleansedlinks.append(item)
-
-
+            #clean links for display as categories
+            cleansedlinks = browse_queries.clean_links(links,category)
+            #render template with subcats from database
             return render_template('browse_cat.html', title="Browse",
                                    links=cleansedlinks, cat="subcat",
                                    category=category)
-        else:#catch Substrate~All
+
+        # catch Substrate~All which is a table object
+        else:
             return render_template('search_results.html',
                                    title='All Substrates',style='table',
                                    results=links)

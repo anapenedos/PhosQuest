@@ -1,13 +1,16 @@
 <<!--inherits layout from layout.html-->
 {% extends "layout_no_sidebar.html" %}
 {% block content %}
+
 <!--This code adds entries from query according to style selected-->
+{% set title = title|replace("~"," ") %}
+{% set title = title|replace("&F&","/") %}
 <div class='container'>
     {% if style == 'None' %}
     <b> Sorry no results found please try again!</b>
 
     {% elif style == 'table' %}
-    <H3> List of {{ title }} Records</H3>
+    <H3> {{ title }} Records</H3>
     <br>
     <div class=table>
         {{ results }}

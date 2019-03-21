@@ -1,29 +1,42 @@
 <!--inherits layout from layout.html-->
 {% extends "layout.html" %}
 {% block content %}
-<H3> Browse by {{ category }}:</H3>
+{% set title = category|replace("~", " ") %}
+<H3> Browse by {{ title }}:</H3>
 <br>
+
 {% if cat == "cat" %}
 
-    {% for item in links %}
-    <p class="lead">
-        <a class="btn btn-info btn-block btn-md"
-           href="{{url_for('browse.browse_cat', category=item)}}" role="button">
-            {{ item }} </a>
-    </p>
-    {% endfor %}
+<div class="container">
+    <div class="row">
+         {% for item in links %}
+            <div class="col-md-4">
+                <p class="lead">
+                     <a class="btn btn-info btn-block btn-lrg"
+                   href="{{url_for('browse.browse_cat', category=item)}}" role="button">
+                    {{item|replace("~", " ")}} </a>
+            </p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
 
 {% elif cat == "subcat" %}
- {% set link = '' %}
-    {% for item in links %}
-        {% set link = category + '~' + item %}
-        <p class="lead">
-            <a class="btn btn-info btn-block btn-sml"
-               href="{{url_for('browse.browse_table', subcategory=link)}}" role="button">
-               {{item|replace("&F&", "/")}}</a>
-        </p>
+    {% set link = '' %}
+    <div class="container">
+        <div class="row">
+            {% for item in links %}
+                {% set link = category + '~' + item %}
+            <div class="col-md-4">
+                <p class="lead">
+                     <a class="btn btn-info btn-block btn-md"
+                   href="{{url_for('browse.browse_table', subcategory=link)}}" role="button">
+                   {{item|replace("&F&", " / ")}}</a>
+                </p>
+            </div>
     {% endfor %}
+         </div>
+    </div>
 
 {% endif %}
-
 {% endblock content %}
