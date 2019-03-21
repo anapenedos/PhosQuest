@@ -1,11 +1,38 @@
 # PhosphoQuest Application Readme
 
+## Index
+
+### Information for Web Page Users
+* [Website functionality - Basic overview](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#website-functionality---basic-overview)
+* [Data sources](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-sources)
+* [Data analysis file upload format](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-analysis-file-upload-format)
+* [Data analysis - general summary](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-analysis---general-summary)
+* [Data analysis output data information](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#data-analysis-output-information)
+
+### Information for Developers
+* [Setting up the Database](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#setting-up-the-database)
+* [Software Specifications](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#software-specifications)
+* [Setting up the PhosphoQuest Application](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#setting-up-the-phosphoquest-application)
+* [Python Package requirements to run the PhosphoQuest Server](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#python-package-requirements-to-run-the-phosphoquest-server)
+* [Software architecture](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#software-architecture)
+* [About the developers](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#about-the-developers)
+* [Wish list for future updates](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/README.md#wish-list-for-future-updates)
+
 # Information for Web Page Users
 
 ## Website functionality - Basic overview
 PhosphoQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite and disease information. 
 
 The application also provides an area for users to upload a tsv or csv file of experimental phosphorylation data and receive the significantly up or down phosphorylated sites, and other useful analysis. The analysed data can be viewed on the website and the complete analysis of all phosphosites in the data can be downloaded as a CSV file.
+
+## Data sources
+Resources in this database were obtained from various sites. We thank everyone involved with maintaining, updating and keeping these online sites available and free to use for non-commercial purposes. 
+The majority of the information on this website was obtained from [PhosphositePlus](https//www.phosphosite.org/). A superb online resource.
+
+Inhibitors information was obtained from [BindingDB](https://www.bindingdb.org).
+
+
+Additional information to fill in missing data was obtained via API from [Uniprot](https://www.uniprot.org) and [PubChem](https://pubchem.ncbi.nlm.nih.gov/). Particular thanks to PubChem developers for providing the widget resources which are used on the inhibitor detail information pages of this website.
 
 ## Data analysis file upload format
 The uploaded file used for data analysis must be in the following format:
@@ -22,17 +49,8 @@ Column 5: T-test P-values. Please use uncorrected values, as PhosphoQuest will i
 
 Column 6-7: Coefficients of variation (CV's) for the Control and Treatment/Condition columns, respectively. PhosphoQuest can also handle data that doesn't have these column entries. Please see section - Analysis functions below for further details. 
 
-## Data sources
-Resources in this database were obtained from various sites. We thank everyone involved with maintaining, updating and keeping these online sites available and free to use for non-commercial purposes. 
-The majority of the information on this website was obtained from [PhosphositePlus](https//www.phosphosite.org/). A superb online resource.
-
-Inhibitors information was obtained from [BindingDB](https://www.bindingdb.org).
-
-
-Additional information to fill in missing data was obtained via API from [Uniprot](https://www.uniprot.org) and [PubChem](https://pubchem.ncbi.nlm.nih.gov/). Particular thanks to PubChem developers for providing the widget resources which are used on the inhibitor detail information pages of this website.
 
 ## Data analysis - general summary
-
 The following will be an overview of the strategy employed to analyse your data. Conceptually, the process can be broken down into 6 steps which collate and categorise your data. We then use this analysis to generate data visualisations, we hope will help you interpret your phospho-proteomics data. 
 
 **Step 1**: Data table structure check and basic filtering. This pre-analysis step implements a basic error check and determines the format of the input table. Data tables without CV columns are processed at this stage. Peptide entries with at least one quantitation event are passed for further processing. 
@@ -51,6 +69,9 @@ The following will be an overview of the strategy employed to analyse your data.
 
 **B** - Calculate relative kinase activity, in the subset of the data, whose hits are considered significantly differentially expressed. This relative activity is determined from the log2 fold changes (Treatment over Control), calculated for their substrates/sites. 
 
+## Data analysis output information 
+Add info about what information is presented to the user etc here
+
 
 # Information for Developers
 
@@ -62,18 +83,15 @@ PhosphoQuest is developed in Python 3.6+ using Flask 1.0.2 for web functionality
 
 Webpage styles are based html5 with Bootstrap CSS 4.2.1 with local tweaks, jquery is used for tabs on results page.
 
-Database functionality uses Sqlite3 and python SqlAlchemy. 
+Database functionality uses Sqlite3 and Python SqlAlchemy. 
 
-Data analysis uses numpy, pandas, seaborn and statsmodels. Outplut plots are rendered using plotly and matplotlib, with WordCloud to provide visual representations. 
-
-## Setting up the Database
-Instructions for using the various python scripts to set up the DB here
+Data analysis uses numpy, pandas, seaborn and statsmodels. Output plots are rendered using plotly and matplotlib, with WordCloud to provide visual representations. 
 
 ## Setting up the PhosphoQuest Application
 
-All the packages required to run the PhosphoQuest web application are in the PhosphoQuest App folder. After installation of all the requirements and set-up of the database run the "Run.py" application `python run.py` from the outer folder level. This will initiate the Flask application and server, navigate to the webpage `127.0.0.1:5000/` to view the web application (run on local computer) 
+All the packages required to run the PhosphoQuest web application are in the PhosphoQuest App folder. After installation of all the requirements and set-up of the database run the "Run.py" application `python run.py` from the outer folder level. This will initiate the Flask application and server, navigate to the webpage `127.0.0.1:5000/` to view the web application (run on local computer).
 
-## Python Package requirements to run the PhosphoQuest Server.
+## Python Package requirements to run the PhosphoQuest Server
 - Babel 2.6.0
 - Click 7.0
 - Flask 1.0.2
@@ -96,3 +114,29 @@ All the packages required to run the PhosphoQuest web application are in the Pho
 - wordcloud  1.5.0
 - WTForms  2.2.1
 - xlrd  1.2.0
+
+## Software architecture
+The structure of the software consists of a `PhosphoQuest_App` folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing pythons scripts used in user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest database.
+
+Outside of the app folder `data_import_scripts` folder contains scripts used in the set up of the database *****UPDATE AS APPROPRIATE***. `run.py` is the python script used to initiate the PhosphoQuest application.
+
+Further information regarding the script functions is available in the following md documents and in comments in the scripts themselves:
+
+* [Overview PhosphoQuest app script structure](****ADD LINK****)
+* [Set up scripts for the PhosphoQuest database ](****ADD LINK****)
+* [Detail on analysis script functions ](****ADD LINK****)
+* [Detail on plotting script functions ](****ADD LINK****)
+* [Detail on query script functions ](****ADD LINK****)
+
+
+## About the developers
+We are a group of part-time MSc Bioinformatics students at Queen Mary College University of London, School of Biological and Chemical Sciences. This Web-Application was developed as the group project requirement of the course within a 12 week deadline and therefore, at this stage, the release version of the software will not be updated any further after 29-4-2019. 
+
+## Wish list for future updates
+* Further categories added to browse and search functionality. 
+* Update design of browse categories pages
+* Use url variables for passing browse and search variables back to query functions instead of string-split method
+* Utilise browser cookies for further functionality with user data upload
+* Consider adding option for users to be able to store data analysis in database for a short period of time
+
+
