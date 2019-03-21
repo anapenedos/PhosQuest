@@ -33,8 +33,8 @@ def records_from_join_res(list_of_tuples):
 
 def extract_record_info(instances, info_needed_tuple):
     """
-    From a list of sqlalchemy class objects (table records), get the instance
-    attributes specified in the info needed tuple.
+    From a list of sqlalchemy class objects (records from a single table), get
+    the instance attributes specified in the info needed tuple.
 
     :param instances: an iterable containing class instances (inst iter)
     :param info_needed_tuple: tuple containing the attributes required
@@ -49,6 +49,20 @@ def extract_record_info(instances, info_needed_tuple):
                      for attr in info_needed_tuple)
         records_info.append(info)
     return sorted(records_info)
+
+
+def create_db_strs(txt_tuple_iter):
+    # TODO docstr
+    # a line can be [('Q8WYB5',)] or 'not in DB' or
+    # [('Q8WYB6',), ('Q8WYB7',)]
+    if txt_tuple_iter != 'not in DB':
+        info_joiner = '/'.join
+        # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
+        rec_strs = [info_joiner(map(str, record)) for record in txt_tuple_iter]
+        new_line = ', '.join(rec_strs)
+    else:
+        new_line = txt_tuple_iter
+    return new_line
 
 
 def format_db_strs(db_links, headers=False):
@@ -91,21 +105,21 @@ def format_db_strs(db_links, headers=False):
     return tidy_db_links
 
 
-def create_db_links(txt_link_iter, detail_page):
+def create_db_links(txt_tuple_iter, detail_page):
     """
     From a set of kinase accessions, produce url links to detail page of each
     kinase. If 'not in DB', 'not in DB' is returned.
 
-    :param txt_link_iter: an iterable of tuples where the 0 element of the
+    :param txt_tuple_iter: an iterable of tuples where the 0 element of the
                           tuple is the text to display in the link and element
                           1 is the key value to build the link (iter of tuples)
     :detail_page: the details page relevant to the entries being processed
                   (str)
     :return: string containing links to each entry (str)
     """
-    if txt_link_iter != 'not in DB':
+    if txt_tuple_iter != 'not in DB':
         line_links = []
-        for txt, key in sorted(txt_link_iter):
+        for txt, key in txt_tuple_iter:
             line_links.append('<a target="_blank" href="/%s/%s">%s</a>'
                                % (detail_page, key, txt))
             line = ', '.join(line_links)
@@ -262,15 +276,44 @@ def link_ud_to_db(user_data_frame):
 
     session.close()
 
-    # format db_links dict
-    # show as strings
-    tidy_db_links = format_db_links(db_links)
     # change key/column names
-    tidy_db_links['Substrate/Isoform in DB (gene name)'] = \
-        tidy_db_links.pop(Substrate)
-    tidy_db_links['Phosphosite in DB (ID)'] = \
-        tidy_db_links.pop(Phosphosite)
-    tidy_db_links['Kinase in DB\n(gene name)'] = \
-        tidy_db_links.pop(Kinase)
+    db_links['Substrate/Isoform in DB (gene name)'] = \
+        db_links.pop(Substrate)
+    db_links['Phosphosite in DB (ID)'] = \
+        db_links.pop(Phosphosite)
+    db_links['Kinase in DB\n(gene name)'] = \
+        db_links.pop(Kinase)
 
-    return tidy_db_links, kin_to_ud
+    return db_links, kin_to_ud
+
+
+if __name__ == "__main__":
+    # standard imports
+    import os
+
+    from PhosphoQuest_app.service_scripts.user_data_crunch \
+        import user_data_check
+    from PhosphoQuest_app.service_scripts.userdata_display import run_all
+    from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+    from sqlalchemy.orm import Load
+    import pandas as pd
+
+    ad = run_all(user_data_check(os.path.join('user_data',
+                                              'az20.tsv')))
+
+    sty = ad['full_sty_sort']
+    styno = ad['parsed_sty_sort']
+
+    # sites_dict, kin_dict = link_ud_to_db(styno)
+
+    # session = create_sqlsession(session_type='pandas_sql')
+    # query = session.query(Substrate, Phosphosite, Kinase)\
+    #         .outerjoin(Phosphosite)\
+    #         .outerjoin(kinases_phosphosites_table)\
+    #         .outerjoin(Kinase)\
+    #         .options(Load(Substrate).load_only("subs_gene"),
+    #                  Load(Phosphosite).load_only("phos_modified_residue"),
+    #                  Load(Kinase).load_only("kin_gene"))
+    # subs_phos_kin_subset_df = pd.read_sql(subs_phos_kin_query.\
+    #                                      statement,\
+    #                                      subs_phos_kin_query.session.bind)

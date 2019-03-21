@@ -1,5 +1,6 @@
 """scripts to format subsets of crunched data for display"""
-from PhosphoQuest_app.service_scripts import user_data_crunch, plotting
+from PhosphoQuest_app.service_scripts import user_data_crunch, plotting, \
+    ud_db_queries
 from datetime import datetime
 import os
 
@@ -49,9 +50,18 @@ def plot_all(all_data):
 
     # Analysis tab 1 display - Styled table of significant hits and kinase
     # activity
+    subs_centric_table = all_data['parsed_sty_sort']
+    # format DB info as links to display on site
+    detail_pages = {'Kinase in DB\n(gene name)': 'kin_detail',
+                    'Substrate/Isoform in DB (gene name)': 'sub_detail',
+                    'Phosphosite in DB (ID)': 'phosites_detail'}
+    for col, page in detail_pages.items():
+        subs_centric_table[col] = subs_centric_table.apply(
+            lambda row: ud_db_queries.create_db_links(row[col], page),
+            axis=1)
 
-    table, kin_act = plotting.style_df(all_data['parsed_sty_sort'],
-                 all_data['kinase_activities'])
+    table, kin_act = plotting.style_df(subs_centric_table,
+                                       all_data['kinase_activities'])
 
     # Tab 2 run volcano plot on full_sty_sort dataframe
     volcano = plotting.user_data_volcano_plot(all_data['full_sty_sort'])
@@ -100,12 +110,20 @@ def create_csv(dataframe):
     :return: string of full filename including file extension
 
     """
+    # format columns containing links to DB info to display as strs
+    cols_to_format = ['Kinase in DB\n(gene name)',
+                      'Substrate/Isoform in DB (gene name)',
+                      'Phosphosite in DB (ID)']
+    for col in cols_to_format:
+        dataframe[col] = dataframe.apply(
+            lambda row: ud_db_queries.create_db_strs(row[col]),
+            axis=1)
+
+    # set up for saving
     tempdir = os.path.join('PhosphoQuest_app','static', 'userdata_temp')
 
     #run create userfilename function to get used specific filename
     outname = plotting.create_userfilename('analysed', 'csv')
-
-    #TODO SAVE FILE and ANA to change back to nice lovely string!!!
 
     dataframe.to_csv(os.path.join(tempdir,outname))
 
