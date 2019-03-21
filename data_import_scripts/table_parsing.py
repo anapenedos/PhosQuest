@@ -8,7 +8,7 @@ import os.path
 
 import pandas as pd
 
-from PhosphoQuest_app.service_scripts.df_editing import split_multi_value_rows_in_df, \
+from data_import_scripts.df_editing import split_multi_value_rows_in_df, \
     reset_df_index
 
 
