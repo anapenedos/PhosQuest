@@ -116,9 +116,9 @@ All the packages required to run the PhosphoQuest web application are in the Pho
 - xlrd  1.2.0
 
 ## Software architecture
-The structure of the software consists of a PhosphoQuest App folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing pythons scripts used in user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest database.
+The structure of the software consists of a `PhosphoQuest_App` folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing pythons scripts used in user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest database.
 
-Outside of the app folder 'data_import_scripts` folder contains scripts used in the set up of the database *****UPDATE AS APPROPRIATE***. `run.py` is the python script used to initiate the PhosphoQuest application.
+Outside of the app folder `data_import_scripts` folder contains scripts used in the set up of the database *****UPDATE AS APPROPRIATE***. `run.py` is the python script used to initiate the PhosphoQuest application.
 
 Further information regarding the script functions is available in the following md documents and in comments in the scripts themselves:
 
