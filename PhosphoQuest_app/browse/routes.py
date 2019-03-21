@@ -29,7 +29,7 @@ def browse_cat(category):
 
         table = browse_queries.browse_inhibitors()
 
-        return render_template('browse_table.html', title=category,
+        return render_template('search-results.html', title=category,
                                table=table)
 
     else: # if this is the subcategory level (requiring query)
@@ -48,8 +48,9 @@ def browse_cat(category):
                                    links=cleansedlinks, cat="subcat",
                                    category=category)
         else:#catch Substrate~All
-            return render_template('browse_table.html',title="Substrate",
-                                            table=links)
+            return render_template('search_results.html',
+                                   title='All Substrates',style='table',
+                                   results=links)
 
 
 
@@ -58,8 +59,8 @@ def browse_table(subcategory):
     """ route to create table format for browse results in subcategory"""
 
     table = browse_queries.browse_table(subcategory)
-    return render_template('browse_table.html', title=subcategory,
-                                            table=table)
+    return render_template('search_results.html', title=subcategory,
+                           style='table', results=table)
 
 
 ### create detail routes for viewing a single Kinase, Inhibitor, Substrate, or
@@ -84,7 +85,7 @@ def kin_detail(text):
     # variables for title info (related, related2 and text of acc no)
     return render_template('search_results.html', title="Kinase",
                            style="triple", results=results, table=phos,
-                           related="Phosphosite_results", table2 = inh,
+                           related="Phosphosites", table2 = inh,
                            related2="Inhibitors", text=text)
 
 @browse.route("/sub_detail/<text>")
@@ -103,7 +104,7 @@ def sub_detail(text):
     # variables for title info (related and text of acc no)
     return render_template('search_results.html', title="Substrate",
                            style='double', results=results, table=table,
-                           related="Phosphosite_results", text=text)
+                           related="Phosphosites", text=text)
 
 
 @browse.route("/phosites_detail/<text>")
