@@ -1,4 +1,4 @@
-###### API (Application Programming Interface) Documentation
+### API (Application Programming Interface) Documentation
 
 API functionality was dependent on the pandas module to allow handling of data structures. The API scripts were also dependent on the urllib module to allow utilization of URLs. For our database, we required access to UniProt and PubChem websites with the ability to search multiple accession numbers and output as a dataframe for population of the SQLite database. 
 
