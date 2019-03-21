@@ -15,8 +15,8 @@ ad = run_all(user_data_check(os.path.join('PhosphoQuest_app',
                                           'user_data',
                                           'az20.tsv')))
 
-sty = ad['sty']
-styno = ad['styno']
+sty = ad['full_sty_sort']
+styno = ad['parsed_sty_sort']
 
 # sites_dict, kin_dict = link_ud_to_db(styno)
 
