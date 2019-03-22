@@ -9,6 +9,7 @@ matplotlibrc
 .idea
 
 ## virtual environment directory
+venv
 giardellovenv
 
 ## python
