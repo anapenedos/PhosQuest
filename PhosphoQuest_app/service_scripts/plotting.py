@@ -153,20 +153,20 @@ def style_df(phospho_df, kin_activities):
     # Set CSS properties for pandas.style object.
     # CSS properties for table header/index in dataframe.
     th_props = [
-      ('font-size', '16px'),
-      ('font-family', 'Calibri'),
+      #('font-size', '16px'),
+      #('font-family', 'Calibri'),
       ('text-align', 'center'),
-      ('font-weight', 'bold'),
-      ('color', '#000000'),
-      ('background-color', '#708090'),
-      ('border', '1px solid black'),
-      ('height', '50px'),
+      #('font-weight', 'bold'),
+      #('color', '#000000'),
+      #('background-color', '#708090'),
+      #('border', '1px solid black'),
+      #('height', '50px'),
       ('position', 'sticky'),
       ('position', '-webkit-sticky'),
       ('top', '50px'),
       ('z-index', '999'),
-      ('padding', '5px'),
-      ('background-clip', 'padding-box') # Required for firefox rendering of 
+      #('padding', '5px'),
+      #('background-clip', 'padding-box') # Required for firefox rendering of 
                                          # of borders on table headers. Header
                                          # background obscures bordering, hence
                                          # application of clipping.
@@ -174,11 +174,11 @@ def style_df(phospho_df, kin_activities):
     
     # CSS properties for table data in dataframe.
     td_props = [
-      ('font-size', '12px'),
-      ('border', '1px solid black'),
+      #('font-size', '12px'),
+      #('border', '1px solid black'),
       ('text-align', 'center'),
-      ('font-weight', 'bold'),
-      ('background-clip', 'border-box') # Required for chrome to counter border
+      #('font-weight', 'bold'),
+      #('background-clip', 'border-box') # Required for chrome to counter border
                                         # clipping applied to table headers.
       ]
     
@@ -286,7 +286,7 @@ def style_df(phospho_df, kin_activities):
       # Set float precision for data - 2 significant figures. 
       .set_precision(2)
       
-       # Pass CSS styling to styled table.
+      # Pass CSS styling to styled table.
       .set_table_styles(styles)
       
       # Colour cells with 0 in control log2 fold column as green,
@@ -308,7 +308,7 @@ def style_df(phospho_df, kin_activities):
       # Set float precision for data - 2 significant figures. 
       .set_precision(2)
       
-       # Pass CSS styling to styled table.
+      # Pass CSS styling to styled table.
       .set_table_styles(styles))
     
     # ----------------------------------------------------------------------- #
