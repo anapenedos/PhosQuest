@@ -21,12 +21,12 @@ def search_db():
         # call query switch function to decide which search and display option
         results, style = query_db.query_switch(search_txt, search_type,
                                                search_table, search_option)
-        number = len(results)
-        # Prepare flash message with search options and no of outputs.
-        flash(f'You searched for "{search_txt}"\
-            in {search_table} {search_option} using {search_type} match., Your\
-            search returned {number} result(s).', 'info')
 
+        # Prepare flash message with search options
+
+        flash(f'You searched for "{search_txt}" in {search_table} \
+              {search_option} using {search_type} \
+                    match.', 'info')
 
         #for inhibitors, get CID number for PubChem 3D Widget
         if style != 'None':
@@ -46,7 +46,6 @@ def search_db():
 
             elif search_table == 'substrate':
                 if style == "list":
-                    print(results)
                     subs_acc_no = results[0][0][1]  # get acc-no from results
                     table = browse_queries.subs_phos_query(subs_acc_no)
 
