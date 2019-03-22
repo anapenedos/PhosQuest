@@ -2,8 +2,16 @@
 <!-- format form for upload of data.-->
 {% extends "layout.html" %}
 {% block content %}
-<div>
-    <H3><b><em>Online analysis for your phospho-proteomics data</b></em></H3>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+        <img src="{{url_for('static', filename='fighter.png')}}"
+                            alt="fighter image"/>
+        </div>
+        <div class="col-md-10">
+        <H2>Online analysis for your phospho-proteomics data</H2>
+        </div>
+    </div>
     <br>
     <p>All analysis on this website is done <i> on the fly</i>, therefore please
         do not click back or other links (in same tab) unless
@@ -16,27 +24,24 @@
     <br>
     <p>We hope you enjoy your <i>PhosphoQuest</i>.</p>
 
-    <br>
- <p><b> Please note large amounts of data-crunching goes on behind the scenes
+    <form method='POST' action="" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+          <div class="form-group">
+            {{ form.data_file.label() }}
+            {{ form.data_file(class='form-control-file') }}
+            {% if form.data_file.errors %}
+                {% for error in form.data_file.errors %}
+                    <span class="text-danger">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </fieldset>
+        <p><b> Please note large amounts of data-crunching goes on behind the scenes
      and the analysis takes some time. Please wait.</b></p>
-
+        <div class="form-group">
+             {{ form.submit(class="btn btn-info") }}
+        </div>
+    </form>
 </div>
-<br>
-<form method='POST' action="" enctype="multipart/form-data">
-  {{ form.hidden_tag() }}
-    <fieldset class="form-group">
-      <div class="form-group">
-        {{ form.data_file.label() }}
-        {{ form.data_file(class='form-control-file') }}
-        {% if form.data_file.errors %}
-            {% for error in form.data_file.errors %}
-                <span class="text-danger">{{ error }}</span>
-          {% endfor %}
-        {% endif %}
-      </div>
-    </fieldset>
-    <div class="form-group">
-         {{ form.submit(class="btn btn-info") }}
-    </div>
-</form>
 {% endblock content %}
