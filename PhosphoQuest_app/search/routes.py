@@ -38,7 +38,7 @@ def search_db():
                     return render_template('search_results.html',
                                     title="Inhibitor", results=results,
                                     style='double', table=table, cid=cid,
-                                           related = 'Kinases')
+                                           related = 'Kinases', text=cid)
                 else:
                     return render_template('search_results.html',
                                            title="Inhibitor", results=results,
@@ -51,8 +51,8 @@ def search_db():
                     table = browse_queries.subs_phos_query(subs_acc_no)
 
                     return render_template('search_results.html',
-                                       title="Substrate", results=results,
-                                       style='double', table=table,
+                                 title="Substrate", results=results,
+                                 style='double', table=table, text=subs_acc_no,
                                        related='Phosphosites')
                 else:
 
