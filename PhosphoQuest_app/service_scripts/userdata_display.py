@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 
 
+
 def run_all(df):
 
     """Function to run all crunch analyses on dataframe"""

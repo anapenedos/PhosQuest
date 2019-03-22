@@ -9,7 +9,7 @@ import os
 crunch = Blueprint('crunch', __name__)
 
 
-# route for upload page with file handling method <<<FUTURE UPDATE>>
+# route for upload page with file handling method
 @crunch.route('/upload', methods=['GET', 'POST'])
 def upload_check():
     pass
