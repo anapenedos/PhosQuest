@@ -1,23 +1,34 @@
 <!--inherits layout from layout.html-->
 {% extends "layout.html" %}
 {% block content %}
-<H2> Choose browse category</H2>
-<br>
-<p class="lead">
-    <a class="btn btn-default btn-block btn-lg"
-       href="{{url_for('browse.browse_cat', category='Kinase')}}" role="button">
-        Kinases - by Family or Cellular Location</a>
-</p>
-<p class="lead">
-    <a class="btn btn-default btn-block btn-lg"
-       href="{{url_for('browse.browse_cat', category='Substrate')}}" role="button">
-        Substrates - All or by Chromosome Location</a>
-</p>
-<p class="lead">
-    <a class="btn btn-default btn-block btn-lg"
-       href="{{url_for('browse.browse_table', subcategory='Inhibitor')}}" role="button">
-         All Inhibitors</a>
-</p>
+<div class=" container">
+    <div class="row">
+        <p style="float:left">
+
+            <img src="{{url_for('static', filename='shapeshifter.png')}}"
+                        alt="shapeshifter image"/>
+        </p>
+        <H2> Choose browse category</H2>
+    </div>
+    <br>
+    <p class="lead">
+        <a class="btn btn-default btn-block btn-lg"
+           href="{{url_for('browse.browse_cat', category='Kinase')}}" role="button">
+            Kinases - by Family or Cellular Location</a>
+    </p>
+    <br>
+    <p class="lead">
+        <a class="btn btn-default btn-block btn-lg"
+           href="{{url_for('browse.browse_cat', category='Substrate')}}" role="button">
+            Substrates - All or by Chromosome Location</a>
+    </p>
+    <br>
+    <p class="lead">
+        <a class="btn btn-default btn-block btn-lg"
+           href="{{url_for('browse.browse_table', subcategory='Inhibitor')}}" role="button">
+             All Inhibitors</a>
+    </p>
+</div>
 
 {% endblock content %}
 

@@ -30,6 +30,7 @@ def query_switch(text,type, table, option):
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,
                                Inhibitor.inhib_short_name]}
+    print(text,type,table,option)
 
     # find appropriate field to apply and find field object
     if table == 'kinase':
@@ -61,32 +62,35 @@ def query_switch(text,type, table, option):
             style = 'None'
             return results, style
 
-        elif len(results) < 4: # if only 3 or less results display as list
+        elif len(results) < 2: # if only 1 results display as list
             results = query_to_list(results, dbtable)
             style = 'list'
             return results, style
 
-        else:#like search
+        else:
+            style ='table'
             if table == 'kinase':
                 results = display_tables.Kinase_results(results)
+
             elif table == 'inhibitor':
-                for item in results: # shorten name for display table
-                    item.inhib_short_name = item.inhib_short_name[:20]
                 results = display_tables.Inhibitor_results(results)
                 # add cid variable to add pubchem widget on website.
                 cid='cid'
+                return results, style, cid
             else:
                 results = display_tables.Substrate_results(results)
-            style = 'table'
-            return results, style, cid
+
+            return results, style
 
     else:
+
         results = searchlike(text, dbtable, field)
+
         if 'No results found' in results:
             style = 'None'
             return results, style
 
-        elif len(results) < 3: # if only 2 or less results display as list
+        elif len(results) < 2: # if only 1 result display as list
             results = query_to_list(results, dbtable)
             style = 'list'
             return results, style
@@ -96,9 +100,7 @@ def query_switch(text,type, table, option):
             if table == 'kinase':
                 results = display_tables.Kinase_results(results)
             elif table == 'inhibitor':
-                # make short name up to 20 characters to avoid long table
-                for item in results:
-                    item.inhib_short_name = item.inhib_short_name[:20]
+                # make short name up to 30 characters to avoid long table
                 results = display_tables.Inhibitor_results(results)
             else:
                 results = display_tables.Substrate_results(results)
@@ -174,6 +176,7 @@ def query_to_list(query_results, table):
     # get attribute names for this table
     names = table.__table__.columns.keys()
     # initialise result list
+
     resultlist = []
     # iterate through query results checking for names and dropped attrs
     for item in query_results:
@@ -181,7 +184,6 @@ def query_to_list(query_results, table):
         for name in names:
             # set attribute variable from query output based on name
             attrib = getattr(item, name)
-
             if name in headers:
                 # translate to human readable
                 header = headers[name]

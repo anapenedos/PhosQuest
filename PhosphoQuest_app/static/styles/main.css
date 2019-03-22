@@ -33,30 +33,29 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-table.dataframe, .dataframe td {
+table td {
   border: 1px solid black;
   border-bottom: 1px solid black;
   border-collapse: collapse;
-  text-align:center;
+  text-align:left;
   padding: 5px;
   margin-bottom: 40px;
   font-size: 12px;
   font-weight: bold;
 }
 
-table.dataframe th {
+table th {
 border: 1px solid black;
 border-bottom: 1px solid black;
 border-collapse: collapse;
-text-align:center;
+text-align:left;
 padding: 5px;
 font-size: 16px;
-font-family: Calibri
-text-align: center;
+font-family: Georgia,serif;
+text-align: left;
 font-weight: bold;
 color:#000000;
 background-color: #708090;
-border: 1px solid black;
 height: 50px;
 position: sticky;
 position: -webkit-sticky;
@@ -67,6 +66,7 @@ z-index: 999
 tr:nth-child(odd)	{ background-color #ffffff;}
 tr:nth-child(even)	{ background-color: #dbe4f0;}
 tr:hover            { background-color: #f6f4d5;}
+
 
 .btn-default {
   color: #fff;

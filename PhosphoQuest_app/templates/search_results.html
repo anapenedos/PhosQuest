@@ -15,8 +15,9 @@
     <div class=table>
         {{ results }}
     </div>
-    {% elif style == 'double' or style == 'triple' %}
-    <H4>{{title}} Record Detail</H4>
+    {% elif style == 'double' or style == 'triple' or style == 'list' %}
+    <br>
+    <H3><b>{{title}} Search Result  - Record Detail</b></H3>
     <br>
     <div>
         {% for item in results %}
@@ -24,15 +25,16 @@
 
             <div class="row">
                 <div class="col-md-2">
-                    <b>{{ attr[0] }}</b>
+                    <H5>  <b>{{ attr[0] }}</b></H5>
                 </div>
 
                 <div class="col-md-10">
-                    {% if attr[0] == 'Related substrate'%}
+                  <h5>  {% if attr[0] == 'Related substrate'%}
                         <a href="{{url_for('browse.sub_detail',text=attr[1])}}">{{attr[1]}}</a>
                     {% else %}
                         {{ attr[1] }}
                     {% endif %}
+                  </h5>
                 </div>
             </div>
 
@@ -48,11 +50,17 @@
     {% endif %}
     <hr>
     <br>
-    <H4> {{ related }} related to {{ title }}-{{ text }}</H4>
-        <br>
-    <div class=table>
-        {{ table }}
-    </div>
+    {% if style == "double" or style == "triple" %}
+        <H4> {{ related }} related to {{ title }}-{{ text }}</H4>
+            <br>
+        {% if style == 'triple' %}
+            Scroll down past table for related {{related2}}
+        {% endif %}
+
+        <div class=table>
+            {{ table }}
+        </div>
+    {% endif %}
 </div>
 {% endif %}
 {% if style == 'triple' %}
