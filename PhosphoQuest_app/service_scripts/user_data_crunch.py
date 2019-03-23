@@ -150,7 +150,8 @@ def create_filtered_dfs(parsed_data):
     ud_df1_sty_valid.loc[:, "Log10 condition intensity"] =\
                     np.log10(ud_df1_sty_valid.iloc[:, 2])
 
-    # Calc log2 fold change - condition/control and append as new column to df.
+    # Calculate log2 fold change - condition/control and 
+    # append as new column to df.
     ud_df1_sty_valid.loc[:,"Log2 fold change - condition over control"] =\
                     np.log2(ud_df1_sty_valid.iloc[:, 3])
 
