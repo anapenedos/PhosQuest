@@ -13,33 +13,56 @@ transferred to other DB systems, with minimal changes to the
 and `db_setup` (creation of tables and data import) scripts, all in the 
 `data_import_scripts` directory.
 
-## Database structure
-The PhosphoQuest database contains nine tables as outlines in the schema below:
-![PhosphoQuest schema](images/PhosphoQuest_schema.png)
-The schema is defined through a SQLalchemy declarative script, 
-[sqlalchemy_declarative.py](../PhosphoQuest_app/data_access/sqlalchemy_declarative.py)
- 
+The python library `pandas` was used to parse datasets and facilitate data import. 
+This library allows for the easy handling of large amounts of data in a time- 
+and resource-efficient manner. 
 
+The Python modules' versions employed in this project are specified in the project's
+`README.md` file. They can easily be installed using `pip install -r requirements.txt` 
+files.
+
+## Database structure
+The PhosphoQuest database contains nine tables, two of which join tables, as 
+outlined in the schema below:
+![PhosphoQuest schema](images/PhosphoQuest model-2019-03-23_09_45.png)
+The term 'substrate(s)' is used to refer to a protein that is a putative kinase 
+target. 'Phosphosites' are peptides within the substrate where phosphorylation 
+occurs, hence a substrate may have many phosphosites, which may be targetted by 
+different kinases.
+The schema is defined through a SQLalchemy declarative script, 
+`../PhosphoQuest_app/data_access/sqlalchemy_declarative.py`.  Some fields were 
+indexed to speed up DB queries:
+
+* `substrates` table 
+    * `subs_gene`
+* `phosphosites` table
+    * `phos_modified_residue`
+    * `phos_in_substrate`
+* `kinases` table
+    * `kin_cellular_location`
+ 
 ## Data Sources
 ### Database exports
 All external datasets downloaded as files were saved in the `db_source_tables`
 directory, under the relevant sub-directory.
 Data on kinases, substrates, phosphosites, phosphosite regulation and 
 disease-associated alterations was obtained from 
-[PhosphoSitePlus](https://www.phosphosite.org/staticDownloads). Files 
+[PhosphoSitePlus](https://www.phosphosite.org). Files 
 `Disease-associated_sites.gz`, `Kinase_Substrate_Dataset.gz`, 
 `Phosphorylation_site_dataset.gz`, and `Regulatory_sites.gz` were used to populate 
 database tables `kinases`, `substrates`, `phosphosites`, `disease_alterations`, 
 and `diseases`. The files were downloaded from the `Downloads` tab, 
-`Datasets from PSP` page on _**X/X/XX**_ (last updated 04/03/2019).  
+`Datasets from PSP` page on _**X/X/XX**_ (source last updated 04/03/2019).  
 Inhibitor data was obtained from 
 [MRC Kinase Profiling Inhibitor Database](http://www.kinase-screen.mrc.ac.uk/kinase-inhibitors)
-as a `.csv` file on _**X/X/XX**_ and from 
+as a `.csv` file on 23/03/2019 and from 
 [BindingDB](https://www.bindingdb.org/bind/chemsearch/marvin/SDFdownload.jsp?all_download=yes) 
-as a `zip` compressed `.tsv` file on _**X/X/XX**_ (last updated 08/07/2018) 
-(`Full BindingDB Database Dump` option). Given BindingDB's file size, it could 
-not be added in its uncompressed form to the github repo due to the latter's file 
-size restrictions.
+as a `zip` compressed `.tsv` file on 23/03/2019 (source last updated 01/03/2019) 
+(`Ligand-Target-Affinity Datasets` > `Only data curated from articles by BindingDB`,
+`BindingDB_BindingDB_Inhibition_2019m2.tsv.zip ` file). Given BindingDB's file
+size, it could not be added in its uncompressed form to the github repo due to
+the latter's file size restrictions.
+
 ### Application Programming Interface (API) Documentation
 API functionality was dependent on the pandas module to allow handling of data 
 structures. The API scripts were also dependent on the urllib module to allow 
@@ -69,10 +92,9 @@ UniProtKB column names for programmatic access can be found
 
 To allow population of the database, we have selected as a default the following 
 qualifiers:
-
-'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,'
-                   'genes,proteome,comment(DOMAIN)',
-
+```
+'columns': 'id,protein names,comment(SUBCELLULAR LOCATION),families,genes'
+```
 - The final qualifier is the accession number itself.
 
 In terms of functionality, the code:
@@ -119,12 +141,47 @@ ii) MolecularFormula
 
 iii) MolecularWeight
 
-For our searches, the following example was utilized:
+For our searches, the following example was utilized:  
 
+```
 results_csv = ("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
-                       "cid/" + query_str + "/property/IUPACName,MolecularFormula,MolecularWeight/csv")
-        
-Where 'query_str' denotes the CID qualifier. The data was then converted from csv 
-to a dataframe ready for population of the SQLite database.          
+               "cid/" + query_str + "/property/"
+               "IUPACName,MolecularFormula,MolecularWeight/csv")
+```       
+
+Where 'query_str' denotes the CID qualifiers. The data was then converted from
+csv to a dataframe ready for population of the SQLite database.
         
 ## Database setup
+To recreate the database from newly imported data, run the `db_setup.py` script
+which will first create the database schema if not in place already, then import
+the PhosphoSitePlus, MRC and BindingDB datasets, and finally obtain additional
+data from UniProt and PubChem using the `api_import.py` script. The script will
+also curate individual records found to be incorrect.
+The interaction between the various scripts are shown in the diagram below:
+![setup script](images/data_import.png)
+The process is outlined below:
+
+1. Data downloaded from data sources as described in the 'Database exports'
+section above;
+2. Downloaded files parsed into data frames through `table_parsing.py` import
+scripts, using auxiliary functions in `df_editing.py`;
+3. Data frames imported into the DB through the `sqlalchemy_import.py` script
+with the auxiliary `class_functions.py` and an import session from `db_sessions.py` 
+script in the `data_access` directory and following the mapping of data frame 
+column headings to SQLalchemy class objects and their attributes input into
+`df_to_attributes.py`. Only BindingDB data for the inhibitors associated with
+kinases already imported is imported in order to select out drugs unrelated 
+to phosphorylation inhibition;
+4. Specific incorrect records are curated;
+5. Missing data imported for the existing records from Uniprot and PubChem APIs
+using the `api_imports.py` script.
+
+### Importing additional data
+Additional data can be easily imported to the databse by parsing a data table 
+input into a pandas data frame and then matching the data frame column headings 
+to the fields they are destined for in the database in the `df_to_attributes.py`. 
+Only data for empty record fields is imported (existing data will not be 
+over-written). To replace existing data, remove the field in question from
+`df_to_attributes.py` dictionary for the undesired data source and run `db_setup.py` 
+again.
