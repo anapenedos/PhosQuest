@@ -70,15 +70,4 @@ tr:nth-child(even)	{ background-color: #dbe4f0;}
 tr:hover            { background-color: #f6f4d5;}
 
 
-.btn-default {
-  color: #fff;
-  background-color: #1f7a7a !important;
-  border-color: #1f7a7a !important;
-}
 
-.btn-info {
-  color: #000000;
-  background-color: #49d0d0 !important;
-  border-color: #49d0d0 !important;
-  padding: 5px;
-}
