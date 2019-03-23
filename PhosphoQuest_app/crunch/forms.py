@@ -10,4 +10,3 @@ class UploadForm(FlaskForm):
                           validators=[FileAllowed(['csv', 'tsv', 'txt']),
                           FileRequired()])
     submit = SubmitField("Upload")
-    

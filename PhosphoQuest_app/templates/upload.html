@@ -37,22 +37,11 @@
             {% endif %}
           </div>
         </fieldset>
-
+        <p><b> Please note large amounts of data-crunching goes on behind the scenes
+     and the analysis takes some time. Please wait.</b></p>
         <div class="form-group">
-            <p id="click">
-            {{ form.submit(class="btn btn-info btn-lg", onclick="func()") }}
-            </p>
+             {{ form.submit(class="btn btn-info") }}
         </div>
-
-        <script>
-            function func() {
-            document.getElementById("click").innerHTML =
-
-            "<H3>Your data is being analysed - Please wait</H3> Your PhosphoQuest is in progress, data demons are being defeated and you will soon emerge victorious.";
-            }
-        </script>
-
     </form>
-
- </div>
+</div>
 {% endblock content %}

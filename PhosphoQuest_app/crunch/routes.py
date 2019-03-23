@@ -60,7 +60,8 @@ def analysis():
 
             else:  # if string show user error
                 flash(check_var, 'danger')
-                return render_template('upload.html', form=form)
+                return render_template('upload.html', form=form,
+                                       report='upload')
 
         except Exception as ex:
             # catch any file exception with error shown to help debugging
@@ -68,7 +69,7 @@ def analysis():
             flash(ex, 'danger')
             return render_template('file_error.html')
 
-    return render_template('upload.html', form=form)
+    return render_template('upload.html', form=form, report='upload')
 
 
 @crunch.route('/download_analysis/<csv>', methods=['GET', 'POST'])
