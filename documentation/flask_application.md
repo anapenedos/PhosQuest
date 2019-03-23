@@ -2,28 +2,24 @@
 ## Introduction
 This website is built using the Flask 1.0.2. Flask is a Python web microframework
 makes it relatively easy to build basic websites, but also offers extended 
-features that enable development of more sophisticated sites.
-
-The documentation for the Flask python package library can be found at the
-[Flask website](http://flask.pocoo.org/).
+features that enable development of more sophisticated sites. The documentation for the Flask python package 
+library can be found at the [Flask website](http://flask.pocoo.org/).
 
 From the outset, the project team decided that all the functional code within the 
-application should be written in Python 3.Python was chosen as a 
-widely used, powerful and relatively easy to understand programming language. In 
+application should be written in Python 3. Python was chosen as a 
+widely used, powerful and relatively easy to read, programming language. In 
 addition there are many packages available for Python and they are well supported.
  
-Specifically, Python version 3.6+ is necessary for functionality due to some of
+Python version 3.6+ is necessary for functionality due to some of
 the functions used within the code having changed syntax from earlier versions
-of Python 3. 
-
-Python 3 was used as Python 2 is being depreciated and will not be maintained past 
+of Python 3. Python 3 was used as Python 2 is being depreciated and will not be maintained past 
 January 1st 2020. 
 
 Flask uses [Jinga2](https://www.palletsprojects.com/p/jinja/) and the 
 [Werkzeug WSGI toolkit](https://www.palletsprojects.com/p/werkzeug/) for web
  functionality (template rendering).
 
-##Additional Python Packages used within the webapp
+## Additional Python Packages used within the webapp
 `flask-WTF` and `WTForms` were used to create web forms for the search function and 
 for the user data upload function. These packages give extra functionality in terms of validating form field and providing ready-formatted web display objects (form fields and buttons) specifically for Flask applications.
 
