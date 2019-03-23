@@ -101,7 +101,7 @@
         a heatmap to the cells, for visual clarification of intensity differences.
         </p>
        <p><b>Log2 fold changes: </b> Barplots are integrated into the column, that scale
-        with the fold change values. <em>Note</em>: Cells that are fully coloured
+        with the fold change values. <em>Note</em>: Cells that are fully coloured,
         denote hits detected in only one condition (see intensity columns). 
         <p>
         <b>Sorting: </b> The Log2 fold changes are used, giving a gradated
@@ -130,11 +130,15 @@
         </div>
       <div id="analysis-3">
           <p>
-            <b>General overview: </b> These visualisations correspond to analysis
-            of the full list of phosphorylated-sites in your data. By drawing  
-            on information in <em>PhosphoQuest's</em> database, we can generate 
-            WordClouds paired with frequency charts. We hope this will help you 
-            gauge how some hits are strongly emphasised in the WordClouds.
+            <b>General overview: </b> We take the full list of phosphorylated 
+            peptides, query the <em>PhosphoQuest</em> database, and map your 
+            substrate/sites to their respective kinases. 
+            <p>
+            <b>Visualisation: </b> This data is visualised as WordClouds, each of 
+            which is paired to a frequency chart. This will help you gauge which
+            kinases target the largest number of unique substrate/sites in your 
+            data. Conversely, we can also determine  which substrate/sites
+            are most targetted by different kinases.
             </p>
           <hr>
           <div class = "row">
@@ -163,11 +167,19 @@
       <div id="analysis-4">
         <p>
         <b>General overview: </b> <em>PhosphoQuest's</em> query of the database
-        and cross-referencing to your data, allows us to collate all kinases that
-        match to particular substrate/site(s).  Since we know that the log2 fold 
-        changes <em>(Treatment/Condition over Control)</em> serve as a proxy of 
-        kinase activity, we can amalgamate these values to generate a measure
-        of relative kinase activity.
+        and cross-referencing to the significantly differentially expressed
+        subset of your data, allows us to collate all kinases that
+        match to particular substrate/site(s). 
+        </p>
+        <b>Kinase activity calculation: </b> Log2 fold changes in 
+        substrate/sites <em>(Treatment/Condition over Control)</em>, serve 
+        as a proxy of kinase activity. We first calculate a mean of the absolute 
+        values, a more robust method than just taking the mean of the actual 
+        log2 fold changes. This means that increased and decreased 
+        phosphorylation of different kinase targets, does not lead to erroneously 
+        small values of relative kinase activities. The overall direction of 
+        relative activity <em>(increase/decrease)</em>, is estimated based on 
+        the total sum of log2 fold changes.
         </p>
         <b>Table: </b> We have again utilised the styled table format, with 
         super-imposed barplots implemented. We also apply sorting to the table 
@@ -185,7 +197,7 @@
       <p>
       <b>General overview: </b> The piecharts below summarise various metrics
       and distributions in your data. We hope these will help you to characterise
-      your enrichment procedure.
+      your enrichment procedure and determine various distributions in your data.
       </p>
       <b>Interactivity: </b> Hovering your cursor over the charts will
       highlight further details. As in the volcano plot, the top right hand
