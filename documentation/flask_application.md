@@ -47,7 +47,7 @@ files.
 The PhosphoQuest application requires an Sqlite3 database (`PhosphoQuest.db`) situated in the folder level outside of the `PhosphoQuest_app` folder. Also in this location, `run.py` is a script which is run to activates the Flask application `PhosphoQuest_app`. `python3 run.py` or a similar command should activate the application (when all requirements are installed).
 
 ### App Folder structure 
-|
+
 The structure of the software consists of a `PhosphoQuest_App` folder.This folder contains the `__init__.py` file that initiates the instance of the PhosphoQuest Flask application. 
 
 The `PhosphoQuest_App` folder contains subfolders corresponding to *Flask Blueprints* for routes `main`, `search`, `browse`, and `crunch`. Blueprints enable developers to simplify large applications and separate the code. For information about Flask Blueprints see [link](http://flask.pocoo.org/docs/0.12/blueprints/). 
@@ -66,7 +66,10 @@ Additional folders within the `PhosphoQuest_App folder are:
  
 `templates` - contains all the website html template files. 
 
+
 `service_scripts`-  containing scripts used in user data analysis
+
+
 `data_access`- containing scripts for querying the PhosphoQuest database.
 
 
