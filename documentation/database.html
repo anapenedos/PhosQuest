@@ -332,39 +332,20 @@ kbd {
 
 <h2 id="toc_1">Tools</h2>
 
-<p>The DB was setup in SQLite (version 3). SqLite is suitable to low- to 
-medium-traffic websites and the one file approach of this type of DBs makes them 
-reliable and portable. Its limitations in terms of user management and 
-performance optimisation are unlikely to be felt in this project.</p>
+<p>The DB was setup in SQLite (version 3). SqLite is suitable to low- to medium-traffic websites and the one file approach of this type of DBs makes them reliable and portable. Its limitations in terms of user management and performance optimisation are unlikely to be felt in this project.</p>
 
-<p>Python library SQLalchemy was employed to create and populate the DB. This makes
-the PhosphoQuest DB and WebApp more portable and allows for performance 
-improvements in the python-SQLite interactions. With SQLalchemy, the DB can be 
-transferred to other DB systems, with minimal changes to the 
-<code>sqlalchemy_declarative</code> (table changes), <code>db_sessions</code> (DB path and connections) 
-and <code>db_setup</code> (creation of tables and data import) scripts, all in the 
-<code>data_import_scripts</code> directory.</p>
+<p>Python library SQLalchemy was employed to create and populate the DB. This makes the PhosphoQuest DB and WebApp more portable and allows for performance improvements in the python-SQLite interactions. With SQLalchemy, the DB can be transferred to other DB systems, with minimal changes to the <code>sqlalchemy_declarative</code> (table changes) and <code>db_sessions</code> (DB path and connections) scripts in the <code>data_import_scripts</code> directory.</p>
 
-<p>The python library <code>pandas</code> was used to parse datasets and facilitate data import. 
-This library allows for the easy handling of large amounts of data in a time- 
-and resource-efficient manner. </p>
+<p>The python library <code>pandas</code> was used to parse datasets and facilitate data import. This library allows for the easy handling of large amounts of data in a time- and resource-efficient manner. </p>
 
-<p>The Python modules&#39; versions employed in this project are specified in the project&#39;s
-<code>README.md</code> file. They can easily be installed using <code>pip install -r requirements.txt</code> 
-files.</p>
+<p>The Python modules&#39; versions employed in this project are specified in the project&#39;s <code>README.md</code> file. They can easily be installed using <code>pip install -r requirements.txt</code> files.</p>
 
 <h2 id="toc_2">Database structure</h2>
 
-<p>The PhosphoQuest database contains nine tables, two of which join tables, as 
-outlined in the schema below:
+<p>The PhosphoQuest database contains nine tables, two of which join tables, as outlined in the schema below:
 <img src="images/PhosphoQuest%20model-2019-03-23_09_45.png" alt="PhosphoQuest schema">
-The term &#39;substrate(s)&#39; is used to refer to a protein that is a putative kinase 
-target. &#39;Phosphosites&#39; are peptides within the substrate where phosphorylation 
-occurs, hence a substrate may have many phosphosites, which may be targetted by 
-different kinases.
-The schema is defined through a SQLalchemy declarative script, 
-<code>../PhosphoQuest_app/data_access/sqlalchemy_declarative.py</code>.  Some fields were 
-indexed to speed up DB queries:</p>
+The term &#39;substrate(s)&#39; is used to refer to a protein that is a putative kinase target. &#39;Phosphosites&#39; are peptides within the substrate where phosphorylation occurs, hence a substrate may have many phosphosites, which may be targetted by different kinases.
+The schema is defined through a SQLalchemy declarative script, <code>../PhosphoQuest_app/data_access/sqlalchemy_declarative.py</code>.  Some fields were indexed to speed up DB queries:</p>
 
 <ul>
 <li><code>substrates</code> table 
@@ -387,60 +368,33 @@ indexed to speed up DB queries:</p>
 
 <h2 id="toc_3">Data Sources</h2>
 
-<h3 id="toc_4">Database exports</h3>
+<h3 id="toc_4">Database Exports</h3>
 
-<p>All external datasets downloaded as files were saved in the <code>db_source_tables</code>
-directory, under the relevant sub-directory.
+<p>All external datasets downloaded as files were saved in the <code>db_source_tables</code> directory, under the relevant sub-directory.
 Data on kinases, substrates, phosphosites, phosphosite regulation and 
-disease-associated alterations was obtained from 
-<a href="https://www.phosphosite.org">PhosphoSitePlus</a>. Files 
-<code>Disease-associated_sites.gz</code>, <code>Kinase_Substrate_Dataset.gz</code>, 
-<code>Phosphorylation_site_dataset.gz</code>, and <code>Regulatory_sites.gz</code> were used to populate 
-database tables <code>kinases</code>, <code>substrates</code>, <code>phosphosites</code>, <code>disease_alterations</code>, 
-and <code>diseases</code>. The files were downloaded from the <code>Downloads</code> tab, 
-<code>Datasets from PSP</code> page on <em><strong>X/X/XX</strong></em> (source last updated 04/03/2019).<br>
-Inhibitor data was obtained from 
-<a href="http://www.kinase-screen.mrc.ac.uk/kinase-inhibitors">MRC Kinase Profiling Inhibitor Database</a>
-as a <code>.csv</code> file on 23/03/2019 and from 
-<a href="https://www.bindingdb.org/bind/chemsearch/marvin/SDFdownload.jsp?all_download=yes">BindingDB</a> 
-as a <code>zip</code> compressed <code>.tsv</code> file on 23/03/2019 (source last updated 01/03/2019) 
-(<code>Ligand-Target-Affinity Datasets</code> &gt; <code>Only data curated from articles by BindingDB</code>,
-<code>BindingDB_BindingDB_Inhibition_2019m2.tsv.zip</code> file). Given BindingDB&#39;s file
-size, it could not be added in its uncompressed form to the github repo due to
+disease-associated alterations was obtained from <a href="https://www.phosphosite.org">PhosphoSitePlus</a>. Files <code>Disease-associated_sites.gz</code>, <code>Kinase_Substrate_Dataset.gz</code>, <code>Phosphorylation_site_dataset.gz</code>, and <code>Regulatory_sites.gz</code> were used to populate database tables <code>kinases</code>, <code>substrates</code>, <code>phosphosites</code>, <code>disease_alterations</code>, and <code>diseases</code>. The files were downloaded from the <code>Downloads</code> tab, <code>Datasets from PSP</code> page on 23/03/2019 (source last updated 04/03/2019).<br>
+Inhibitor data was obtained from <a href="http://www.kinase-screen.mrc.ac.uk/kinase-inhibitors">MRC Kinase Profiling Inhibitor Database</a> as a <code>.csv</code> file on 23/03/2019 and from <a href="https://www.bindingdb.org/bind/chemsearch/marvin/SDFdownload.jsp?all_download=yes">BindingDB</a> as a <code>zip</code> compressed <code>.tsv</code> file on 23/03/2019 (source last updated 01/03/2019) (<code>Ligand-Target-Affinity Datasets</code> &gt; <code>Only data curated from articles by BindingDB</code>, <code>BindingDB_BindingDB_Inhibition_2019m2.tsv.zip</code> file). Given BindingDB&#39;s file size, it could not be added in its uncompressed form to the github repo due to
 the latter&#39;s file size restrictions.</p>
 
-<h3 id="toc_5">Application Programming Interface (API) Documentation</h3>
+<h3 id="toc_5">Application Programming Interface (API)</h3>
 
-<p>API functionality was dependent on the pandas module to allow handling of data 
-structures. The API scripts were also dependent on the urllib module to allow 
-utilization of URLs. For our database, we required access to UniProt and PubChem 
-websites with the ability to search multiple accession numbers and output as a 
-dataframe for population of the SQLite database. </p>
+<p>API functionality was dependent on the pandas module to allow handling of data structures. The API scripts were also dependent on the urllib module to allow utilization of URLs. For our database, we required access to UniProt and PubChem websites with the ability to search multiple accession numbers and output as a dataframe for population of the SQLite database. </p>
 
-<p>To enable population of the database, we utilised APIs from three different 
-websites:</p>
+<p>To enable population of the database, we utilised APIs from three different websites:</p>
 
 <h4 id="toc_6">UniProt</h4>
 
-<p>The UniProt website obtains specific data using a kinase or substrate qualifier 
-from the default UniProt site: </p>
-
-<p>https://www.uniprot.org/uploadlists/</p>
+<p>The UniProt website obtains specific data using a kinase or substrate qualifier from the <a href="https://www.uniprot.org/uploadlists/">UniProt site</a>.</p>
 
 <p>The API uses a number of parameters which are selected when performing a search:</p>
 
 <ul>
-<li>The ability to convert to another identifier type from your original input type 
-is an option. The default here is the ACC abbreviation which is the UniProtKB AC 
-category. </li>
+<li>The ability to convert to another identifier type from your original input type is an option. The default here is the ACC abbreviation which is the UniProtKB AC category. </li>
 <li>The return format is in tab form.</li>
-<li>The columns denote the categories of information which can be retrieved. The 
-UniProtKB column names for programmatic access can be found 
-<a href="https://www.uniprot.org/help/uniprotkb_column_names">here</a>.</li>
+<li>The columns denote the categories of information which can be retrieved. The UniProtKB column names for programmatic access can be found <a href="https://www.uniprot.org/help/uniprotkb_column_names">here</a>.</li>
 </ul>
 
-<p>To allow population of the database, we have selected as a default the following 
-qualifiers:
+<p>To allow population of the database, we have selected as a default the following qualifiers:
 <code>
 &#39;columns&#39;: &#39;id,protein names,comment(SUBCELLULAR LOCATION),families,genes&#39;
 </code>
@@ -458,31 +412,21 @@ qualifiers:
 
 <p>v) Places the retrieved data into a dataframe.</p>
 
-<p>Based on the information retrieved, one of parameters we require to populate our 
-database is the subcellular location. This qualifier returns multiple pieces of 
-information relating to the subcellular location and here we only wish to retrieve 
-the first set of information, the subcellular location. We create a separate 
-column and using regular expression extract this information. This is also 
-repeated for gene names where we only take the first instance. </p>
+<p>Based on the information retrieved, one of parameters we require to populate our database is the subcellular location. This qualifier returns multiple pieces of information relating to the subcellular location and here we only wish to retrieve the first set of information, the subcellular location. We create a separate column and using regular expression extract this information. This is also repeated for gene names where we only take the first instance. </p>
 
 <h4 id="toc_7">PubChem</h4>
 
-<p>To access data from the PubChem website, we have utilised the PubChem REST-style 
-version of PUG (Power User Gateway) utility which is a web interface for accessing 
-PubChem data and services. To access the data, a URL with a specific structure is 
-required: </p>
+<p>To access data from the PubChem website, we have utilised the PubChem REST-style version of PUG (Power User Gateway) utility which is a web interface for accessing PubChem data and services. To access the data, a URL with a specific structure is required: </p>
 
 <ul>
 <li>The URL has three parts – input, operation, and output: </li>
 </ul>
 
-<p>https://pubchem.ncbi.nlm.nih.gov/rest/pug/<em>input specification</em>/<em>operation specification</em>/<em>output specification</em>/<em>operation_options</em></p>
+<div><pre><code class="language-none">https://pubchem.ncbi.nlm.nih.gov/rest/pug/*input specification*/*operation specification*/*output specification*/*operation_options*</code></pre></div>
 
-<p>In our case, the selected data was obtained using the CID qualifier from the 
-<a href="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/">PubChem site</a>.</p>
+<p>In our case, the selected data was obtained using the CID qualifier from the <a href="https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/">PubChem site</a>.</p>
 
-<p>This API allows a number of qualifiers to be retrieved. The full lit can be 
-accessed from the following website: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest</p>
+<p>This API allows a number of qualifiers to be retrieved. The full lit can be accessed from the following website: https://pubchemdocs.ncbi.nlm.nih.gov/pug-rest</p>
 
 <p>To allow population of the database, we have selected the columns:</p>
 
@@ -503,41 +447,22 @@ csv to a dataframe ready for population of the SQLite database.</p>
 
 <h2 id="toc_8">Database setup</h2>
 
-<p>To recreate the database from newly imported data, run the <code>db_setup.py</code> script
-which will first create the database schema if not in place already, then import
-the PhosphoSitePlus, MRC and BindingDB datasets, and finally obtain additional
-data from UniProt and PubChem using the <code>api_import.py</code> script. The script will
-also curate individual records found to be incorrect.
-The interaction between the various scripts are shown in the diagram below:
+<p>To recreate the database from newly imported data, run the <code>db_setup.py</code> script which will first create the database schema if not in place already, then import the PhosphoSitePlus, MRC and BindingDB datasets, and finally obtain additional data from UniProt and PubChem using the <code>api_import.py</code> script. The script will also curate individual records found to be incorrect.
+The interactions between the various scripts are shown in the diagram below:
 <img src="images/data_import.png" alt="setup script">
 The process is outlined below:</p>
 
 <ol>
-<li>Data downloaded from data sources as described in the &#39;Database exports&#39;
-section above;</li>
-<li>Downloaded files parsed into data frames through <code>table_parsing.py</code> import
-scripts, using auxiliary functions in <code>df_editing.py</code>;</li>
-<li>Data frames imported into the DB through the <code>sqlalchemy_import.py</code> script
-with the auxiliary <code>class_functions.py</code> and an import session from <code>db_sessions.py</code> 
-script in the <code>data_access</code> directory and following the mapping of data frame 
-column headings to SQLalchemy class objects and their attributes input into
-<code>df_to_attributes.py</code>. Only BindingDB data for the inhibitors associated with
-kinases already imported is imported in order to select out drugs unrelated 
-to phosphorylation inhibition;</li>
+<li>Data downloaded from data sources as described in the <a href="#Database-Exports">Database Exports</a> section above;</li>
+<li>Downloaded files parsed into data frames through <code>table_parsing.py</code> import scripts, using auxiliary functions in <code>df_editing.py</code>;</li>
+<li>Data frames imported into the DB through the <code>sqlalchemy_import.py</code> script with the auxiliary <code>class_functions.py</code> and an import session from <code>db_sessions.py</code> script in the <code>data_access</code> directory and following the mapping of data frame column headings to SQLalchemy class objects and their attributes input into <code>df_to_attributes.py</code>. Only BindingDB data for the inhibitors associated with kinases already imported is imported in order to select out drugs unrelated to phosphorylation inhibition;</li>
 <li>Specific incorrect records are curated;</li>
-<li>Missing data imported for the existing records from Uniprot and PubChem APIs
-using the <code>api_imports.py</code> script.</li>
+<li>Missing data imported for the existing records from Uniprot and PubChem APIs using the <code>api_imports.py</code> script.</li>
 </ol>
 
 <h3 id="toc_9">Importing additional data</h3>
 
-<p>Additional data can be easily imported to the databse by parsing a data table 
-input into a pandas data frame and then matching the data frame column headings 
-to the fields they are destined for in the database in the <code>df_to_attributes.py</code>. 
-Only data for empty record fields is imported (existing data will not be 
-over-written). To replace existing data, remove the field in question from
-<code>df_to_attributes.py</code> dictionary for the undesired data source and run <code>db_setup.py</code> 
-again.</p>
+<p>Additional data can be easily imported to the databse by parsing a data table input into a pandas data frame and then matching the data frame column headings to the fields they are destined for in the database in the <code>df_to_attributes.py</code>.  Only data for empty record fields is imported (existing data will not be over-written). To replace existing data, remove the field in question from the <code>df_to_attributes.py</code> dictionary for the undesired data source and run <code>db_setup.py</code> again.</p>
 
 
 
