@@ -6,6 +6,8 @@ app = Flask(__name__)
 # security for site secret key generated in python using secrets module
 # token hex method
 app.config['SECRET_KEY'] = '7302b128c277227526063af5c73ec426'
+
+# CODE FOR USERS DATABASE FOR POSSIBLE USE IN FUTURE
 #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 #db = SQLAlchemy(app)
 #bcrypt = Bcrypt(app)

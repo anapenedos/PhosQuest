@@ -4,7 +4,7 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
 
 
 pd.options.mode.chained_assignment = None
