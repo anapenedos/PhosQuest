@@ -13,16 +13,16 @@
         </div>
     </div>
     <br>
-    <p>All analysis on this website is done <i> on the fly</i>, therefore please
+    <p>All analysis on this website is done <em> on the fly</em>, therefore please
         do not click back or other links (in same tab) unless
-        you have finished looking through your results. A csv file of the analysed
+        you have finished looking through your results.
+
+        <p>A csv file of the analysed
         data is provided for download when the analysis is finished and individual
         data charts can be saved from the site.</p>
     <a>Please see <a href="{{url_for('main.documentation')}}"> the documentation</a>
     for information about how to format your datafile correctly and for further
     information about the analysis output results.</p>
-    <br>
-
     <p>We hope you enjoy your <i>PhosphoQuest</i>.</p>
 
     <form method='POST' action="" enctype="multipart/form-data">
@@ -49,6 +49,7 @@
         </div>
 
     </form>
- </div>
+    <H4> Data analysis takes some time - Please wait</H4>
+</div>
 
 {% endblock content %}
