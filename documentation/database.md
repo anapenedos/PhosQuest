@@ -52,7 +52,7 @@ disease-associated alterations was obtained from
 `Phosphorylation_site_dataset.gz`, and `Regulatory_sites.gz` were used to populate 
 database tables `kinases`, `substrates`, `phosphosites`, `disease_alterations`, 
 and `diseases`. The files were downloaded from the `Downloads` tab, 
-`Datasets from PSP` page on _**X/X/XX**_ (source last updated 04/03/2019).  
+`Datasets from PSP` page on 23/03/2019 (source last updated 04/03/2019).  
 Inhibitor data was obtained from 
 [MRC Kinase Profiling Inhibitor Database](http://www.kinase-screen.mrc.ac.uk/kinase-inhibitors)
 as a `.csv` file on 23/03/2019 and from 

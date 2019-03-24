@@ -31,7 +31,6 @@ The majority of the information on this website was obtained from [PhosphositePl
 
 Inhibitors information was obtained from [BindingDB](https://www.bindingdb.org).
 
-
 Additional information to fill in missing data was obtained via API from [Uniprot](https://www.uniprot.org) and [PubChem](https://pubchem.ncbi.nlm.nih.gov/). Particular thanks to PubChem developers for providing the widget resources which are used on the inhibitor detail information pages of this website.
 
 ## Data analysis file upload format
@@ -76,7 +75,7 @@ Add info about what information is presented to the user etc here
 # Information for Developers
 
 ## Setting up the Database
-Instructions for using the various python scripts to set up the DB here
+To set up the database, download data from [PhosphoSitePlus](https://www.phosphosite.org), [MRC Kinase Profiling Inhibitor Database](http://www.kinase-screen.mrc.ac.uk) and [BindingDB](https://www.bindingdb.org), introduce the new file locations in the `table_parsing.py` script in the `data_import_scripts` directory and then run `db_setup.py`. More details about how the DB is structured and populated can be found in the [database documentation](documentation/database.md).
 
 ## Software Specifications
 PhosphoQuest is developed in Python 3.6+ using Flask 1.0.2 for web functionality and runs on Windows, Linux and Mac OS. The database is running in sqlite3. The web interface can be viewed in any modern browser; however, we recommend the latest versions of Chrome, Firefox and Edge to ensure correct page rendering (minor differences are seen between browsers due to different handling of css).
@@ -127,16 +126,17 @@ Further information regarding the script functions is available in the following
 * [Detail on analysis script functions ](****ADD LINK****)
 * [Detail on plotting script functions ](****ADD LINK****)
 * [Detail on query script functions ](****ADD LINK****)
-
+* [Detail on database setup](documentation/database.md)
 
 ## About the developers
-We are a group of part-time MSc Bioinformatics students at Queen Mary College University of London, School of Biological and Chemical Sciences. This Web-Application was developed as the group project requirement of the course within a 12 week deadline and therefore, at this stage, the release version of the software will not be updated any further after 29-4-2019. 
+We are a group of part-time MSc Bioinformatics students at Queen Mary College University of London, School of Biological and Chemical Sciences. This Web-Application was developed as the group project requirement of the course within a 12 week deadline and therefore, at this stage, the release version of the software will not be updated any further after 29/03/2019.
 
-## Wish list for future updates
-* Further categories added to browse and search functionality. 
-* Update design of browse categories pages
-* Use url variables for passing browse and search variables back to query functions instead of string-split method
-* Utilise browser cookies for further functionality with user data upload
-* Consider adding option for users to be able to store data analysis in database for a short period of time
-
-
+## Areas for further development
+* Further categories added to browse and search functionality; 
+* Update design of browse categories pages;
+* Use url variables for passing browse and search variables back to query functions instead of string-split method;
+* Utilise browser cookies for further functionality with user data upload;
+* Consider adding option for users to be able to store data analysis in database for a short period of time;
+* Curate kinase cellular location, protein family and disease data and break them down into several tables containing categories and sub-categories that could then be automatically be used for browse categories;
+* Improve DB normalisation in general, for instance, by creating a join table containing all alternative gene names associated with an GenBank accession number, and associate substrate isotype accession number to a single substrate record;
+* Produce a network diagram containing the top phosphorylated residues and related kinases to display in the user data analysis.
