@@ -64,7 +64,10 @@ Additional folders within the `PhosphoQuest_App folder are:
  * Subfolder `styles`, containing the `main.css` local css file
  * Subfolder `userdata_temp` for temporary storage of user data and output files.
  
-`templates` - contains all the website html template files. 
+`templates` - contains all the website html template files.
+
+
+`errors` - contains error handlers
 
 
 `service_scripts`-  containing scripts used in user data analysis
