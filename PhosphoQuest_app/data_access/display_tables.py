@@ -26,7 +26,7 @@ class Substrate_results(Table):
 class Inhibitor_results(Table):
     """create table of inhibitors for first result display"""
     inhib_pubchem_cid = Col('PubChem no')
-    inhib_short_name = Col('Compound')
+    inhib_name = Col('Inhibitor names')
     detail = LinkCol('Detail', 'browse.inh_detail',
                      url_kwargs=dict(text='inhib_pubchem_cid'))
 

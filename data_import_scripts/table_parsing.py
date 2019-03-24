@@ -189,6 +189,7 @@ def kin_sub_import():
     """
     kin_sub_human = kin_sub_parser(os.path.join("db_source_tables",
                                                 "PhosphoSitePlus",
+                                                "March_04_2019",
                                                 "Kinase_Substrate_Dataset"))
     return kin_sub_human
 
@@ -200,6 +201,7 @@ def phos_sites_import():
     phos_sites_human = phos_site_parser(
         os.path.join("db_source_tables",
                      "PhosphoSitePlus",
+                     "March_04_2019",
                      "Phosphorylation_site_dataset"))
     return phos_sites_human
 
@@ -212,6 +214,7 @@ def dis_sites_import():
     dis_sites_human = dis_site_parser(
         os.path.join("db_source_tables",
                      "PhosphoSitePlus",
+                     "March_04_2019",
                      "Disease-associated_sites"))
     return dis_sites_human
 
@@ -222,6 +225,7 @@ def reg_sites_import():
     """
     reg_sites_human = reg_site_parser(os.path.join("db_source_tables",
                                                    "PhosphoSitePlus",
+                                                   "March_04_2019",
                                                    "Regulatory_sites"))
     return reg_sites_human
 
@@ -233,7 +237,7 @@ def bdb_inhib_import():
     bindingDB_human = bdb_inhib_parser(
         os.path.join("db_source_tables",
                      "BindingDB",
-                     "BindingDB_BindingDB_Inhibition.tsv"))
+                     "BindingDB_BindingDB_Inhibition_2019-03-01.tsv"))
     return bindingDB_human
 
 
@@ -244,5 +248,5 @@ def mrc_inhib_import():
     mrc_inhib_source = mrc_inhib_parser(
         os.path.join("db_source_tables",
                      "MRC_curated_DB",
-                     "kinase_inhibitor_list_2019-01-14T19-38-48.csv"))
+                     "kinase_inhibitor_list_2019-03-23T11-58-20.csv"))
     return mrc_inhib_source

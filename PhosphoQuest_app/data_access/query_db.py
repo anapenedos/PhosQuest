@@ -29,7 +29,7 @@ def query_switch(text,type, table, option):
                  'substrate': [Substrate.subs_accession,
                                Substrate.subs_full_name],
                  'inhibitor': [Inhibitor.inhib_pubchem_cid,
-                               Inhibitor.inhib_short_name]}
+                               Inhibitor.inhib_name]}
     print(text,type,table,option)
 
     # find appropriate field to apply and find field object

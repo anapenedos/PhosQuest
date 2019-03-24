@@ -11,17 +11,17 @@ Base = declarative_base()
 kinases_inhibitors_table = Table(
     'kinases_inhibitors', Base.metadata,
     Column('kin_accession', String,
-           ForeignKey('kinases.kin_accession'), index=True),
+           ForeignKey('kinases.kin_accession'), primary_key=True),
     Column('inhib_pubchem_cid', Integer,
-           ForeignKey('inhibitors.inhib_pubchem_cid'), index=True)
+           ForeignKey('inhibitors.inhib_pubchem_cid'), primary_key=True)
 )
 
 kinases_phosphosites_table = Table(
     'kinases_phosphosites', Base.metadata,
     Column('kin_accession', String,
-           ForeignKey('kinases.kin_accession'), index=True),
+           ForeignKey('kinases.kin_accession'), primary_key=True),
     Column('phos_group_id', String,
-           ForeignKey('phosphosites.phos_group_id'), index=True)
+           ForeignKey('phosphosites.phos_group_id'), primary_key=True)
 )
 
 
@@ -35,13 +35,12 @@ class Kinase(Base):
 
     # kinase accession number is the primary key of kinases table
     kin_accession = Column(String, primary_key=True)
-    # kinase short name as impported from PhosphoSitePlus kinase_substrate
-    # dataset
-    kin_short_name = Column(String)
-    # kinase full name (non-abbreviated) as obtained from API
-    kin_full_name = Column(String)
     # gene encoding the kinase
     kin_gene = Column(String)
+    # kinase full name (non-abbreviated) as obtained from API
+    kin_full_name = Column(String)
+    # kinase name as imported from PhosphoSitePlus kinase_substrate dataset
+    kin_name = Column(String)
     # organism where kinase is encoded
     # in the first instance of the DB, only human kinases are included
     kin_organism = Column(String)
@@ -65,10 +64,10 @@ class Kinase(Base):
                                       back_populates='phosphorylated_by')
 
     def __repr__(self):
-        return "<Kinase(accession='%s', short name='%s', full name='%s', " \
+        return "<Kinase(accession='%s', name='%s', full name='%s', " \
                        "gene='%s', organism='%s', cellular location='%s', " \
                        "family='%s')>" \
-               % (self.kin_accession, self.kin_short_name, self.kin_full_name,
+               % (self.kin_accession, self.kin_name, self.kin_full_name,
                   self.kin_gene, self.kin_organism, self.kin_cellular_location,
                   self.kin_family)
 
@@ -121,16 +120,16 @@ class Substrate(Base):
 
     # substrate accession number is the primary key of the substrates table
     subs_accession = Column(String, primary_key=True)
-    # substrate short name as imported from the PhosphoSitePlus datasets
-    subs_short_name = Column(String)
+    # gene encoding the substrate
+    subs_gene = Column(String, index=True)
     # substrate full name as obtained from API
     subs_full_name = Column(String)
+    # substrate name as imported from the PhosphoSitePlus datasets
+    subs_name = Column(String)
     # substrate protein type
     subs_protein_type = Column(String)
     # molecular weight (kD) of the substrate
     subs_molec_weight_kd = Column(Float)
-    # gene encoding the substrate
-    subs_gene = Column(String, index=True)
     # chromosomal location of the substrate-encoding gene
     subs_chrom_location = Column(String)
     # substrate organism
@@ -142,14 +141,13 @@ class Substrate(Base):
                               back_populates='site_in_subs')
 
     def __repr__(self):
-        return "<Substrate(accession='%s', short name='%s', full name='%s', " \
+        return "<Substrate(accession='%s', name='%s', full name='%s', " \
                           "protein type='%s', molecular weight(kD)='%s', " \
                           "gene='%s', chromosomal location='%s', " \
                           "organism='%s')>" \
-               % (self.subs_accession, self.subs_short_name,
-                  self.subs_full_name, self.subs_protein_type,
-                  self.subs_molec_weight_kd, self.subs_gene,
-                  self.subs_chrom_location, self.subs_organism)
+               % (self.subs_accession, self.subs_name, self.subs_full_name,
+                  self.subs_protein_type, self.subs_molec_weight_kd,
+                  self.subs_gene, self.subs_chrom_location, self.subs_organism)
 
     def add_relationships(self, class_instances):
         """
@@ -396,12 +394,12 @@ class Inhibitor(Base):
 
     # inhibitor PubChem compound identifier, primary key of inhibitors table
     inhib_pubchem_cid = Column(Integer, primary_key=True)
-    # inhibitor short name
-    inhib_short_name = Column(String)
-    # inhibitor full name
-    inhib_full_name = Column(String)
-    # inhibitor brutto (molecular formula)
-    inhib_brutto = Column(String)
+    # inhibitor name
+    inhib_name = Column(String)
+    # inhibitor compound name
+    inhib_compound = Column(String)
+    # inhibitor molecular formula
+    inhib_molec_formula = Column(String)
     # molecular weight of the inhibitor (g/mol)
     inhib_molec_weight = Column(Float)
     # inhibitor SMILE formula
@@ -426,13 +424,13 @@ class Inhibitor(Base):
                                         back_populates='kin_inhibitors')
 
     def __repr__(self):
-        return "<Inhibitor(PubChem ID='%s', short name='%s', " \
-                          "full name='%s', brutto='%s', " \
+        return "<Inhibitor(PubChem ID='%s', name='%s', " \
+                          "compound='%s', molec. form.='%s', " \
                           "molec. weight (g/mol)='%s', SMILE='%s', " \
                           "InChI='%s', InChI key='%s', references='%s', " \
                           "vendor='%s', catalog#='%s')>" \
-               % (self.inhib_pubchem_cid, self.inhib_short_name,
-                  self.inhib_full_name, self.inhib_brutto,
+               % (self.inhib_pubchem_cid, self.inhib_name,
+                  self.inhib_compound, self.inhib_molec_formula,
                   self.inhib_molec_weight, self.inhib_smile,
                   self.inhib_int_chem_id, self.inhib_int_chem_id_key,
                   self.inhib_bibl_references, self.inhib_vendor,

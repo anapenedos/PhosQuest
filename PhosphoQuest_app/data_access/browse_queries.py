@@ -182,6 +182,7 @@ def subs_phos_query(subs_accession):
     #subset of information about substrate phosphosites sites.
     subsites = sub.subs_sites
     table = Phosphosite_results(subsites)
+    session.close()
     return table
 
 def kin_phos_query(kin_accession):
@@ -196,6 +197,7 @@ def kin_phos_query(kin_accession):
     #subset of information about substrate phosphosites sites.
     subsets = kin.kin_phosphorylates
     table = Phosphosite_results(subsets)
+    session.close()
     return table
 
 def phos_kin_query(phos_group_id):
@@ -210,6 +212,7 @@ def phos_kin_query(phos_group_id):
     #subset of information about related kinases.
     subsets = phos.phosphorylated_by
     table = Kinase_results(subsets)
+    session.close()
     return table
 
 
@@ -225,6 +228,7 @@ def kin_inhib_query(kin_accession):
     #subset of information about substrate phosphosites sites.
     subsets = kin.kin_inhibitors
     table = Inhibitor_results(subsets)
+    session.close()
     return table
 
 def inhib_kin_query(inhib_pubchem_cid):
@@ -239,4 +243,5 @@ def inhib_kin_query(inhib_pubchem_cid):
     #subset of information about substrate phosphosites sites.
     subsets = inh.inhib_target_kinases
     table = Kinase_results(subsets)
+    session.close()
     return table

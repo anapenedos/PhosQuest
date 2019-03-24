@@ -3,11 +3,11 @@
 
 #database table field headers for interface display
 headers = {
-    'kin_accession':'Accession no', 'kin_short_name':'Short name',
+    'kin_accession':'Accession no', 'kin_name':'Other name',
     'kin_full_name' :'Full name', 'kin_gene':'Gene',
     'kin_organism':'Species', 'kin_cellular_location':'Cellular location',
     'kin_family': 'Family', 'subs_accession':'Accession no',
-    'subs_short_name':'Short name', 'subs_full_name':'Full name',
+    'subs_name':'Other name', 'subs_full_name':'Full name',
     'subs_protein_type':'Protein type',
               'subs_molec_weight_kd':'Molecular weight (kd)',
     'subs_gene':'Gene', 'subs_chrom_location':'Chromosome location',
@@ -22,11 +22,11 @@ headers = {
         'phos_other_interactions':'Other interactions',
     'phos_bibl_references':'References','phos_notes':'Notes',
     'phos_in_substrate':'Related substrate',
-    'inhib_pubchem_cid':'PubChem CID', 'inhib_short_name':'Name',
-    'inhib_full_name':'Full name', 'inhib_brutto':'Brutto',
+    'inhib_pubchem_cid':'PubChem CID', 'inhib_name':'Name',
+    'inhib_compound':'Compound name', 'inhib_molec_formula':'molec. formula',
     'inhib_molec_weight':'molec. weight (g/mol)', 'inhib_smile':'SMILE',
     'inhib_int_chem_id':'InChI', 'inhib_int_chem_id_key':'InChI key',
-    'inhib_bibl_references':'References', 'inhib_vendor':'vendor',
+    'inhib_bibl_references':'PubMed references', 'inhib_vendor':'vendor',
     'inhib_catalog_number':'Cat. No.'
 }
 
