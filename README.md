@@ -34,23 +34,31 @@ Inhibitors information was obtained from [BindingDB](https://www.bindingdb.org).
 Additional information to fill in missing data was obtained via API from [Uniprot](https://www.uniprot.org) and [PubChem](https://pubchem.ncbi.nlm.nih.gov/). Particular thanks to PubChem developers for providing the widget resources which are used on the inhibitor detail information pages of this website.
 
 ## Data analysis: file upload format
-The uploaded file used for data analysis must be in the following format:
+The uploaded file used for data analysis should adhere to the following format:
 
-Column 1: Substrate column with gene name and site. Note that non-phosphorylated peptides should also be in the format indicated i.e. gene name(None). However, the analysis tool can also handle substrate entries for non-phosphorylated peptides that are only gene names. 
+<b>Column 1</b>: Substrate column with gene name and site. Note that non-phosphorylated peptides should also be in the format indicated i.e. gene name(None). However, the analysis tool can also handle substrate entries for non-phosphorylated peptides that are only gene names. 
 
-Column 2: Mean intensity of Control replicate intensities. 
+<b>Column 2</b>: Mean intensity of Control replicate intensities. 
 
-Column 3: Mean intensity of Treatment/Condition replicate intensities. 
+<b>Column 3</b>: Mean intensity of Treatment/Condition replicate intensities. 
 
-Column 4: Fold change calculation: Treatment over the Control. Note: these should not be log2 fold calculations! 
+<b>Column 4</b>: Fold change calculation: Treatment over the Control. Note: these should not be log2 fold calculations! 
 
-Column 5: T-test P-values. Please use uncorrected values, as PhosphoQuest will implement correction for multiple-testing errors. 
+<b>Column 5</b>: T-test P-values. Please use uncorrected values, as PhosphoQuest will implement correction for multiple-testing errors. 
 
-Column 6-7: Coefficients of variation (CV's) for the Control and Treatment/Condition columns, respectively. PhosphoQuest can also handle data that doesn't have these column entries. Please see section - Analysis functions below for further details. 
-
+<b>Column 6-7</b>: Coefficients of variation (CV's) for the Control and Treatment/Condition columns, respectively. PhosphoQuest can also handle data that doesn't have these column entries. 
 
 ## Data analysis - general summary
-To be filled in
+
+<em>PhosphoQuests</em> analysis tool is designed with phosphoproteomics data in mind - that is mass spectrometry data generated from enrichment experiments. Uploaded user data that conforms to the earlier specification is processed in a series of steps that fit into 3 broad categories. 
+
+**1.** Tool checks for data format conformity and extracts data that has at least 1 quantitation event. The data is then further analysed and filtered to extract information on broad categories. For example substrate/sites reported in 1 or both conditions, with CVs <=25% and entries that are only phospho-sites to name a few.
+
+**2.** User calculated p-values are corrected for multiple testing errors - Benjamini-Hochberg method implemented with a default permissable error rate of 0.05 applied. User data is also queried against the PhosphoQuest database to find kinases and substrates that map to each other. Further analysis extracts "Metrics" of the data.
+
+**3.** Kinase and substrate/sites frequency analysis carried out. Relative kinase activity analysis, based on log2 fold change calculations in substrate/site(s), is also implemented.
+
+These steps effectively build a user table with original upload information and the extra analysis appended.
 
 ## Data analysis: output visuals 
 PhosphoQuest generates a number of visuals, that we hope will help you interpret and understand your data. These take the following form:
@@ -59,9 +67,9 @@ PhosphoQuest generates a number of visuals, that we hope will help you interpret
 
 <b>Volcano plot</b>: We can also visualise significantly differentially expressed hits by plotting a scatter of log2 fold changes vs the corrected p-value for each phospho-site.
 
-<b>WordCouds and Frequency charts</b>: By using the analysis briefly described in Step 6A above, we can visualise the frequency with which substrates/sites and their kinases appear.
+<b>WordCouds and Frequency charts</b>: Representations of the frequency with which substrates/sites and their kinases appear in the data.  
 
-<b>Summary Metrics</b>: We visualise your data in a series of piecharts, that aim to summarise distributions in a number of categories. For example, by taking the proportion of phospho-peptides detected in the whole data, we can determine the efficiency of your pull-down strategy.
+<b>Summary Metrics</b>: Data is visualised in a series of piecharts, that aim to summarise distributions in a number of categories. For example, by taking the proportion of phospho-peptides detected in the whole data, we can determine the efficiency of your pull-down strategy.
 
 
 # Information for Developers
