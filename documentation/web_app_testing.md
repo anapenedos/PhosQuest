@@ -3,17 +3,17 @@
 This document displays a number of example searches that constitute our web app testing. 
 
 
-i) [Searching for kinase accession number e.g. Q9BQI3](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+i) [Searching for kinase accession number e.g. Q9BQI3](web_app_testing.md#test-case-scenario-1--searching-for-kinase-accession-number-eg-q9bqi3)
  
-ii) [est case scenario 2 = Searching for kinase accession name - HRI](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+ii) [est case scenario 2 = Searching for kinase accession name - HRI](web_app_testing.md#test-case-scenario-2--searching-for-kinase-accession-name---hri)
 
-iii) [Test case scenario 3 = Searching for substrate via accession name e.g. P01236](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+iii) [Test case scenario 3 = Searching for substrate via accession name e.g. P01236](web_app_testing.md#test-case-scenario-3--searching-for-substrate-via-accession-name-eg-p01236)
 
-iv) [Test case scenario 4 = Searching for kinase accession name - e.g. PRL](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+iv) [Test case scenario 4 = Searching for kinase accession name - e.g. PRL](web_app_testing.md#test-case-scenario-4--searching-for-kinase-accession-name---eg-prl)
 
-v) [Test case scenario 5 = Searching for Inhibitors via accession number e.g. 4877](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+v) [Test case scenario 5 = Searching for Inhibitors via accession number e.g. 4877](web_app_testing.md#test-case-scenario-5--searching-for-inhibitors-via-accession-number-eg-4877)
  
- vi) [Test case scenario 6 = Searching for Inhibitors via name e.g. (5Z)-7-Oxozeaenol](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+ vi) [Test case scenario 6 = Searching for Inhibitors via name e.g. (5Z)-7-Oxozeaenol](web_app_testing.md#test-case-scenario-6--searching-for-inhibitors-via-name-eg-5z-7-oxozeaenol)
  
  
 
