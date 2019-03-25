@@ -239,7 +239,7 @@ def correct_pvalue(filtered_df):
 def table_sort_parse(filtered_df):
     """ The following operations carried out
     1 - Sort table, 
-    2 - Launch query of db against user data, with algnment results appended
+    2 - Launch query of db against user data, with alignment results appended
     to user data table.
     3 - Parse most significant hits, with or without CV filter.
     :param filtered_df: Dataframe of phospho-hits only.
