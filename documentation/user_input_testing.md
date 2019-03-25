@@ -2,25 +2,25 @@
 
 This document displays a number of example searches that constitute user input data in different formats. 
 
-i) [User input AZ20.tsv](user_input_testing.md#test-case-scenario-1)
+i) [User input AZ20.tsv](user_input_testing.md#test-case-scenario-1--user-input-az20tsv)
 
-ii) [User input AZ20.tsv, however missing the CV column](user_input_testing.md#test-case-scenario-2)
+ii) [User input AZ20.tsv, however missing the CV column](user_input_testing.md#test-case-scenario-2--user-input-az20tsv-however-missing-the-cv-column)
 
-iii) [User input AZ20.tsv, however CV column is in a random location](user_input_testing.md#test-case-scenario-3)
+iii) [User input AZ20.tsv, however CV column is in a random location](user_input_testing.md#test-case-scenario-3--user-input-az20tsv-however-the-cv-column-is-in-a-random-location)
 
-iv) [User input AZ20.tsv, however the residue type and number does not contain any 'nones'](user_input_testing.md#test-case-scenario-4)
+iv) [User input AZ20.tsv, however the residue type and number does not contain any 'nones'](user_input_testing.md#test-case-scenario-4--user-input-az20tsv-however-the-residue-type-and-number-does-not-contain-any-nones)
 
-v) [User input AZ20.tsv, however the substrate name column has been placed as the final column](user_input_testing.md#test-case-scenario-5)
+v) [User input AZ20.tsv, however the substrate name column has been placed as the final column](user_input_testing.md#test-case-scenario-5--user-input-az20tsv-however-the-substrate-name-column-has-been-placed-as-the-final-column)
 
-vi) [User input AZ20.tsv, however the substrate name column has been placed in a random position](user_input_testing.md#test-case-scenario-6)
+vi) [User input AZ20.tsv, however the substrate name column has been placed in a random position](user_input_testing.md#test-case-scenario-6--user-input-az20tsv-however-the-substrate-name-column-has-been-placed-in-a-random-position)
 
-vii) [User input AZ20.tsv, however the p values column is missing](user_input_testing.md#test-case-scenario-7)
+vii) [User input AZ20.tsv, however the p values column is missing](user_input_testing.md#test-case-scenario-7--user-input-az20tsv-however-the-p-values-column-is-missing)
 
-viii) [User input AZ20.tsv, however the p values column is in a random column](user_input_testing.md#test-case-scenario-8)
+viii) [User input AZ20.tsv, however the p values column is in a random column](user_input_testing.md#test-case-scenario-8--user-input-az20tsv-however-the-p-values-column-is-in-a-random-column)
 
-ix) [User input AZ20.tsv, however the fold values column is missing](user_input_testing.md#test-case-scenario-9)
+ix) [User input AZ20.tsv, however the fold values column is missing](user_input_testing.md#test-case-scenario-9--user-input-az20tsv-however-the-fold-values-column-is-missing)
 
-x) [User input AZ20.tsv, however the fold values column has been moved to a different column](user_input_testing.md#test-case-scenario-10)
+x) [User input AZ20.tsv, however the fold values column has been moved to a different column](user_input_testing.md#test-case-scenario-10--user-input-az20tsv-however-the-fold-values-column-has-been-moved-to-a-different-column)
 
 
 #### Test case scenario 1 = User input AZ20.tsv 
