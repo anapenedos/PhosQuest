@@ -33,7 +33,7 @@ Inhibitors information was obtained from [BindingDB](https://www.bindingdb.org).
 
 Additional information to fill in missing data was obtained via API from [Uniprot](https://www.uniprot.org) and [PubChem](https://pubchem.ncbi.nlm.nih.gov/). Particular thanks to PubChem developers for providing the widget resources which are used on the inhibitor detail information pages of this website.
 
-## Data analysis file upload format
+## Data analysis: file upload format
 The uploaded file used for data analysis must be in the following format:
 
 Column 1: Substrate column with gene name and site. Note that non-phosphorylated peptides should also be in the format indicated i.e. gene name(None). However, the analysis tool can also handle substrate entries for non-phosphorylated peptides that are only gene names. 
@@ -50,26 +50,18 @@ Column 6-7: Coefficients of variation (CV's) for the Control and Treatment/Condi
 
 
 ## Data analysis - general summary
-The following will be an overview of the strategy employed to analyse your data. Conceptually, the process can be broken down into 6 steps which collate and categorise your data. We then use this analysis to generate data visualisations, we hope will help you interpret your phospho-proteomics data. 
+To be filled in
 
-**Step 1**: Data table structure check and basic filtering. This pre-analysis step implements a basic error check and determines the format of the input table. Data tables without CV columns are processed at this stage. Peptide entries with at least one quantitation event are passed for further processing. 
+## Data analysis: output visuals 
+PhosphoQuest generates a number of visuals, that we hope will help you interpret and understand your data. These take the following form:
 
-**Step 2**: A series of sequential steps, categorise the data into groupings. For example: which hits are unique or appear in both the Control and Treatment/Condition, which entries are phosphorylated peptides, are cvs within a certain tolerance etc. The table is also further filtered for phospho-sites only. 
+<b>Styled tables</b>: Your analysed, filtered and sorted data is uploaded in the form of a styled table. We have implemented visual cues such as super-imposed heatmaps and barplots to clarify the groupings in your data. Both the standard data and kinase activity analysis take this form.
 
-**Step 3**: P-values corrected for multiple testing errors. A default permissable error rate of 0.05 is applied, with only the Benjamini-Hochberg method for multiple testing correction currently implememented. Please see [this link](https://www.nature.com/articles/nbt1209-1135)  for background information: 
+<b>Volcano plot</b>: We can also visualise significantly differentially expressed hits by plotting a scatter of log2 fold changes vs the corrected p-value for each phospho-site.
 
-**Step 4**: Analysis in previous steps used to further categorise , filter and sort data. It is at this stage, that the data table is queried against the PhosphoQuest database, determining which substrates and sites map to information held on the database. Data analysis at this stage allows the visualisation of significantly differentially expressed hits in the form of a styled table and a volcano plot. 
+<b>WordCouds and Frequency charts</b>: By using the analysis briefly described in Step 6A above, we can visualise the frequency with which substrates/sites and their kinases appear.
 
-**Step 5**: Metrics of the data are extracted for downstream visualisation. For example, phospho pull-down enrichment efficiency & distributions of phosphorylated amino acid residues to name two categories. 
-
-**Step 6**: This analysis step has 2 sub-categories: 
-
-**A**- Determine global freqencies of substrate/sites and their corresponding kinases in data table - this data is visualised using wordclouds and frequency charts. 
-
-**B** - Calculate relative kinase activity, in the subset of the data, whose hits are considered significantly differentially expressed. This relative activity is determined from the log2 fold changes (Treatment over Control), calculated for their substrates/sites. 
-
-## Data analysis output information 
-Add info about what information is presented to the user etc here
+<b>Summary Metrics</b>: We visualise your data in a series of piecharts, that aim to summarise distributions in a number of categories. For example, by taking the proportion of phospho-peptides detected in the whole data, we can determine the efficiency of your pull-down strategy.
 
 
 # Information for Developers
