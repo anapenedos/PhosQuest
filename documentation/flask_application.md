@@ -33,7 +33,7 @@ Webpage styles are based on `html5` with `Bootstrap CSS 4.2.1` with local tweaks
  
 * `SQLalchemy` - used to create and populate the database. 
 
-*  `pandas`, `seaborn` and `numpy` - used to parse datasets, facilitate data import
+*  `pandas`, `statsmodels` and `numpy` - used to parse datasets, facilitate data import
 and for user data analysis.
 * `matplotlib`, `wordcloud` and `plotly` - used to visualise analysed data
 
@@ -75,7 +75,7 @@ Additional folders within the `PhosphoQuest_App folder are:
 
 `data_access`- containing scripts for querying the PhosphoQuest database.
 
-An overview diagram of the PhosphoQuest app structure is shown below.
+### An overview diagram of the PhosphoQuest app structure is shown below.
 
 
 ![App structure](diagrams/PhosphoQuestApp_overview.png)
