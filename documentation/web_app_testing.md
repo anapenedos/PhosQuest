@@ -2,7 +2,22 @@
 
 This document displays a number of example searches that constitute our web app testing. 
 
-**Test case scenario 1** = Searching for kinase accession number e.g. Q9BQI3:-
+
+i) [Searching for kinase accession number e.g. Q9BQI3](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+ 
+ii) [est case scenario 2 = Searching for kinase accession name - HRI](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+
+iii) [Test case scenario 3 = Searching for substrate via accession name e.g. P01236](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+
+iv) [Test case scenario 4 = Searching for kinase accession name - e.g. PRL](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+
+v) [Test case scenario 5 = Searching for Inhibitors via accession number e.g. 4877](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+ 
+ vi) [Test case scenario 6 = Searching for Inhibitors via name e.g. (5Z)-7-Oxozeaenol](web_app_testing.md#test-case-scenario-1--user-input-az20tsv)
+ 
+ 
+
+### Test case scenario 1 = Searching for kinase accession number e.g. Q9BQI3
 
 ![Search for Q9BQI3](images/web_app_testing/Case1a.png)
 
@@ -17,7 +32,7 @@ Selecting one of the Group IDs (e.g. 447635) leads to a detailed display of this
 Here we also see a list of kinases which are related to this specific phosphosite (447635). In this list we can observe the original kinase (Q9BQI3) which we had searched for, allowing us to link back to the original search. 
 
 
-**Test case scenario 2** = Searching for kinase accession name - HRI
+### Test case scenario 2 = Searching for kinase accession name - HRI
 
 ![Search for HRI](images/web_app_testing/Case2a.png) 
 
@@ -35,7 +50,7 @@ From here, one can link to the specific phosphosites related to this particular 
 
 And from here, one can observe the kinases associated with this phosphosite, and link back to the original EPHB2 search result (Accession number P29323)
 
-**Test case scenario 3** = Searching for substrate via accession name e.g. P01236
+### Test case scenario 3 = Searching for substrate via accession name e.g. P01236
 
 ![Search for P01236](images/web_app_testing/Case3a.png)
  
@@ -49,7 +64,7 @@ Selecting one of the Group IDs (e.g. 451732) leads to a detailed display of char
 
 Here, we can view detailed information regarding the selected phosphosite group. We also have the "related substrate" qualifer, and this takes us back to the previous page.  
 
-**Test case scenario 4** = Searching for kinase accession name - e.g. PRL
+### Test case scenario 4 = Searching for kinase accession name - e.g. PRL
 
 ![Search for PRL](images/web_app_testing/Case4a.png) 
 
@@ -70,7 +85,7 @@ From here, one can select the related substrates and go back to the substrates t
 ![Results for PRL](images/web_app_testing/Case4e.png)
 
 
-**Test case scenario 5** = Searching for Inhibitors via accession number e.g. 4877:-
+### Test case scenario 5 = Searching for Inhibitors via accession number e.g. 4877
 
 ![Search for 4877](images/web_app_testing/Case5a.png)
 
@@ -83,7 +98,7 @@ Selecting one of the Group IDs (e.g. 4877) leads to a detailed display of charac
 ![Results for 4877](images/web_app_testing/Case5c.png)
 
 
- **Test case scenario 6** = Searching for Inhibitors via name e.g. (5Z)-7-Oxozeaenol:-
+ ### Test case scenario 6 = Searching for Inhibitors via name e.g. (5Z)-7-Oxozeaenol
 
 ![Search for (5Z)-7-Oxozeaenol](images/web_app_testing/Case6a.png)
 
