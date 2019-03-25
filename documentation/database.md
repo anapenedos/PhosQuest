@@ -23,7 +23,7 @@ The schema is defined through a SQLalchemy declarative script, `../PhosphoQuest_
     * `kin_cellular_location`
  
 ## Data Sources
-###Database Exports
+### Database Exports
 All external datasets downloaded as files were saved in the `db_source_tables` directory, under the relevant sub-directory.
 Data on kinases, substrates, phosphosites, phosphosite regulation and 
 disease-associated alterations was obtained from [PhosphoSitePlus](https://www.phosphosite.org). Files `Disease-associated_sites.gz`, `Kinase_Substrate_Dataset.gz`, `Phosphorylation_site_dataset.gz`, and `Regulatory_sites.gz` were used to populate database tables `kinases`, `substrates`, `phosphosites`, `disease_alterations`, and `diseases`. The files were downloaded from the `Downloads` tab, `Datasets from PSP` page on 23/03/2019 (source last updated 04/03/2019).  
