@@ -10,7 +10,7 @@ The Python modules' versions employed in this project are specified in the proje
 
 ## Database structure
 The PhosphoQuest database contains nine tables, two of which join tables, as outlined in the schema below:
-![PhosphoQuest schema](images/PhosphoQuest model-2019-03-23_09_45.png)
+![PhosphoQuest schema](images/PhosphoQuest-2019-03-25_17_48.png)
 The term 'substrate(s)' is used to refer to a protein that is a putative kinase target. 'Phosphosites' are peptides within the substrate where phosphorylation occurs, hence a substrate may have many phosphosites, which may be targetted by different kinases.
 The schema is defined through a SQLalchemy declarative script, `../PhosphoQuest_app/data_access/sqlalchemy_declarative.py`.  Some fields were indexed to speed up DB queries:
 
@@ -23,7 +23,7 @@ The schema is defined through a SQLalchemy declarative script, `../PhosphoQuest_
     * `kin_cellular_location`
  
 ## Data Sources
-###Database Exports
+### Database Exports
 All external datasets downloaded as files were saved in the `db_source_tables` directory, under the relevant sub-directory.
 Data on kinases, substrates, phosphosites, phosphosite regulation and 
 disease-associated alterations was obtained from [PhosphoSitePlus](https://www.phosphosite.org). Files `Disease-associated_sites.gz`, `Kinase_Substrate_Dataset.gz`, `Phosphorylation_site_dataset.gz`, and `Regulatory_sites.gz` were used to populate database tables `kinases`, `substrates`, `phosphosites`, `disease_alterations`, and `diseases`. The files were downloaded from the `Downloads` tab, `Datasets from PSP` page on 23/03/2019 (source last updated 04/03/2019).  
