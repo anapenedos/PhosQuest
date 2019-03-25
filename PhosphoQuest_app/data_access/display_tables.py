@@ -38,5 +38,6 @@ class Phosphosite_results(Table):
     phos_site = Col('Phosphorylation Site')
     phos_domain = Col('Domain')
     phos_p_function = Col('Function')
+    phos_in_substrate = Col('In Substrate')
     detail = LinkCol('Detail', 'browse.phosites_detail',
                      url_kwargs=dict(text='phos_group_id'))
