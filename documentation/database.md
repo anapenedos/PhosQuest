@@ -10,7 +10,7 @@ The Python modules' versions employed in this project are specified in the proje
 
 ## Database structure
 The PhosphoQuest database contains nine tables, two of which join tables, as outlined in the schema below:
-![PhosphoQuest schema](images/PhosphoQuest model-2019-03-23_09_45.png)
+![PhosphoQuest schema](images/PhosphoQuest-2019-03-25_17_48.png)
 The term 'substrate(s)' is used to refer to a protein that is a putative kinase target. 'Phosphosites' are peptides within the substrate where phosphorylation occurs, hence a substrate may have many phosphosites, which may be targetted by different kinases.
 The schema is defined through a SQLalchemy declarative script, `../PhosphoQuest_app/data_access/sqlalchemy_declarative.py`.  Some fields were indexed to speed up DB queries:
 
