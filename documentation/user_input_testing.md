@@ -1,8 +1,8 @@
-### User Input Testing 
+## User Input Testing 
 
 This document displays a number of example searches that constitute user input data in different formats. 
 
-i) [User input AZ20.tsv](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/documentation/user_input_testing.md#test-case-scenario-1)
+i) [User input AZ20.tsv](user_input_testing.md#test-case-scenario-1)
 
 ii) [User input AZ20.tsv, however missing the CV column](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/documentation/user_input_testing.md#test-case-scenario-2)
 
@@ -24,7 +24,7 @@ ix) [User input AZ20.tsv, however the fold values column is missing](https://git
 x) [User input AZ20.tsv, however the fold values column has been moved to a different column](https://github.research.its.qmul.ac.uk/bt18637/giardello/blob/develop/documentation/user_input_testing.md#test-case-scenario-10)
 
 
-**Test case scenario 1** = User input AZ20.tsv:- 
+#### Test case scenario 1 = User input AZ20.tsv:- 
 
 ![Search for AZ20.tsv](images/user_data_testing/User1a.png)
 
@@ -33,7 +33,7 @@ Results for AZ20.tsv are as follows with no error messages displayed.
 ![Results for AZ20.tsv](images/user_data_testing/User1b.png)
  
 
-**Test case scenario 2** = User input AZ20.tsv, however missing the CV column. 
+Test case scenario 2 = User input AZ20.tsv, however missing the CV column. 
 
 ![Search for AZ20.tsv_noCSVcolumn](images/user_data_testing/User2a.png)  
  
