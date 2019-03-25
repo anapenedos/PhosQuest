@@ -39,7 +39,7 @@ Data takes the form of a table comprising one identifier column (mixed text & nu
 
 **3. `correct_pvalue()`**:  <em>Further analysis of p-values in filtered dataframe.</em>
 * <b>Input</b>: phospho-hits dataframe output of <b>`create_filtered_dfs()`</b> function.
-* <b>`fdrcorrection()`</b> function of <b>statsmodels</b> is used to correct adjust p-values for multiple-testing errors. 
+* <b>`fdrcorrection()`</b> function of <b>statsmodels</b> is used to correct p-values for multiple-testing errors. 
 * Benjamini-Hochberg method for multiple testing correction utilised.
 * Permissible error rate = 0.05.
 * Analysis appended to dataframe as 2 extra columns: rejected hypotheses (boolean) and corrected p-values.
@@ -79,7 +79,7 @@ Data takes the form of a table comprising one identifier column (mixed text & nu
 * <b>Analysis 1</b> - Kinase and corresponding substrate/sites analysis:
 * Kinase dictionary converted to a dataframe with each row a unique kinase (also index), with the first column a set of substrate/site(s) per kinase.
 * Dataframe transformed such that each kinase has 1 unique substrate/site per row.
-* Further calculation determines frequency distributions for each kinase and substrate/site. 
+* Further calculation determines frequency distributions for each kinase and substrate/site. These are fed into the <b>`wordcloud_freq_charts()`</b> function of the <b>`plotting.py`</b> script.
 * Lists of kinases and substrate/sites are each converted to lists of strings. These are fed into the <b>`wordcloud_freq_charts()`</b> function of the <b>`plotting.py`</b> script.
 * <b>Analysis 2</b> - kinase relative activity calculation:
 * Subset of significant hits dataframe generated and hits with both intensities reported are parsed.
@@ -95,7 +95,7 @@ Data takes the form of a table comprising one identifier column (mixed text & nu
 
 ### <u>Limitations and further work</u>:
 
-1. Generally the script is somewhat flexible with regards to the user data input i.e. CV columns may or not be present and non-phosphorylated entries in the table can also be just gene-names. However, users will likely use a number of different proteomics software packages to generate their data. The raw format of these output tables will necessitate some data wrangling, pre-upload to PhosphoQuest. This increases the chances of table format issues i.e. such as missorting of columns (which the crunch script partially takes into account). Improvements in <b>`user_data_check()`</b> checks could assess whether: P-values are not assigned to hits with intensities reported and CVs assigned for hits with intensity of 0 reported in both replicates.
+1. Generally the script is somewhat flexible with regards to the user data input i.e. CV columns may or not be present and non-phosphorylated entries in the table can also be just gene-names. However, users will likely use a number of different proteomics software packages to generate their data. The raw format of these output tables will necessitate some data wrangling, pre-upload to PhosphoQuest. This increases the chances of table format issues i.e. such as missorting of columns (which the crunch script partially takes into account). Improvements in <b>`user_data_check()`</b> could assess whether: P-values are not assigned to hits with intensities reported and CVs assigned for hits with intensity of 0 reported in both replicates.
 2. Code a template that takes a more raw output table from the user i.e. closer to the native analysis of proteomics software packages. Intensity columns, for example, maybe reported for the separate replicates of each experiment i.e. control and treatment/condition. The advantage of this approach, is that less needs to be done by the user and it  should decrease the likely hood of issues cropping-up such as those mentioned earlier. The disadvantage is that the burden of averaging intensities, calculating CVs and p-values will fall on the script. This will necessitate a substantial expansion of the script.
 3. <b>`correct_pvalue()`</b> function could be expanded to include other methods such as the more stringent Bonferroni method. 
 4. Currently there are a number of "metrics" calculated by the <b>`kinase_analysis()`</b> function, that could be used to create a small summary table to compliment the current visuals. These include measures such as the number of unique kinases that map to user data substrate/sites (and vice-versa) and the sum of kinase and substrate/site frequencies. 
