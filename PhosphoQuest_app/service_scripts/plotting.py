@@ -179,7 +179,7 @@ def style_df(phospho_df, kin_activities):
       ('text-align', 'center'),
       #('font-weight', 'bold'),
       #('background-clip', 'border-box') # Required for chrome to counter border
-                                        # clipping applied to table headers.
+                                         # clipping applied to table headers.
       ]
     
     # Set table styles.
@@ -461,7 +461,10 @@ def user_data_volcano_plot(phos_table):
     with open(outfile,'r') as f:
         html = f.read()
     return html
-
+    
+    # Uncomment line below and comment lines above (upto fig variable) to 
+    # allow volcano plot editing from the command line. File written as html
+    # to working directory.
 #    plot(fig, filename = 'vp.html', auto_open=False)
 
 # --------------------------------------------------------------------------- #
