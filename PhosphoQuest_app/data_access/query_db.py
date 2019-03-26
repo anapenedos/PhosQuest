@@ -53,60 +53,11 @@ def query_switch(text,type, table, option):
     #carry out query with exact or like method depending on user choice
     if type == "exact":
         results = searchexact(text, dbtable, field)
-
         results,style = format_results(results,table)
-        # #output different styles of results depending on number of results
-        # if 'No results found' in results:
-        #     style = 'None'
-        #     return results, style
-        #
-        # elif len(results) < 2: # if only 1 results display as list
-        #     results = query_to_list(results, dbtable)
-        #     style = 'list'
-        #     return results, style
-        #
-        # else:
-        #     style ='table'
-        #     if table == 'kinase':
-        #         results = display_tables.Kinase_results(results)
-        #
-        #     elif table == 'inhibitor':
-        #         results = display_tables.Inhibitor_results(results)
-        #         # add cid variable to add pubchem widget on website.
-        #         cid='cid'
-        #         return results, style, cid
-        #     else:
-        #         results = display_tables.Substrate_results(results)
-        #
-        #     return results, style
 
     else:
-
         results = searchlike(text, dbtable, field)
         results, style = format_results(results, table)
-
-
-        # if 'No results found' in results:
-        #     style = 'None'
-        #     return results, style
-        #
-        # elif len(results) < 2: # if only 1 result display as list
-        #     results = query_to_list(results, dbtable)
-        #     style = 'list'
-        #     return results, style
-        #
-        # else:
-        #     # if more results display as table for each type
-        #     if table == 'kinase':
-        #         results = display_tables.Kinase_results(results)
-        #     elif table == 'inhibitor':
-        #         # make short name up to 30 characters to avoid long table
-        #         results = display_tables.Inhibitor_results(results)
-        #     else:
-        #         results = display_tables.Substrate_results(results)
-        #     style = 'table'
-        #
-        #     return results,style
     return results, style
 
 def format_results(results, table):
@@ -125,7 +76,6 @@ def format_results(results, table):
         style = 'list'
 
     else:
-        print("hello")
         style ='table'
         # if more results display as table for each type
         if table == 'kinase':
