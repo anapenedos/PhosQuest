@@ -61,6 +61,13 @@ vi) **`wordcloud_freq_charts()`**: Wordcloud and barplots for kinase and substra
 * Dataframes fed into <b>`matplotlib`</b> plotting function <b>`bar()`</b>. Barplot objects returned with various styling. 
 * Word lists fed into <b>`wordcloud`</b> function <b>`WordCloud()`</b>. WordCloud objects returned with various styling.
 * <b>Output</b>: pngs of wordclouds and barplots.
-    
+
+### <u>Further work</u>:
+
+1. The volcano plot has the potential for a susbtantial expansion of interaction options and visuals:
+* User input fields could be generated that allow the user to shift the dashed thresholds that currently hard-coded. 
+* Another useful option would be to enable user selection of points, such that they are labeled for image export. An alternative approach would be to have a function that displays selected hits as a table on the webapp volcano plot tab. This has been implemented in a scatter here: <https://plot.ly/python/selection-events/>
+* The volcano plot tab could also implement extra visualisation in the form of density distributions of log10 intensity data. This may inform the user as to whether the underlying assumption of t-test calculations, i.e. data is normally distributed, can be corroborated.
+
 
 
