@@ -1,4 +1,4 @@
-# <center><u>User data analysis: general summary</center>
+# <center><u>User data analysis</center>
 
 ### <u>Main script</u>:  `user_data_crunch.py`
 
