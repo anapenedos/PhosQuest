@@ -108,7 +108,22 @@ Results for AZ20.tsv_FoldValues_asRandomColumn show that the current analysis re
 
 ![Results for AZ20.tsv_FoldValues_asRandomColumn](images/user_data_testing/User10b.png)
 
+**Summary** 
 
+In this short user app testing, we have tested a number of different scenarios in relation to different user input files:- 
+
+- User input AZ20.tsv 
+- User input AZ20.tsv, however missing the CV column 
+- User input AZ20.tsv, however the CV column is in a random location 
+- User input AZ20.tsv, however the residue type and number does not contain any 'nones'
+- User input AZ20.tsv, however the substrate name column has been placed as the final column
+- User input AZ20.tsv, however the substrate name column has been placed in a random position
+- User input AZ20.tsv, however the p values column is missing
+- User input AZ20.tsv, however the p values column is in a random column
+- Test case scenario 9 = User input AZ20.tsv, however the fold values column is missing
+- Test case scenario 10 = User input AZ20.tsv, however the fold values column has been moved to a different column
+
+We have tried to graphically illustrate the results of such searches and show that in each of the different scenarios, the website does not crash, but the errors are captured in different ways. These error messages denote that there is something wrong with the input file in terms of order or columns of required information are missing. The user input testing also shows how missing CV columns can be accounted and the analysis completes without taking CVs into consideration. 
 
 
 

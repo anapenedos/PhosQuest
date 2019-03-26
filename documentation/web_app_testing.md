@@ -1,4 +1,4 @@
-### Web App Testing 
+# Web App Testing 
 
 This document displays a number of example searches that constitute our web app testing. 
 
@@ -107,7 +107,16 @@ Results for (5Z)-7-Oxozeaenol.
 ![Results for (5Z)-7-Oxozeaenol](images/web_app_testing/Case6b.png)
 
 
+**Summary** 
 
+In this short web app testing, we have tested the pipeline of searches for the six main methods of searches:-
+- Kinase with accession or ID
+- Kinase with name
+- Substrate with accession or ID
+- Substrate with name
+- Inhibitor with accession of ID
+- Inhibitor with name
 
+We have tried to graphically illustrate the results of such searches and demonstrate that all links and searches work as expected. In the future we hope to implement an even more comprehensive web app testing document. 
 
 
