@@ -35,47 +35,26 @@ The layout of the pie-chart is defined along with the parameters of colour, line
 
  The plot function is called and the data is generated as an image which can be saved within the html file.  
 
-ii) **Volcano plot**
+ii) **`user_data_volcano_plot()`**:
+* <b>Input</b>: full phospho-sites dataframe of <b>`table_sort_parse()` function. See: [user data analysis document](documentation/user_data_analysis.md)
+* Subset of the of the input dataframe, corresponding to phosphosites detected in both conditions, is passed to new variable.
+* Log2 fold changes and -log10(corrected p-values) of this dataframe is then passed to the <b>`plotly`</b> function <b>`scatter()`</b>.
+* Dimensions as follows: x-axis as the log2 fold change and the y-axis as the -log10(corrected p-value). 
+* CSS styling and interactivity options passed to the scatter object.
+* <b>Output</b>: html.
 
-The volcano plot function generates a scatter plot of Log2 fold changes vs -log10(corrected p-values) from the user data uploaded. The code utilizes the following column data:-
 
-- Substrate
-- Site
-- Control mean
-- Condition mean
-- Log2 fold change
-- -log10(corrected p-value)
-
-The volcano plot is created by initially invoking the go.Scatter function and specifically denoting the x-axis as the log2 fold change, and the y-axis as the -log10(corrected p-value). Specific parameters are set for the visualisation of the volcano plot. The plot function generates the image and this is uploaded into the respective html file.
-
-iii) **Processed Table**
-
-The processed table lists the substrate data provided from the user-upload file and a number of additional datasets. The table corresponds to hits, whose corrected p-values meet an error rate threshold of <=0.05 and have a CV of <=25%. If the original upload table did not include CV columns, then only the p-value threshold is applied.
-
-- Substrate (gene name)
-- Phosphosite ID
-- Substrate/isoform in DB (gene name)
-- Phosphosite in DB (ID)
-- Kinase in DB 
-- Fold control intensity over maximum
-- Fold condition intensity over maximum
-- Log2 fold change - condition over control 
-- Corrected p-value
-
-For the intensity columns, the original intensity values were transformed by dividing each substrate/site intensity by the maximum intensity of the row (both conditions). This scaling allowed the application of a heatmap to the cells, for visual clarification of intensity differences.
-
-Log2 fold changes were presented as barplots and are integrated into the column, that scale with the fold change values. When cells that are fully coloured, this denotes hits detected in only one condition.
-
-For sorting, the Log2 fold changes were used, giving a gradated ordering of hits as you scroll through the table.
-
-The code for the processed table is split into a number of functions where some are related to the drawing of the table, and some to the calculations required for the different columns. 
-
-**Style_df** - Function to style table of significant phospho sites and render to html.
-
-**colour_cond_uniques** - Sub-functions to ascertain unique phospho-hits, 
-    and differentially colour and coerce log2 fold change columns.
-    
-**styled_phospho_df** - Pass data frame fields to multiple style methods.        
+iii) **`style_df()`**:
+* <b>Input</b>: 
+<br><b>1</b>: significant phospho-site hits dataframe of <b>`table_sort_parse()`</b> function. See: [user data analysis document](documentation/user_data_analysis.md)
+<br><b>2</b>: kinase activities dataframe of <b>`kinase_analysis()`</b> function. See: [user data analysis document](documentation/user_data_analysis.md)
+* Subset of the significant phospho-site hits dataframe, corresponding to the following columns, is passed to a new variable.
+* Kinase activities dataframe not processed further.
+* CSS styles and auxiliary functions for passing extra styling to the table are defined.
+* Dataframes, CSS styling and auxiliary functions passed into the <b>`Pandas`</b> function <b>`style`</b>.
+* Over-layed heat-map applied to intensity columns (significant hits table)
+* Over-layed barplots applied to log2 fold change and kinase activity columns of significant phospho-site hits and kinase activity dataframes respectively.
+* <b>Output</b>: styled html tables.
 
 iv) **Kinase & Substrate Frequencies**
 
