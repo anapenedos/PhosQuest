@@ -75,10 +75,10 @@ def search_db():
                                            title="Kinase", results=results,
                                            style='table')
 
-        else:
+        else: # return results to be filled it "no results " text
            return render_template('search_results.html', title="Search results",
                         style=style)
-    else:
+    else: #return search template
         return render_template('search.html', title="Search", form=form)
 
 
