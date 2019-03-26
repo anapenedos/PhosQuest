@@ -71,7 +71,7 @@ def format_results(results, table):
         style = 'None'
 
     elif len(results) < 2: # if only 1 results display as list
-        results = query_to_list(results, table)
+        results = query_to_list(results, tabledict[table])
         style = 'list'
 
     else:
