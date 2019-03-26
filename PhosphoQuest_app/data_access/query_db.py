@@ -54,7 +54,7 @@ def query_switch(text,type, table, option):
     if type == "exact":
         results = searchexact(text, dbtable, field)
 
-        results,style = format_results(results,dbtable)
+        results,style = format_results(results,table)
         # #output different styles of results depending on number of results
         # if 'No results found' in results:
         #     style = 'None'
@@ -83,7 +83,7 @@ def query_switch(text,type, table, option):
     else:
 
         results = searchlike(text, dbtable, field)
-        results, style = format_results(results, dbtable)
+        results, style = format_results(results, table)
 
 
         # if 'No results found' in results:
