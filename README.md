@@ -128,9 +128,9 @@ The PhosphoQuest.db file should be located in a folder `database` located in the
 Further information regarding the script functions is available in the following md documents and in comments in the scripts themselves:
 
 * [Overview of PhosphoQuest Software structure](documentation/flask_application.md)
-* [Detail on analysis script functions ](documentation/user_data_analysis.md)
-* [Detail on plotting script functions ](documentation/plotting.md)
-* [Detail on query script functions ](****ADD LINK****)
+* [Detail on analysis script functions](documentation/user_data_analysis.md)
+* [Detail on plotting script functions](documentation/plotting.md)
+* [Detail on search and browse script functions](documentation/search_and_browse.md)
 * [Detail on database setup](documentation/database.md)
 
 ## About the developers
