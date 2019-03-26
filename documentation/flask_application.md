@@ -44,7 +44,7 @@ The Python modules' versions employed in this project are specified in the proje
 files.
 
 ## Application structure
-The PhosphoQuest application requires an Sqlite3 database (`PhosphoQuest.db`) situated in the folder level outside of the `PhosphoQuest_app` folder. Also in this location, `run.py` is a script which is run to activates the Flask application `PhosphoQuest_app`. `python3 run.py` or a similar command should activate the application (when all requirements are installed).
+The PhosphoQuest application requires an Sqlite3 database (`PhosphoQuest.db`) situated in the folder level outside of the `PhosphoQuest_app` folder. Also in this location, `application.py` is a script which is run to activates the Flask application `PhosphoQuest_app`. `python3 run.py` or a similar command should activate the application (when all requirements are installed).
 
 ### App Folder structure 
 
@@ -85,7 +85,7 @@ Additional folders within the `PhosphoQuest_App folder are:
 
 The interactions between the various scripts and the methods used in the PhosphoQuest_app is shown in the detailed documentation.
 
-* [Browse and Search documentation](****INSERT LINK HERE***)
+* [Browse and Search documentation](search_and_browse.md)
 * [User data analysis documentation](user_data_analysis.md)
 * [Result plotting documentation](plotting.md)
 * [Database documentation](database.md)
