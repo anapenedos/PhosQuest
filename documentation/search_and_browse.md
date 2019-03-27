@@ -4,7 +4,7 @@
 
 An overview of how the search scripts interact in the application is shown below.
 
-![Search script interaction](***ADD PNG LINK***)
+![Search script interaction](images/search_script_scheme.png)
 
 ## Search script information
 `routes.py` and `forms.py` within the `search` folder of the `PhosphoQuest_app` contain the Flask routes and Flask form class set up for display of the search page on the web-app.
@@ -17,10 +17,17 @@ The `query_switch` function within `query_db.py` which is located within the `da
 
 `search_results.html` is a generic template that is used to display many different types of search result outputs and is also used for displaying all of the browse result outputs. 
 
+
+### Limitations specific to search
+* Exact match search only returns results if the input text is **exactly the same as the entire field contents** of the searched database field (this may be unexpected for the user but avoids cases where for example accession number "123" is searched and accession number "123", "1234" and "12345" is returned). (Future development may be to add further exact match within string function)
+* Only able to search accession/ID field or Name (field in database that is searched for "name" depends on table for search)
+* Search does not understand logical and boolean inputs (e.g. search text inputs like `"DNA" AND "replication"`)
+
+
 ## Browse script overview
 An overview of how the search scripts interact in the application is shown below.
 
-![Browse script interaction](***ADD PNG LINK***)
+![Browse script interaction](images/browse_script_scheme.png)
 
 `routes.py` within the `browse` folder of the `PhosphoQuest_app` contain the Flask routes for display of the various browse pages on the web-app.
 
@@ -35,3 +42,13 @@ The `routes.py` functions deal with handling the different browse categories but
 The various `browse_XXXdetail` routes all perform queries and render pages for detail view of an individual item with tables of related information (eg. One kinase record with corresponding tables of related phosphosites and inhibitors). 
 
 All results from the browse queries are displayed using the generic `search_results.html` template which can handle multiple different types of outputs. 
+
+### Limitations specific to browse
+* No sub-categories have currently be applied for Inhibitors, can only browse all.
+* Only one subcategory applied for Substrates.
+* Chromosome location categories appear in semi-numerical order (ie. 10 appears before 1) due to the alphanumeric nature of the text
+
+## Limitations for both browse and search features
+* Unable to search or browse phosphosites table directly (but related results are obtained from searches on substrate or kinase)
+* Although further information is contained within the database (such as disease aliteration) it is not currently possible to view this data in any search or browse result page (for future development)
+* Output tables can be very large and are not currently sortable by field header (future development), data can be found within the page using the browser `find` function.
