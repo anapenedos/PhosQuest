@@ -50,6 +50,7 @@ All results from the browse queries are displayed using the generic `search_resu
 * No sub-categories have currently be applied for Inhibitors, can only browse all.
 * Only one subcategory applied for Substrates.
 * Chromosome location categories appear in semi-numerical order (ie. 10 appears before 1) due to the alphanumeric nature of the text
+* Passing of browse categories to functions is currently done by string split methods which could potentially result in errors if the character used to split is found within the database, this has not happened in testing, however the method for passing the information would be better changed to url arguments in a future update. 
 
 ## Limitations for both browse and search features
 * Unable to search or browse phosphosites table directly (but related results are obtained from searches on substrate or kinase)
