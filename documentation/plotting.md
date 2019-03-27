@@ -29,7 +29,7 @@ The script has some generic code such as:-
 * Generating pie-charts involves two steps. Initially the row headings of the dataframes are imported as objects and stored as a series. Specific values are then imported as a list. Any data not intended to be included in the analysis will be removed at this point. 
 * The layout of the pie-chart is defined along with the parameters of colour, line width and size. 
 * Variables and layout are then passed to the **`plotly`** function **`pie()`**.
-**Output**: 3 interactive pie-charts as html.  
+* **Output**: 3 interactive pie-charts as html.  
 
 4) **`style_df()`**: Styled tables for analysed user table and relative kinase activities.
 * <b>Input</b>: 
