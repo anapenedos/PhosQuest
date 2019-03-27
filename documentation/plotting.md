@@ -38,8 +38,8 @@ The script has some generic code such as:-
 * Variables and layout are then passed to the **`plotly`** function **`pie()`**.
 
 * **Output**: 3 interactive pie-charts as html.  
-
-4) **`style_df()`**: Styled tables for analysed user table and relative kinase activities.
+ 
+*4)* **`style_df()`**: Styled tables for analysed user table and relative kinase activities.
 * <b>Input</b>: 
 <br>**1**: significant phospho-site hits dataframe of **`table_sort_parse()`** function. 
 <br>**2**: kinase activities dataframe of **`kinase_analysis()`** function. 
@@ -51,7 +51,7 @@ The script has some generic code such as:-
 * Over-layed barplots applied to log2 fold change and kinase activity columns of significant phospho-site hits and kinase activity dataframes respectively.
 * **Output**: styled html tables.
 
-5) **`user_data_volcano_plot()`**: plot for displaying distribution of significantly differentially regulated phospho-sites.
+*5)* **`user_data_volcano_plot()`**: plot for displaying distribution of significantly differentially regulated phospho-sites.
 * **Input**: full phospho-sites dataframe of **`table_sort_parse()`** function. 
 * Subset of the of the input dataframe, corresponding to phosphosites detected in both conditions, is passed to new variable.
 * Log2 fold changes and -log10(corrected p-values) of this dataframe is then passed to the **`plotly`** function **`scatter()`**.
@@ -59,7 +59,7 @@ The script has some generic code such as:-
 * CSS styling and interactivity options passed to the scatter object.
 * **Output**: html.
 
-6) **`wordcloud_freq_charts()`**: Wordcloud and barplots for kinase and substrate/sites frequency analysis.
+*6)* **`wordcloud_freq_charts()`**: Wordcloud and barplots for kinase and substrate/sites frequency analysis.
 
 * **Input**: dataframes and wordlist outputs of **`kinase_analysis()`** function. 
 <br>**1**: dataframe 1 - Kinase frequency distribution analysis (top 30 most active kinases).
