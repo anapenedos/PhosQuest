@@ -21,6 +21,7 @@ The `query_switch` function within `query_db.py` which is located within the `da
 ### Limitations specific to search
 * Exact match search only returns results if the input text is **exactly the same as the entire field contents** of the searched database field (this may be unexpected for the user but avoids cases where for example accession number "123" is searched and accession number "123", "1234" and "12345" is returned). (Future development may be to add further exact match within string function)
 * Only able to search accession/ID field or Name (field in database that is searched for "name" depends on table for search)
+* Search does not recognise wild-cards eg "*"
 * Search does not understand logical and boolean inputs (e.g. search text inputs like `"DNA" AND "replication"`)
 
 
