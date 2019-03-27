@@ -273,7 +273,7 @@ def link_ud_to_db(user_data_frame):
                 else:
                     to_append = not_in_db
                 db_links[class_obj].append(to_append)
-
+        session.expire_all()
     session.close()
 
     # change key/column names
