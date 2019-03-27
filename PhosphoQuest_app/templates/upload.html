@@ -45,11 +45,18 @@
 
         </fieldset>
         <div class="form-group">
-            {{ form.submit(class="btn btn-info btn-lg") }}
+            {{ form.submit(class="btn btn-info btn-lg", onclick="func()") }}
         </div>
 
     </form>
-    <H4> Data analysis takes some time - Please wait</H4>
+        <p id="click">
+        </p>
+        <script>
+            function func() {
+            document.getElementById("click").innerHTML =
+            "<H3>Your data is being analysed - Please wait</H3> Your PhosphoQuest is in progress, data demons are being defeated and you will soon emerge victorious.";
+            }
+        </script>
 </div>
 
 {% endblock content %}
