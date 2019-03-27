@@ -19,8 +19,8 @@ The `query_switch` function within `query_db.py` which is located within the `da
 
 
 ### Limitations specific to search
-* Exact match search only returns results if the input text is **exactly the same as the entire field contents** of the searched database field (this may be unexpected for the user but avoids cases where for example accession number "123" is searched and accession number "123", "1234" and "12345" is returned). (Future development may be to add further exact match within string function)
-* Only able to search accession/ID field or Name (field in database that is searched for "name" depends on table for search)
+* Exact match search only returns results if the input text is **exactly the same as the entire field contents** of the searched database field. This may be unexpected for the user but avoids cases where for example accession number "123" is searched and accession number "123", "1234" and "12345" is returned).
+* Only able to search accession/ID field or Name (field in database that is searched for "Name" depends on table for search)
 * Search does not recognise wild-cards eg "*"
 * Search does not understand logical and boolean inputs (e.g. search text inputs like `"DNA" AND "replication"`)
 
@@ -32,7 +32,9 @@ An overview of how the search scripts interact in the application is shown below
 
 `routes.py` within the `browse` folder of the `PhosphoQuest_app` contain the Flask routes for display of the various browse pages on the web-app.
 
-The routes `browse_main` and `browse_cat`, render pages of browse category buttons. For some categories there is only one level of browse buttons to click (eg. inhibitors where the only browse option at present is to browse all inhibitors), for others there are several levels of buttons to click, eg *Kinases*, where they can be browsed by categories eg. *Kinase Family*, and then sub-categories eg.*Alpha-type protein kinase*. The categories *Kinase family* and *Kinase cellular location* are called from a dictionary of entries curated from the PhosphoQuest.db field for the respecive type. However the subcategory *Substrate-Chromosome location* is obtained from a database query for all chromosome locations and then parsed using a regular expression to show only distinct chromosome number (or X/Y) and p or q arms, eg (12p) to reduce the number of categories for adding to the browse buttons.
+The routes `browse_main` and `browse_cat`, render pages of browse category buttons. For some categories there is only one level of browse buttons to click (eg. inhibitors where the only browse option at present is to browse all inhibitors), for others there are several levels of buttons to click, eg *Kinases*, where they can be browsed by categories eg. *Kinase Family*, and then sub-categories eg. *Alpha-type protein kinase*.
+
+The categories *Kinase family* and *Kinase cellular location* are called from a fixed set of entries curated from a one off search of the PhosphoQuest.db field for the respective type and contained within a dictionary, the curation was necessary to avoid very high numbers of categories. However, the subcategory *Substrate-Chromosome location* is obtained from a live database query for all chromosome locations which is then parsed using a regular expression to show only distinct chromosome number (or X/Y) and p or q arms, eg (12p) to reduce the number of categories for adding to the browse buttons.
 
 Clicking any of the final level category or subcategory buttons triggers a "like" query run from the function `searchlike()` in `data_access/query_db`
 
@@ -48,6 +50,7 @@ All results from the browse queries are displayed using the generic `search_resu
 * No sub-categories have currently be applied for Inhibitors, can only browse all.
 * Only one subcategory applied for Substrates.
 * Chromosome location categories appear in semi-numerical order (ie. 10 appears before 1) due to the alphanumeric nature of the text
+* Passing of browse categories to functions is currently done by string split methods which could potentially result in errors if the character used to split is found within the database, this has not happened in testing, however the method for passing the information would be better changed to url arguments in a future update. 
 
 ## Limitations for both browse and search features
 * Unable to search or browse phosphosites table directly (but related results are obtained from searches on substrate or kinase)
