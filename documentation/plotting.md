@@ -43,9 +43,9 @@ The script has some generic code such as:-
 * <b>Input</b>: 
 <br>**1**: significant phospho-site hits dataframe of **`table_sort_parse()`** function. 
 <br>**2**: kinase activities dataframe of **`kinase_analysis()`** function. 
-* Subset of the significant phospho-site hits dataframe, corresponding to the following columns, is passed to a new variable.
+* Subset of the significant phospho-site hits dataframe is passed to a new variable.
 * Kinase activities dataframe not processed further.
-* CSS styles and auxiliary functions for passing extra styling to the table are defined.
+* CSS styles and auxiliary functions for passing extra styling to the tables are defined.
 * Dataframes, CSS styling and auxiliary functions passed into the **`Pandas`** function **`style`**.
 * Over-layed heat-map applied to intensity columns (significant hits table)
 * Over-layed barplots applied to log2 fold change and kinase activity columns of significant phospho-site hits and kinase activity dataframes respectively.
