@@ -23,7 +23,6 @@ The script has some generic code such as:-
 3) **`pie_chart()`**: pie-charts of "Metrics" data, summarising various distributions within the user data.
 * <b>Input</b>: 
 dataframe outputs **`data_extract()`** function. 
-
 <br>**i)**: dataframe 1 - % enrichment.
 <br>**ii)**: dataframe 2 - Phosphorylated AA residue frequency distribution.
 <br>**iii)**: dataframe 3 - Multiple phosphorylation frequency distribution. 
