@@ -20,10 +20,10 @@ The script has some generic code such as:-
 
 *2)* **`read_html_to_variable()`**: Function to open savedfile and read lines into variable.
 
-*3)* **`pie_chart()`**: pie-charts of "Metrics" data, summarising various distributions within the user data.
+*3)* **`pie_chart()`**: pie-charts of "Metrics" data, summarising various distributions within the user data. The generic function `pie_chart()` is called from the `userdata_display.plotall()` function on the  `phos_enrich_pie`, `phos_enrich`  and `multi_phos_res_freq` dataframes created in the `run_all()` function. Each `pie_chart()` function has four specific input variables:-
 
 * <b>Input</b>: 
-<br>**1**: A Pandas dataframe to be analysed. 
+<br>**1**: A pandas dataframe to be analysed (`phos_enrich_pie`, `phos_enrich` or `multi_phos_res_freq`) 
 <br>**2**: A header for the respective column in string format.
 <br>**3**: A designated name for the pie-chart. 
 <br>**4**: In integer denoting if a specifc row is to be removed from the analysis.
@@ -43,9 +43,9 @@ The script has some generic code such as:-
 * <b>Input</b>: 
 <br>**1**: significant phospho-site hits dataframe of **`table_sort_parse()`** function. 
 <br>**2**: kinase activities dataframe of **`kinase_analysis()`** function. 
-* Subset of the significant phospho-site hits dataframe, corresponding to the following columns, is passed to a new variable.
+* Subset of the significant phospho-site hits dataframe is passed to a new variable.
 * Kinase activities dataframe not processed further.
-* CSS styles and auxiliary functions for passing extra styling to the table are defined.
+* CSS styles and auxiliary functions for passing extra styling to the tables are defined.
 * Dataframes, CSS styling and auxiliary functions passed into the **`Pandas`** function **`style`**.
 * Over-layed heat-map applied to intensity columns (significant hits table)
 * Over-layed barplots applied to log2 fold change and kinase activity columns of significant phospho-site hits and kinase activity dataframes respectively.
