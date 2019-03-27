@@ -20,9 +20,9 @@ The script has some generic code such as:-
 
 2) **`read_html_to_variable()`**: Function to open savedfile and read lines into variable.
 
-3) **`pie_chart()`**: piecharts of "Metrics" data, summarising various distributions within the user data.
+3) **`pie_chart()`**: pie-charts of "Metrics" data, summarising various distributions within the user data.
 
-**Input**: dataframe outputs **`data_extract()`** function. See: [user data analysis document](documentation/user_data_analysis.md)
+**Input**: dataframe outputs **`data_extract()`** function. 
 <br>**1**: dataframe 1 - % enrichment.
 <br>**2**: dataframe 2 - Phosphorylated AA residue frequency distribution.
 <br>**3**: dataframe 3 - Multiple phosphorylation frequency distribution. 
@@ -33,8 +33,8 @@ The script has some generic code such as:-
 
 4) **`style_df()`**: Styled tables for analysed user table and relative kinase activities.
 * <b>Input</b>: 
-<br>**1**: significant phospho-site hits dataframe of **`table_sort_parse()`** function. See: [user data analysis document](documentation/user_data_analysis.md)
-<br>**2**: kinase activities dataframe of **`kinase_analysis()`** function. See: [user data analysis document](documentation/user_data_analysis.md)
+<br>**1**: significant phospho-site hits dataframe of **`table_sort_parse()`** function. 
+<br>**2**: kinase activities dataframe of **`kinase_analysis()`** function. 
 * Subset of the significant phospho-site hits dataframe, corresponding to the following columns, is passed to a new variable.
 * Kinase activities dataframe not processed further.
 * CSS styles and auxiliary functions for passing extra styling to the table are defined.
@@ -44,7 +44,7 @@ The script has some generic code such as:-
 * **Output**: styled html tables.
 
 5) **`user_data_volcano_plot()`**: plot for displaying distribution of significantly differentially regulated phospho-sites.
-* **Input**: full phospho-sites dataframe of **`table_sort_parse()`** function. See: [user data analysis document](documentation/user_data_analysis.md)
+* **Input**: full phospho-sites dataframe of **`table_sort_parse()`** function. 
 * Subset of the of the input dataframe, corresponding to phosphosites detected in both conditions, is passed to new variable.
 * Log2 fold changes and -log10(corrected p-values) of this dataframe is then passed to the **`plotly`** function **`scatter()`**.
 * Dimensions as follows: x-axis as the log2 fold change and the y-axis as the -log10(corrected p-value). 
@@ -53,7 +53,7 @@ The script has some generic code such as:-
 
 6) **`wordcloud_freq_charts()`**: Wordcloud and barplots for kinase and substrate/sites frequency analysis.
 
-* **Input**: dataframes and wordlist outputs of **`kinase_analysis()`** function. See: [user data analysis document](documentation/user_data_analysis.md)
+* **Input**: dataframes and wordlist outputs of **`kinase_analysis()`** function. 
 <br>**1**: dataframe 1 - Kinase frequency distribution analysis (top 30 most active kinases).
 <br>**2**: dataframe 2 - Substrate/site frequency distribution analysis (top 30 most targeted substrate/sites).
 <br>**3**: word list 1 - kinases (top 30 most active kinases).
