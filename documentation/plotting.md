@@ -29,7 +29,6 @@ The script has some generic code such as:-
 <br>**4**: In integer denoting if a specifc row is to be removed from the analysis.
 
 The output of this function produces three pie-charts:-
-
 <br>**i)**: dataframe 1 - % enrichment.
 <br>**ii)**: dataframe 2 - Phosphorylated AA residue frequency distribution.
 <br>**iii)**: dataframe 3 - Multiple phosphorylation frequency distribution. 
