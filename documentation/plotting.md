@@ -21,11 +21,12 @@ The script has some generic code such as:-
 2) **`read_html_to_variable()`**: Function to open savedfile and read lines into variable.
 
 3) **`pie_chart()`**: pie-charts of "Metrics" data, summarising various distributions within the user data.
+* <b>Input</b>: 
+dataframe outputs **`data_extract()`** function. 
 
-**Input**: dataframe outputs **`data_extract()`** function. 
-<br>**1**: dataframe 1 - % enrichment.
-<br>**2**: dataframe 2 - Phosphorylated AA residue frequency distribution.
-<br>**3**: dataframe 3 - Multiple phosphorylation frequency distribution. 
+<br>**i)**: dataframe 1 - % enrichment.
+<br>**ii)**: dataframe 2 - Phosphorylated AA residue frequency distribution.
+<br>**iii)**: dataframe 3 - Multiple phosphorylation frequency distribution. 
 * Generating pie-charts involves two steps. Initially the row headings of the dataframes are imported as objects and stored as a series. Specific values are then imported as a list. Any data not intended to be included in the analysis will be removed at this point. 
 * The layout of the pie-chart is defined along with the parameters of colour, line width and size. 
 * Variables and layout are then passed to the **`plotly`** function **`pie()`**.
