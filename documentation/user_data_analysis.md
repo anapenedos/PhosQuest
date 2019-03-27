@@ -23,21 +23,19 @@ Data takes the form of a table comprising one identifier column (mixed text & nu
 
 **1. `user_data_check()`**: *Data table structure check and basic filtering.*
 
-**Input**: user data table.
+* **Input**: user data table.
 * Implements an error check in case of issues such as missorting of the original table. The function calculates fold changes based on intensity column inputs and then checks if the values match the original uploaded values. Boolean values returned, are used to determine if the table should be passed for later processing or return an error message.
 * Determines the format of the input table by checking how many columns are present. If CV columns missing, these columns are appended with entry values of 1. Summing these "mock" CV columns gives a value equal to the length of the dataframe. This is utilised at a later stage for filtering the data. See function: **`table_sort_parse()`**.
 * Parse data entries that have at least 1 quantitation value.
-
-**Output**: filtered dataframe or error message.
+* **Output**: filtered dataframe or error message.
 
 **2. `create_filtered_dfs()`**:  *Dataframe analysis and filtering.*
 
-**Input**: dataframe output of **`user_data_check()`** function.
+* **Input**: dataframe output of **`user_data_check()`** function.
 * Splits ID entry into separate gene name and site columns.
 * Performs a series of calculations, transformations and logical checks. This analysis is appended as extra columns in the table.
 * Filters the dataframe to include only phospho-site entries.
-
-**Output**: 
+* **Output**: 
 <br>**1**: analysed dataframe of phospho-hits only. 
 <br>**2**: dataframe of all entries.
 
