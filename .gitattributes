@@ -4,6 +4,6 @@
 /deprecated_code export-ignore
 /documentation export-ignore
 /user_data export-ignore
-README.md
+/README.md
 .gitattributes export-ignore
 .gitignore export-ignore
