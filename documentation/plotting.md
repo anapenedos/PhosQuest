@@ -10,7 +10,7 @@
 
 This plotting documentation outlines the methods used to analyse user input data once uploaded via the "User data analysis" section on the main website. 
 
-The plotting functionality utilizes a number of python modules. The **`Pandas`** module was utilized to allow handling of data structures. **`Plotly`** and a number of related modules and libraries were utilized to generate volcano plots and pie-charts. **`Matplotlib`** was also utilized to help plot the most active kinase list. The script also utilizes some generic imports such as the session module from flask and the timeframe module from timeframe which are utilized within the script.  
+The plotting functionality utilizes a number of python modules. The **`Pandas`** module was utilized to allow handling of data structures. **`Plotly`** and a number of related modules and libraries were utilized to generate volcano plots and pie charts. **`Matplotlib`** was also utilized to help plot the most active kinase list. The script also utilizes some generic imports such as the session module from flask and the timeframe module from timeframe which are utilized within the script.  
 
 ### <u>*Functions*</u>:
 
@@ -20,24 +20,24 @@ The script has some generic code such as:-
 
 *2)* **`read_html_to_variable()`**: Function to open savedfile and read lines into variable.
 
-*3)* **`pie_chart()`**: pie-charts of "Metrics" data, summarising various distributions within the user data. The generic function **`pie_chart()`** is called from the **`userdata_display.plotall()`** function on the **`phos_enrich_pie`**, **`phos_enrich`** and **`multi_phos_res_freq`** dataframes created in the **`run_all()`** function. Each **`pie_chart()`** function has four specific input variables:-
+*3)* **`pie_chart()`**: pie charts of "Metrics" data, summarising various distributions within the user data. The generic function **`pie_chart()`** is called from the **`userdata_display.plotall()`** function on the **`phos_enrich_pie`**, **`phos_enrich`** and **`multi_phos_res_freq`** dataframes created in the **`run_all()`** function. Each **`pie_chart()`** function has four specific input variables:-
 
 * <b>Input</b>: 
 <br>**1**: A pandas dataframe to be analysed (**`phos_enrich_pie`**, **`phos_enrich`** or **`multi_phos_res_freq`**) 
 <br>**2**: A header for the respective column in string format.
-<br>**3**: A designated name for the pie-chart. 
+<br>**3**: A designated name for the pie chart. 
 <br>**4**: In integer denoting if a specifc row is to be removed from the analysis.
 
-* The output of this function produces three pie-charts:-
-<br>**i)**: dataframe 1 - % enrichment.
-<br>**ii)**: dataframe 2 - Phosphorylated AA residue frequency distribution.
-<br>**iii)**: dataframe 3 - Multiple phosphorylation frequency distribution. 
+* The output of this function produces three pie charts:-
+<br>**i)**: % enrichment.
+<br>**ii)**: Phosphorylated AA residue frequency distribution.
+<br>**iii)**: Multiple phosphorylation frequency distribution. 
 
-* Generating pie-charts involves two steps. Initially the row headings of the dataframes are imported as objects and stored as a series. Specific values are then imported as a list. Any data not intended to be included in the analysis will be removed at this point. 
-* The layout of the pie-chart is defined along with the parameters of colour, line width and size. 
+* Generating pie charts involves two steps. Initially the row headings of the dataframes are imported as objects and stored as a series. Specific values are then imported as a list. Any data not intended to be included in the analysis will be removed at this point. 
+* The layout of the pie chart is defined along with the parameters of colour, line width and size. 
 * Variables and layout are then passed to the **`plotly`** function **`pie()`**.
 
-* **Output**: 3 interactive pie-charts as html.  
+* **Output**: 3 interactive pie charts as html.  
  
 *4)* **`style_df()`**: Styled tables for analysed user table and relative kinase activities.
 * <b>Input</b>: 
