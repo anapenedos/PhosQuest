@@ -78,7 +78,7 @@ Additional folders within the `PhosphoQuest_App folder are:
 ### An overview diagram of the PhosphoQuest app structure is shown below.
 
 
-![App structure](diagrams/PhosphoQuestApp_overview.png)
+![App structure](images/PhosphoQuestApp_overview.png)
 
 
 ### Script interactions
