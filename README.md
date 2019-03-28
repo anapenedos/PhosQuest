@@ -25,7 +25,7 @@
 ## General information for Repository Users
 
 ### Website functionality - Basic overview
-PhosphoQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite and disease information. 
+PhosphoQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite information. 
 
 The application also provides an area for users to upload a tsv or csv file of experimental mass-spectrometry data and receive outputs showing sites for which phosphorylation was significantly up- or down-regulated, and other useful analysis. The analysed data can be viewed on the website and the complete analysis of all phosphosites in the data can be downloaded as a CSV file.
 
@@ -147,6 +147,7 @@ We are a group of part-time MSc Bioinformatics students at Queen Mary University
 ### Areas for further development
 * Further categories added to browse and search functionality; 
 * Update design of browse categories pages;
+* Add links to DB disease information;
 * Use url variables for passing browse and search variables back to query functions instead of string-split method;
 * Utilise browser cookies for further functionality with user data upload;
 * Add further functionality to upload page to show data analysis is happening (spinner or progress bar);
