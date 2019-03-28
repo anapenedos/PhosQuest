@@ -275,11 +275,11 @@ def link_ud_to_db(user_data_frame):
             # if there are no records in any of the sets containing unique
             # records replace the empty set with 'not in DB'
             db_links['Substrate/Isoform in DB (gene name)'].append(
-                unique_subs if len(unique_subs) != 0 else not_in_db)
+                unique_subs if unique_subs else not_in_db)
             db_links['Phosphosite in DB (ID)'].append(
-                unique_phos if len(unique_phos) != 0 else not_in_db)
+                unique_phos if unique_phos else not_in_db)
             db_links['Kinase in DB\n(gene name)'].append(
-                unique_kin if len(unique_kin) != 0 else not_in_db)
+                unique_kin if unique_kin else not_in_db)
 
         # remove all objects found in loop from session to reduce memory usage
         session.expire_all()
@@ -288,103 +288,18 @@ def link_ud_to_db(user_data_frame):
     return db_links, kin_to_ud
 
 
-"""
-1. ud df
-2. from gene col, get subs in db
-"""
 if __name__ == "__main__":
-    # standard imports
-    import os
-
-    from PhosphoQuest_app.service_scripts.user_data_crunch \
-        import user_data_check
-    from PhosphoQuest_app.service_scripts.userdata_display import run_all
     from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-    from sqlalchemy.orm import Load
     import pandas as pd
+    from datetime import datetime, timedelta
 
-    # ad = run_all(user_data_check(os.path.join('user_data',
-    #                                           'az20.tsv')))
-    #
-    # sty = ad['full_sty_sort']
-    # styno = ad['parsed_sty_sort']
-    # styno.to_csv('styno.csv')
-    styno = pd.read_csv('styno.csv')
+    for i in range(5):
+        start_time = datetime.now()
+        styno = pd.read_csv('styno.csv')
+        d1, d2 = link_ud_to_db(styno)
+        end_time = datetime.now()
+        elapsed_time = end_time - start_time
+        print(elapsed_time)
+    print(d1)
+    print(d2)
 
-    def subs_in_db(gene_name):
-        session = create_sqlsession()
-        query_res = session.query(Substrate.subs_gene, Substrate.subs_accession)\
-                           .filter_by(subs_gene=gene_name).all()
-        session.close()
-        if len(query_res) == 0:
-            result = 'not in DB'
-        else:
-            result = query_res
-        return result
-
-    def phos_in_db(subs_list, residue):
-
-        session = create_sqlsession()
-
-        phos_set = set()
-        kin_set = set()
-        if subs_list != 'not in DB':
-            for substrate in subs_list:
-                subs_acc = substrate[1]  # accession is in position 1 of tuple
-                query_res = session.query(Phosphosite.phos_modified_residue,
-                                          Phosphosite.phos_group_id,
-                                          Phosphosite.phos_in_substrate,
-                                          Phosphosite.phosphorylated_by)\
-                                   .filter(and_(Phosphosite. phos_in_substrate == subs_acc,
-                                                Phosphosite.phos_modified_residue == residue)).all()
-                for record in query_res:
-                    phos_set.add((record[0], record[1]))  # (residue, grp_id)
-                    record_kinases = record[4]
-                    for kinase in record_kinases:
-                        kin_set.add(kinase)
-            session.close()
-            result = (phos_set, kin_set)
-        else:
-            result = 'not in DB'
-        return result
-
-
-    fields = [Substrate.subs_gene, Substrate.subs_accession]
-    session = create_sqlsession()
-    query = session.query(*fields)\
-        .filter_by(subs_gene='NEDD4').all()
-    print(query)
-    print(subs_in_db('NEDD4'))
-    # p_res = session.query(Phosphosite.phos_modified_residue,
-    #                           Phosphosite.phos_group_id,
-    #                           Phosphosite.phos_in_substrate,
-    #                           Phosphosite.phosphorylated_by) \
-    #     .filter(and_(Phosphosite.phos_in_substrate == 'P46934-4',
-    #                  Phosphosite.phos_modified_residue == 'S743')).all()
-    # for phos in p_res:
-    #     print(phos)
-    q1 = session.query(Substrate.subs_gene, Substrate.subs_accession,
-                          Phosphosite.phos_modified_residue,
-                          Phosphosite.phos_group_id,
-                          Kinase.kin_gene, Kinase.kin_accession) \
-        .outerjoin(Phosphosite) \
-        .outerjoin(kinases_phosphosites_table) \
-        .outerjoin(Kinase).filter(Substrate.subs_gene == 'NEDD4')
-    q1r = q1.all()
-    q2 = q1.filter(Phosphosite.phos_modified_residue == 'S743')
-    q2r = q2.all()
-    session.close()
-    print(q1r)
-    print(q2r)
-    print(len(q1r))
-    # print(phos_in_db([('NEDD4', 'P46934'), ('NEDD4', 'P46934-3'), ('NEDD4', 'P46934-4')], 'S743'))
-    # query = session.query(Substrate, Phosphosite, Kinase)\
-    #         .outerjoin(Phosphosite)\
-    #         .outerjoin(kinases_phosphosites_table)\
-    #         .outerjoin(Kinase)\
-    #         .options(Load(Substrate).load_only("subs_gene"),
-    #                  Load(Phosphosite).load_only("phos_modified_residue"),
-    #                  Load(Kinase).load_only("kin_gene"))
-    # subs_phos_kin_subset_df = pd.read_sql(subs_phos_kin_query.\
-    #                                      statement,\
-    #                                      subs_phos_kin_query.session.bind)

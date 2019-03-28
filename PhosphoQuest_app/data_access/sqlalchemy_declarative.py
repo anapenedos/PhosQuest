@@ -13,15 +13,17 @@ kinases_inhibitors_table = Table(
     Column('kin_accession', String,
            ForeignKey('kinases.kin_accession'), primary_key=True),
     Column('inhib_pubchem_cid', Integer,
-           ForeignKey('inhibitors.inhib_pubchem_cid'), primary_key=True)
+           ForeignKey('inhibitors.inhib_pubchem_cid'),
+           primary_key=True, index=True)
 )
 
 kinases_phosphosites_table = Table(
     'kinases_phosphosites', Base.metadata,
     Column('kin_accession', String,
            ForeignKey('kinases.kin_accession'), primary_key=True),
-    Column('phos_group_id', String,
-           ForeignKey('phosphosites.phos_group_id'), primary_key=True)
+    Column('phos_group_id', Integer,
+           ForeignKey('phosphosites.phos_group_id'),
+           primary_key=True, index=True)
 )
 
 
