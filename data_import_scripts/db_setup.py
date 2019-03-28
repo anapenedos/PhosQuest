@@ -59,7 +59,6 @@ Base.metadata.create_all(engine)
 # =========================================================================== #
 
 ### Call functions for data files (in db_source_data) import
-# TODO update datasets
 # Human kinase/substrate db as data frame.
 kin_sub_human = kin_sub_import()
 
