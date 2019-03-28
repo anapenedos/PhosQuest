@@ -17,7 +17,7 @@ The overall aim of the script is to perform a sequential series of operations th
 These steps are handled by 6 inter-linked functions that have been divided into different data handling categories.
 
 ### <u>*User data*</u>:
-Data takes the form of a table comprising one identifier column (mixed text & numerical fields) and six integer/float columns for a total of seven categories, with the number of records varying from 1000's to 10000's of rows. The script is written to handle a table of these dimensions, however some flexibility is afforded the user. See function: **`user_data_check()`**.   
+Data takes the form of a table comprising one identifier column (mixed text & numerical fields) and six integer/float columns for a total of seven categories, with the number of records varying from 1000's to 10000's of rows. The script is written to handle a table of these dimensions, however some flexibility is afforded to the user. See function: **`user_data_check()`**.   
 
 ### <u>*Functions*</u>:
 
