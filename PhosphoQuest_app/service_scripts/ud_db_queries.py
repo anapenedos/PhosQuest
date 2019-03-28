@@ -9,26 +9,40 @@ from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
 from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 
 
-def records_from_join_res(list_of_tuples):
+def distinct_records(query_res):
     """
     Given a list of tuples from the result of a sqlalchemy join query returns
-    a dictionary mapping a class to a set of instances of that class.
+    unique record info for the substrates, phosphosites and kinases in the query
+    result.
 
-    :param list_of_tuples: sqlalchemy join query result (list of tuples)
-    :return: dictionary of classes to unique instances set (dict)
-             {Class: {inst1, inst2}}
+    :param query_res: sqlalchemy join query result (list of tuples)
+    :return: three sets of unique substrate, phosphosite and kinase records'
+             info (unique_subs, unique_phos, unique_kin sets)
     """
-    class_instances = {}  # {Class: {inst1, inst2}}
-    # iterate through each substrate/phosphosite/kinase
-    for instances_tuple in list_of_tuples:
-        # iterate through each instance inthe tuple
-        for instance in instances_tuple:
-            if instance:
-                # add a dict key for each type of class
-                class_obj = type(instance)
-                cls_set = class_instances.setdefault(class_obj, set())
-                cls_set.add(instance)
-    return class_instances
+    # collect distinct substrate , phosphosite and kinase record info
+    # from all records retrieved in the query
+    unique_subs = set()
+    unique_phos = set()
+    unique_kin = set()
+    for record in query_res:
+        subs_info = (record[0], record[1])  # (subs_gene, subs_acc)
+        unique_subs.add(subs_info)
+        # The record info tuples retrieved when the phosphosite is not
+        # found in the DB is len 2, while those resulting from the
+        # 3-table join are len 6
+        if len(record) > 2:
+            if record[2]:  # only add if not None
+                # collect distinct phosphosite records from record info
+                # retrieved in join query
+                phos_info = (record[2], record[3])  # (phos_rsd, phos_id)
+                unique_phos.add(phos_info)
+            if record[4]:  # only add if not None
+                # collect distinct kinase record info from records
+                # retrieved in join query
+                kin_info = (record[4], record[5])  # (kin_gene, kin_acc)
+                unique_kin.add(kin_info)
+
+    return unique_subs, unique_phos, unique_kin
 
 
 def extract_record_info(instances, info_needed_tuple):
@@ -56,9 +70,10 @@ def create_db_strs(txt_tuple_iter):
     From an iterable containing DB info for records in DB or 'not in DB' when no
     records were found, return info formatted as string.
 
-    :param txt_tuple_iter: an iterable of tuples where the 0 element of the
-                           tuple is the gene/name and element 1 is the
-                           accession/ID number of the instance.
+    :param txt_tuple_iter: an iterable of strings and tuples where the 0 element
+                           of the tuple is the gene/name and element 1 is the
+                           accession/ID number of the instance
+                           (iter of tuples and strs)
     :return: string containing info to each entry (str)
     """
     # a line can be [('Q8WYB5',)] or 'not in DB' or
@@ -119,9 +134,10 @@ def create_db_links(txt_tuple_iter, detail_page):
     instances were found, returns info formatted as url links to detail pages of
     the records.
 
-    :param txt_tuple_iter: an iterable of tuples where the 0 element of the
-                          tuple is the text to display in the link and element
-                          1 is the key value to build the link (iter of tuples)
+    :param txt_tuple_iter: an iterable of strings and tuples where the 0 element
+                          of the tuple is the text to display in the link and
+                          element 1 is the key value to build the link
+                          (iter of tuples and strs)
     :detail_page: the details page relevant to the entries being processed (str)
     :return: string containing links to each entry (str)
     """
@@ -175,18 +191,18 @@ def link_ud_to_db(user_data_frame):
     :param user_data_frame: a data frame containing the significant hits in the
                             user csv file (pandas df)
     :return: data frame column containing user sites > db entry / kinases
-             data frame with individual kinases >
+             data frame with individual kinases > gene / site
     """
     # open sqlite session
     session = create_sqlsession()
 
     # create dictionary to link user phosphosites to db entries
-    # 'Substrate Entry in DB': [{'ACC1'}, 'not in DB', ...] accessions are str
-    # 'Phosphosite Entry in DB': [{id1}, 'not in DB', ...] ids are integers
-    # 'Associated Kinases': [{'ACCa', 'ACCb'}, 'not in DB', ...]
-    db_links = {Substrate: [],
-                Phosphosite: [],
-                Kinase: []}
+    # 'Substrate Entry in DB': [{('gene1', 'ACC1'),...}, 'not in DB', ...]
+    # 'Phosphosite Entry in DB': [{('rsd1', id1),...}, 'not in DB', ...] ids are integers
+    # 'Associated Kinases': [{('gene1', 'ACC1'),...}, 'not in DB', ...]
+    db_links = {'Substrate/Isoform in DB (gene name)': [],
+                'Phosphosite in DB (ID)': [],
+                'Kinase in DB\n(gene name)': []}
 
     # create dictionary for kinase-centric analysis data frame
     # 'KIN_ACC': {('SUB_GENE', 'RSD'),...}
@@ -201,13 +217,13 @@ def link_ud_to_db(user_data_frame):
     # DB
     # Kinases are associated with phosphosites, there may be no kinases for a
     # site
-    query = session.query(Substrate, Phosphosite, Kinase)\
+    query = session.query(Substrate.subs_gene, Substrate.subs_accession,
+                          Phosphosite.phos_modified_residue,
+                          Phosphosite.phos_group_id,
+                          Kinase.kin_gene, Kinase.kin_accession)\
         .outerjoin(Phosphosite)\
         .outerjoin(kinases_phosphosites_table)\
-        .outerjoin(Kinase)\
-        .options(Load(Substrate).load_only("subs_gene"),
-                 Load(Phosphosite).load_only("phos_modified_residue"),
-                 Load(Kinase).load_only("kin_gene"))
+        .outerjoin(Kinase)
 
     # iterate through each line of the user data frame
     for index, row in user_data_frame.iterrows():
@@ -225,60 +241,57 @@ def link_ud_to_db(user_data_frame):
         # each substrate/phosphosite/kinase tuple in query_res
         query_res = query.filter(and_(
             Substrate.subs_gene == s_gene,
-            or_(Phosphosite.phos_modified_residue == residue,
-                Phosphosite.phos_modified_residue == None))).all()
-        # if the substrate is not in the DB, 'not in DB' is added to the three
-        # columns in db_links dict
-        if len(query_res) == 0:
-            for key in db_links:
-                db_links[key].append(not_in_db)
-        else:
-            # dict of classes to unique instances set from the query results
-            # {Class: {inst1, inst2}}
-            class_records = records_from_join_res(query_res)
+            Phosphosite.phos_modified_residue == residue)).all()
 
-            # add relevant instance information to dictionaries
-            record_info = {}
-            # substrates (always present)
-            record_info[Substrate] = extract_record_info(
-                class_records[Substrate], ('subs_gene', 'subs_accession'))
-            # if phosphosites were found add info to substrate-centric dict
-            if Phosphosite in class_records:
-                record_info[Phosphosite] = extract_record_info(
-                    class_records[Phosphosite], ('phos_modified_residue',
-                                                 'phos_group_id'))
-            # if kinases were found add the kinase gene(s) to both
-            # substrate-centric and kinase-centric dictionaries
-            if Kinase in class_records:
-                record_info[Kinase] = extract_record_info(
-                    class_records[Kinase], ('kin_gene', 'kin_accession'))
-                for kin in record_info[Kinase]:
-                    kinase_gene = kin[0]
-                    new_set = kin_to_ud.setdefault(kinase_gene, set())
-                    new_set.add((s_gene, residue))
+        # query_res can be [], [one], [several, records]
+        # where each record is a tuple
+        # (gene, accession, residue, grp id, kin gene, kin acc)
+
+        # if query_res is [] because the phosphosite is not in DB, we still want
+        # the substrate info available in the DB
+        if len(query_res) == 0:
+            subs_only = session.query(
+                Substrate.subs_gene, Substrate.subs_accession)\
+                .filter(Substrate.subs_gene == s_gene).all()
+            query_res = subs_only
+
+        # if the substrate is not in the DB 'not in DB' is added to the
+        # three entries/columns in db_links dict
+        if len(query_res) == 0:
+            for col in db_links:
+                db_links[col].append(not_in_db)
+
+        else:
+            unique_subs, unique_phos, unique_kin = distinct_records(query_res)
+
+            # if kinases were found in the query, map kinase genes to the user
+            # gene and residue
+            for kin in unique_kin:
+                kinase_gene = kin[0]
+                new_set = kin_to_ud.setdefault(kinase_gene, set())
+                new_set.add((s_gene, residue))
 
             # append the new values to the columns dict db_links
-            for class_obj in db_links:
-                if class_obj in record_info:
-                    to_append = record_info[class_obj]
-                else:
-                    to_append = not_in_db
-                db_links[class_obj].append(to_append)
+            # if there are no records in any of the sets containing unique
+            # records replace the empty set with 'not in DB'
+            db_links['Substrate/Isoform in DB (gene name)'].append(
+                unique_subs if len(unique_subs) != 0 else not_in_db)
+            db_links['Phosphosite in DB (ID)'].append(
+                unique_phos if len(unique_phos) != 0 else not_in_db)
+            db_links['Kinase in DB\n(gene name)'].append(
+                unique_kin if len(unique_kin) != 0 else not_in_db)
+
         # remove all objects found in loop from session to reduce memory usage
         session.expire_all()
     session.close()
 
-    # change key/column names
-    db_links['Substrate/Isoform in DB (gene name)'] = \
-        db_links.pop(Substrate)
-    db_links['Phosphosite in DB (ID)'] = \
-        db_links.pop(Phosphosite)
-    db_links['Kinase in DB\n(gene name)'] = \
-        db_links.pop(Kinase)
-
     return db_links, kin_to_ud
 
 
+"""
+1. ud df
+2. from gene col, get subs in db
+"""
 if __name__ == "__main__":
     # standard imports
     import os
@@ -290,15 +303,81 @@ if __name__ == "__main__":
     from sqlalchemy.orm import Load
     import pandas as pd
 
-    ad = run_all(user_data_check(os.path.join('user_data',
-                                              'az20.tsv')))
+    # ad = run_all(user_data_check(os.path.join('user_data',
+    #                                           'az20.tsv')))
+    #
+    # sty = ad['full_sty_sort']
+    # styno = ad['parsed_sty_sort']
+    # styno.to_csv('styno.csv')
+    styno = pd.read_csv('styno.csv')
 
-    sty = ad['full_sty_sort']
-    styno = ad['parsed_sty_sort']
+    def subs_in_db(gene_name):
+        session = create_sqlsession()
+        query_res = session.query(Substrate.subs_gene, Substrate.subs_accession)\
+                           .filter_by(subs_gene=gene_name).all()
+        session.close()
+        if len(query_res) == 0:
+            result = 'not in DB'
+        else:
+            result = query_res
+        return result
 
-    # sites_dict, kin_dict = link_ud_to_db(styno)
+    def phos_in_db(subs_list, residue):
 
-    # session = create_sqlsession(session_type='pandas_sql')
+        session = create_sqlsession()
+
+        phos_set = set()
+        kin_set = set()
+        if subs_list != 'not in DB':
+            for substrate in subs_list:
+                subs_acc = substrate[1]  # accession is in position 1 of tuple
+                query_res = session.query(Phosphosite.phos_modified_residue,
+                                          Phosphosite.phos_group_id,
+                                          Phosphosite.phos_in_substrate,
+                                          Phosphosite.phosphorylated_by)\
+                                   .filter(and_(Phosphosite. phos_in_substrate == subs_acc,
+                                                Phosphosite.phos_modified_residue == residue)).all()
+                for record in query_res:
+                    phos_set.add((record[0], record[1]))  # (residue, grp_id)
+                    record_kinases = record[4]
+                    for kinase in record_kinases:
+                        kin_set.add(kinase)
+            session.close()
+            result = (phos_set, kin_set)
+        else:
+            result = 'not in DB'
+        return result
+
+
+    fields = [Substrate.subs_gene, Substrate.subs_accession]
+    session = create_sqlsession()
+    query = session.query(*fields)\
+        .filter_by(subs_gene='NEDD4').all()
+    print(query)
+    print(subs_in_db('NEDD4'))
+    # p_res = session.query(Phosphosite.phos_modified_residue,
+    #                           Phosphosite.phos_group_id,
+    #                           Phosphosite.phos_in_substrate,
+    #                           Phosphosite.phosphorylated_by) \
+    #     .filter(and_(Phosphosite.phos_in_substrate == 'P46934-4',
+    #                  Phosphosite.phos_modified_residue == 'S743')).all()
+    # for phos in p_res:
+    #     print(phos)
+    q1 = session.query(Substrate.subs_gene, Substrate.subs_accession,
+                          Phosphosite.phos_modified_residue,
+                          Phosphosite.phos_group_id,
+                          Kinase.kin_gene, Kinase.kin_accession) \
+        .outerjoin(Phosphosite) \
+        .outerjoin(kinases_phosphosites_table) \
+        .outerjoin(Kinase).filter(Substrate.subs_gene == 'NEDD4')
+    q1r = q1.all()
+    q2 = q1.filter(Phosphosite.phos_modified_residue == 'S743')
+    q2r = q2.all()
+    session.close()
+    print(q1r)
+    print(q2r)
+    print(len(q1r))
+    # print(phos_in_db([('NEDD4', 'P46934'), ('NEDD4', 'P46934-3'), ('NEDD4', 'P46934-4')], 'S743'))
     # query = session.query(Substrate, Phosphosite, Kinase)\
     #         .outerjoin(Phosphosite)\
     #         .outerjoin(kinases_phosphosites_table)\
