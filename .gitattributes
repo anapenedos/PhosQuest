@@ -1,0 +1,9 @@
+/data_import_scripts export-ignore
+/db_lite_tables export-ignore
+/db_source_tables export-ignore
+/deprecated_code export-ignore
+/documentation export-ignore
+/user_data export-ignore
+/README.md export-ignore
+.gitattributes export-ignore
+.gitignore export-ignore

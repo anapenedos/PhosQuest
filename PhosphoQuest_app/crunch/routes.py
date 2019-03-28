@@ -5,6 +5,8 @@ from werkzeug.utils import secure_filename
 
 from PhosphoQuest_app.crunch.forms import UploadForm
 import os
+import traceback
+
 
 crunch = Blueprint('crunch', __name__)
 
@@ -60,7 +62,7 @@ def analysis():
         except Exception as ex:
             # catch any file exception with error shown to help debugging
             flash('An error occurred please try again', 'danger')
-            flash(ex, 'danger')
+            traceback.print_exc()
             return render_template('file_error.html')
 
     return render_template('upload.html', form=form, report='upload')

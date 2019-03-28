@@ -53,9 +53,11 @@ def plot_all(all_data):
     # activity
     subs_centric_table = all_data['parsed_sty_sort']
     # format DB info as links to display on site
+    # Map column headings to the detail page they should link to
     detail_pages = {'Kinase in DB\n(gene name)': 'kin_detail',
                     'Substrate/Isoform in DB (gene name)': 'sub_detail',
                     'Phosphosite in DB (ID)': 'phosites_detail'}
+    # create link columns
     for col, page in detail_pages.items():
         subs_centric_table[col] = subs_centric_table.apply(
             lambda row: ud_db_queries.create_db_links(row[col], page),

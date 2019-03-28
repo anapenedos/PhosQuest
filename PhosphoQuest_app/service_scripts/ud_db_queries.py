@@ -52,7 +52,15 @@ def extract_record_info(instances, info_needed_tuple):
 
 
 def create_db_strs(txt_tuple_iter):
-    # TODO docstr
+    """
+    From an iterable containing DB info for records in DB or 'not in DB' when no
+    records were found, return info formatted as string.
+
+    :param txt_tuple_iter: an iterable of tuples where the 0 element of the
+                           tuple is the gene/name and element 1 is the
+                           accession/ID number of the instance.
+    :return: string containing info to each entry (str)
+    """
     # a line can be [('Q8WYB5',)] or 'not in DB' or
     # [('Q8WYB6',), ('Q8WYB7',)]
     if txt_tuple_iter != 'not in DB':
@@ -107,14 +115,14 @@ def format_db_strs(db_links, headers=False):
 
 def create_db_links(txt_tuple_iter, detail_page):
     """
-    From a set of kinase accessions, produce url links to detail page of each
-    kinase. If 'not in DB', 'not in DB' is returned.
+    From an iterable containing DB info for records in DB or 'not in DB' when no
+    instances were found, returns info formatted as url links to detail pages of
+    the records.
 
     :param txt_tuple_iter: an iterable of tuples where the 0 element of the
                           tuple is the text to display in the link and element
                           1 is the key value to build the link (iter of tuples)
-    :detail_page: the details page relevant to the entries being processed
-                  (str)
+    :detail_page: the details page relevant to the entries being processed (str)
     :return: string containing links to each entry (str)
     """
     if txt_tuple_iter != 'not in DB':
@@ -122,13 +130,13 @@ def create_db_links(txt_tuple_iter, detail_page):
         for txt, key in txt_tuple_iter:
             line_links.append('<a target="_blank" href="/%s/%s">%s</a>'
                                % (detail_page, key, txt))
-            line = ', '.join(line_links)
+        line = ', '.join(line_links)
     else:
         line = 'not in DB'
     return line
 
 
-def format_db_links(db_links, headers=False):
+def format_db_links(db_links):
     """
     Formats a db_links dictionary to show in web app as links to detail pages.
 
@@ -137,8 +145,6 @@ def format_db_links(db_links, headers=False):
                      col: [[('Q8WYB5',)],
                            'not in DB',
                            [('Q8WYB6',), ('Q8WYB7',)]]
-    :headers: convert dict keys (column headers) to string when column headers
-              are class objects (boolean)
     :return: dictionary with more readable lines (dict)
              col: ['Q8WYB5', 'not in DB', 'Q8WYB6 Q8WYB7']
     """
@@ -157,29 +163,14 @@ def format_db_links(db_links, headers=False):
         tidy_db_links[col] = [create_db_links(line, detail_pages[col])
                               for line in db_links[col]]
 
-        # for line in db_links[col]:
-        #     # a line can be [('Q8WYB5',)] or 'not in DB' or
-        #     # [('Q8WYB6',), ('Q8WYB7',)]
-        #     if type(line) != str:
-        #         info_joiner = '/'.join
-        #         # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
-        #         rec_strs = [info_joiner(map(str, record)) for record in line]
-        #         new_line = ', '.join(rec_strs)
-        #     else:
-        #         new_line = line
-        #     tidy_db_links[col].append(new_line)
-
-        if headers:
-            # rename db_links keys to present as str
-            new_name = col.__name__ + ' DB links'
-            tidy_db_links[new_name] = tidy_db_links.pop(col)
     return tidy_db_links
 
 
 def link_ud_to_db(user_data_frame):
     """
-    Check substrates and phosphosites in the user data against the data base
-    and return primary keys to substrates, phosphosites and kinases tables.
+    Check substrates and phosphosites in the user data against the database and
+    return DB info of substrates, phosphosites and kinases records matching user
+    data.
 
     :param user_data_frame: a data frame containing the significant hits in the
                             user csv file (pandas df)
@@ -273,7 +264,8 @@ def link_ud_to_db(user_data_frame):
                 else:
                     to_append = not_in_db
                 db_links[class_obj].append(to_append)
-
+        # remove all objects found in loop from session to reduce memory usage
+        session.expire_all()
     session.close()
 
     # change key/column names

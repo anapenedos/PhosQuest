@@ -9,7 +9,7 @@ An overview of how the search scripts interact in the application is shown below
 ## Search script information
 `routes.py` and `forms.py` within the `search` folder of the `PhosphoQuest_app` contain the Flask routes and Flask form class set up for display of the search page on the web-app.
 
-`Forms.py` sets up the search form with options for the database table to search (currently limited to *Kinases*, *Substrates* and *Inhibitors*, which information to search (*accession/ID* and *name*) and which type of search to perform (*like* or *exact*).
+`Forms.py` sets up the search form with options for the database table to search, this is currently limited to *Kinases*, *Substrates* and *Inhibitors*, which information to search (*accession/ID* and *name*) and which type of search to perform (*like* or *exact*).
 
 `routes.py` contains the Flask route `/search` which receives the user input from the forms, calls auxillary functions from `data_access/query_db` and renders different templates depending on user input and query results. 
 
@@ -20,9 +20,10 @@ The `query_switch` function within `query_db.py` which is located within the `da
 
 ### Limitations specific to search
 * Exact match search only returns results if the input text is **exactly the same as the entire field contents** of the searched database field. This may be unexpected for the user but avoids cases where for example accession number "123" is searched and accession number "123", "1234" and "12345" is returned).
-* Only able to search accession/ID field or Name (field in database that is searched for "Name" depends on table for search)
+* Only able to search accession/ID field or Name
+* The field in database that is searched for "Name" depends on table for search. For Kinases and Substrates, `_full_name` is used for Inhibitors, `_name` is used (translated to "Other Name on display"). As there are multiple fields where a name can appear the search may not find a name that the user inputs because it is not in the field used for the search.
 * Search does not recognise wild-cards eg "*"
-* Search does not understand logical and boolean inputs (e.g. search text inputs like `"DNA" AND "replication"`)
+* Search does not understand logical tests (e.g. search text inputs like `"DNA" AND "replication"`)
 
 
 ## Browse script overview
@@ -44,7 +45,7 @@ The `routes.py` functions deal with handling the different browse categories but
 
 The various `browse_XXXdetail` routes all perform queries and render pages for detail view of an individual item with tables of related information (eg. One kinase record with corresponding tables of related phosphosites and inhibitors). 
 
-All results from the browse queries are displayed using the generic `search_results.html` template which can handle multiple different types of outputs. 
+All results from the browse queries are displayed using the generic `search_results.html` template, which can handle multiple different types of outputs. 
 
 ### Limitations specific to browse
 * No sub-categories have currently be applied for Inhibitors, can only browse all.

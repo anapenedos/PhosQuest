@@ -25,13 +25,13 @@
 ## General information for Repository Users
 
 ### Website functionality - Basic overview
-PhosphoQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite and disease information. 
+PhosphoQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite information. 
 
-The application also provides an area for users to upload a tsv or csv file of experimental mass-spectrmetry data and receive outputs showing sites for which phosphorylation was significantly up- or down-regulated, and other useful analysis. The analysed data can be viewed on the website and the complete analysis of all phosphosites in the data can be downloaded as a CSV file.
+The application also provides an area for users to upload a tsv or csv file of experimental mass-spectrometry data and receive outputs showing sites for which phosphorylation was significantly up- or down-regulated, and other useful analysis. The analysed data can be viewed on the website and the complete analysis of all phosphosites in the data can be downloaded as a CSV file.
 
 ### Data sources
 Resources in this database (DB) were obtained from various sites. We thank everyone involved with maintaining, updating and keeping these data available and free to use for non-commercial purposes. 
-The majority of the information on this website was obtained from [PhosphoSitePlus](https//www.phosphosite.org/), a superb online resource.
+The majority of the information on this website was obtained from, the superb online resource, [PhosphoSitePlus](https//www.phosphosite.org/).
 
 Inhibitors information was obtained from [MRC Kinase Profiling Inhibitor Database](http://www.kinase-screen.mrc.ac.uk) and [BindingDB](https://www.bindingdb.org).
 
@@ -41,7 +41,7 @@ More information on DB setup can be found in the [database documentation](docume
 
 ### Data analysis
 #### File upload format
-The uploaded file used for data analysis should adhere to the following format:
+The uploaded file used for data analysis (.tsv, .csv or .txt) should adhere to the following format:
 
 **Column 1**: Substrate column with gene name and site. Note that non-phosphorylated peptides should also be in the format indicated i.e. gene name(None). However, the analysis tool can also handle substrate entries for non-phosphorylated peptides that are only gene names. 
 
@@ -119,20 +119,20 @@ Data analysis uses numpy, pandas and statsmodels. Output plots are rendered usin
 
 ### Setting up the PhosphoQuest Application
 
-All the packages required to run the PhosphoQuest web application are in the PhosphoQuest App folder. 
+All the PhosphoQuest web application packages are contained in the PhosphoQuest_app folder. 
 
-Ensure that the DB location for the accompanying PhosphoQuest.db is `/database/PhosphoQuest.db` in the folder location outside of the `PhosphoQuest_app` folder. If a different database location is required then it will be necessary to edit the path in the `db_sessions.py` script in the `data_access` folder within the `PhosphoQuest_app`.
+Ensure that the DB location for the accompanying PhosphoQuest.db is `/database/PhosphoQuest.db` in the folder location outside of the `PhosphoQuest_app` folder. If a different database location is required, then it will be necessary to edit the path in the `db_sessions.py` script in the `data_access` folder within the `PhosphoQuest_app`.
 
 After installation of all the requirements and set-up of the database run the `application.py` script (eg. `python3 application.py`) from the outer folder level. This will initiate the Flask application and server. Navigate to the IP address indicated in your terminal (e.g., `127.0.0.1:5000/`) in your browser to view the web application (run on local computer).
 
 ### Software architecture
-The structure of the software in the Giardello repository consists of a `PhosphoQuest_app` folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing python scripts used in user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest DB.
+The structure of the software in the Giardello repository consists of a `PhosphoQuest_app` folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing python scripts used for user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest DB.
 
 Outside of the app folder `data_import_scripts` folder contains scripts used in the set up of the database. `application.py` is the python script used to initiate the PhosphoQuest application. 
 
 The PhosphoQuest.db file should be located in a folder `database`, in the level outside `PhosphoQuest_app`.
 
-Further information regarding the script functions is available in the following md documents and in comments in the scripts themselves:
+Further information regarding the script functions is available in the following markdown documents and in comments in the scripts themselves:
 
 * [Overview of PhosphoQuest Software structure](documentation/flask_application.md)
 * [Detail on analysis script functions](documentation/user_data_analysis.md)
@@ -147,10 +147,11 @@ We are a group of part-time MSc Bioinformatics students at Queen Mary University
 ### Areas for further development
 * Further categories added to browse and search functionality; 
 * Update design of browse categories pages;
+* Add links to DB disease information;
 * Use url variables for passing browse and search variables back to query functions instead of string-split method;
 * Utilise browser cookies for further functionality with user data upload;
-* Add functionality to upload page to make it more obvious that data analysis is happening (spinner or progress bar);
-* Add user data analysis options (eg.selectable P-value or %CV cut offs);
+* Add further functionality to upload page to show data analysis is happening (spinner or progress bar);
+* Add user data analysis options (eg. selectable P-value or %CV cut offs);
 * Consider adding option for users to be able to store data analysis in database for a short period of time;
 * Curate kinase cellular location, protein family and disease data and break them down into several tables containing categories and sub-categories that could then be automatically be used for browse categories;
 * Improve DB normalisation in general, for instance, by creating a join table containing all alternative gene names associated with a GenBank accession number, and associate substrate isotype accession numbers to a single substrate record;
