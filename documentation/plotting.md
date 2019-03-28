@@ -14,8 +14,6 @@ The plotting functionality utilizes a number of python modules. The **`Pandas`**
 
 ### <u>*Functions*</u>:
 
-The script has some generic code such as:- 
-
 1) **`create_userfilename()`**: Function to create userdata_temp user id and store in session cookie.
 
 2) **`read_html_to_variable()`**: Function to open savedfile and read lines into variable.
