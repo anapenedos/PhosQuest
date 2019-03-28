@@ -1,6 +1,6 @@
 # Flask Application Structure
 ## Introduction
-This website is built using the Flask 1.0.2. Flask is a Python web microframework
+This website is built using the Flask 1.0.2. Flask is a Python web microframework which
 makes it relatively easy to build basic websites, but also offers extended 
 features that enable development of more sophisticated sites. The documentation for the Flask python package 
 library can be found at the [Flask website](http://flask.pocoo.org/).
