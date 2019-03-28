@@ -61,7 +61,7 @@ From here, one can link to the specific phosphosites related to this particular 
 And from here, one can observe the kinases associated with this phosphosite, and link back to the original EPHB2 search result (Accession number P29323)
 
 **'Exact Matches' option**
-<br> For the exact matches option, unfortunately our code did not give the same result and could not identify the four results that were previously identifed using the 'similar match' method. This is something we did not have time to resolve, but will look into.  
+<br> For the exact matches option, HRI was not detected because the "name searches" utilises kinases = `kin_full_name`, which translates to full name. Thus, searching for HRI will not work in an exact match as this corresponds to gene name. Currently we could only search for one specific field. In the future, we will look to implement multi-field searches to capture different information. 
 
 ### Test case scenario 3 = Searching for substrate via accession name e.g. P01236
 
@@ -105,7 +105,7 @@ From here, one can select the related substrates and go back to the substrates t
 ![Results for PRL](images/web_app_testing/Case4e.png)
 
 **'Exact Matches' option**
-<br> For the exact matches option, unfortunately our code did not give the same result and could not identify the four results that were previously identifed using the 'similar match' method. This is something we did not have time to resolve, but will look into.  
+<br> For the exact matches option, PRL was not detected. The "name searches" utilises substrates = `subs_full_name`, which translates to full name. Thus, searching for PRL will not work in an exact match as this corresponds to gene name. Currently we could only search for one specific field. In the future, we will look to implement multi-field searches to capture different information. 
 
 ### Test case scenario 5 = Searching for Inhibitors via accession number e.g. 4877
 
@@ -135,11 +135,11 @@ Results for (5Z)-7-Oxozeaenol.
 ![Results for (5Z)-7-Oxozeaenol](images/web_app_testing/Case6b.png)
 
 **'Exact Matches' option**
-<br> For the exact matches option, the identical results were observed. 
+<br> For the exact matches option, the identical results were observed. The exact match functioned as expected here since "name searches" utilizes inhibitor - `inhib_name` which translates to 'other name' for inhibitors and this worked successfully for the input used here. 
 
 **Summary** 
 
-In this short web app testing, we have tested the pipeline of searches for the six main methods of searches:-
+In this short web app testing, we have tested the pipeline of searches for the six main methods of searches using similar and exact search options:-
 - Kinase with accession or ID
 - Kinase with name
 - Substrate with accession or ID
@@ -147,7 +147,7 @@ In this short web app testing, we have tested the pipeline of searches for the s
 - Inhibitor with accession of ID
 - Inhibitor with name
 
-Currently we have issues for the Kinase and Substrate searches, when names are using, with the 'exact matches' option. We will look to resolve these shortly. We also tried a number of random character inputs and for all occasions, received the "sorry no results found" display.
+Currently we have issues for the Kinase and Substrate searches, when names are using, with the 'exact matches' option based upon the field used to search for. In the future, we will look to implement multi-field searches to capture different information. We also tried a number of random character inputs and for all occasions, and this was captured with the default display "sorry no results found".
 
 We have tried to graphically illustrate the results of such searches and demonstrate that all links and searches work as expected. In the future we hope to implement an even more comprehensive web app testing document. 
 
