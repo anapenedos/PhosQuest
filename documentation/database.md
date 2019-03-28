@@ -56,7 +56,7 @@ ID contains the accession number of the records to be retrieved.
 In terms of functionality the code:
 
 1. Takes parameters and encodes them in a URL format;
-2. Changes to utf-8 format;
+2. Changes to UTF-8 format;
 3. Requests the URL with DB record accession numbers as parameters using urllib.request;
 4. Opens the respective URL and stores the data for the requested columns as a response variable;
 5. Places the retrieved data into a dataframe.
