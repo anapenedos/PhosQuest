@@ -33,7 +33,7 @@ Inhibitor data was obtained from [MRC Kinase Profiling Inhibitor Database](http:
 the latter's file size restrictions.
 
 ### Application Programming Interface (API)
-API functionality was dependent on the pandas module to allow handling of large datasets. The python urllib library was used for opening, reading and parsing of URLs. For our DB, we used data from UniProt and PubChem websites, which allow for searching with multiple accession numbers and output data in a data frame-compatible format for population of the DB. 
+API functionality was dependent on the pandas module to allow handling of large datasets. The python urllib library was used for opening, reading and parsing of URLs. For our DB, we used data from UniProt and PubChem websites, which allow for searching with multiple accession numbers and output data in a dataframe-compatible format for population of the DB. 
 
 To complete population of the DB, we utilised the following two website APIs:
 
@@ -59,7 +59,7 @@ In terms of functionality the code:
 2. Changes to utf-8 format;
 3. Requests the URL with DB record accession numbers as parameters using urllib.request;
 4. Opens the respective URL and stores the data for the requested columns as a response variable;
-5. Places the retrieved data into a data frame.
+5. Places the retrieved data into a dataframe.
 
 Based on the information retrieved, one of parameters we require to populate our database is the subcellular location. This qualifier returns multiple pieces of information relating to the subcellular location and here we only wish to retrieve the first set of information, the subcellular location. We create a separate column and using regular expression extract this information. This is also repeated for gene names where we only take the first name in the returned value. 
 
@@ -91,7 +91,7 @@ results_csv = ("https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/"
 ```       
 
 Where 'query_str' denotes the PubChem CID compund identifiers. The data was then converted from
-csv to a data frame ready for population of the database.
+csv to a dataframe ready for population of the database.
         
 ## Database setup
 To recreate the database from newly imported data, run the `db_setup.py` script which will first create the database schema if not in place already, then import the PhosphoSitePlus, MRC and BindingDB datasets, and finally obtain additional data from UniProt and PubChem using the `api_import.py` script. The script will also curate individual records found to be incorrect.
@@ -102,11 +102,11 @@ The interactions between the various scripts are shown in the following diagram:
 The process is outlined below:
 
 1. Data downloaded from data sources as described in the [Database Exports](#Database-Exports) section above;
-2. Downloaded files parsed into data frames through `table_parsing.py`, using auxiliary functions in `df_editing.py`;
-3. Data frames imported into the DB through the `sqlalchemy_import.py` script (in `data_import_scripts` directory) with auxiliary functions in `class_functions.py` and an import session from `db_sessions.py` script (both in the `data_access` directory), following the mapping of data frame column headings to SQLalchemy class objects and their attributes set out in `data_import_scripts/df_to_attributes.py`.
+2. Downloaded files parsed into dataframes through `table_parsing.py`, using auxiliary functions in `df_editing.py`;
+3. Dataframes imported into the DB through the `sqlalchemy_import.py` script (in `data_import_scripts` directory) with auxiliary functions in `class_functions.py` and an import session from `db_sessions.py` script (both in the `data_access` directory), following the mapping of dataframe column headings to SQLalchemy class objects and their attributes set out in `data_import_scripts/df_to_attributes.py`.
     * BindingDB data is filtered to include only data for inhibitors associated with kinases in the DB;
 4. Specific incorrect records are curated;
 5. Missing data imported for the existing records from Uniprot and PubChem APIs using the `api_imports.py` script (`data_import_scripts` directory).
 
 ### Importing additional data
-Additional data can be easily imported to the database by parsing a data table input into a pandas data frame and then matching the data frame column headings to the fields they are destined for in the database in the `df_to_attributes.py`.  Only data for empty record fields is imported (existing data will not be over-written). To replace existing data, remove the field in question from the `df_to_attributes.py` dictionary for the undesired data source and run `db_setup.py` again.
+Additional data can be easily imported to the database by parsing a data table input into a pandas dataframe and then matching the dataframe column headings to the fields they are destined for in the database in the `df_to_attributes.py`.  Only data for empty record fields is imported (existing data will not be over-written). To replace existing data, remove the field in question from the `df_to_attributes.py` dictionary for the undesired data source and run `db_setup.py` again.
