@@ -92,9 +92,10 @@ The interactions between the various scripts and the methods used in the Phospho
 
 ### Application limitations and potential issues
 * Search function is basic and does not recognise logical functions or wild-cards in the text field.
-* Data analysis is all done at once on successful upload of a file, and can take a minute or more to complete depending on input file and resources available. During which time there is no user feedback, only a slight css change to `submit` button style. There is no progress spinner or any extra text.
-* Errors with data file upload can display in two ways depending on the error type, some are caught by the `user_data_check` function and display as flash messages on the upload page, and others cause an error which is caught by the `try-except` method and give the `file-error.html` page, the information on the page should, however, help to explain what the problem could be. 
+* Data analysis is all done at once on successful upload of a file, and can take a minute or more to complete depending on input file and resources available. 
 * Due to the large amount of data and images rendered on the user-data results page it can take a few seconds after the page initially appears for the styles to render fully (eg. for the jquery tabs to show correctly).
+* Once the results page has appeared, users cannot return to the result data if they navigate away from the page as all the variables are lost. 
+* Errors with data file upload can display in two ways depending on the error type, some are caught by the `user_data_check` function and display as flash messages on the upload page, and others cause an error which is caught by the `try-except` method and give the `file-error.html` page, the information on the page should, however, help to explain what the problem could be. 
 * Issues occasionally occur with the display of the html interactive pie-charts on the user-data results page. We do not currently know the reason for this, but re-running the analysis usually fixes the display issue
 
 
