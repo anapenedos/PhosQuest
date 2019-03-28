@@ -280,32 +280,17 @@ def link_ud_to_db(user_data_frame):
 
 
 if __name__ == "__main__":
-    # standard imports
-    import os
+    if __name__ == "__main__":
+        from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+        import pandas as pd
+        from datetime import datetime, timedelta
 
-    from PhosphoQuest_app.service_scripts.user_data_crunch \
-        import user_data_check
-    from PhosphoQuest_app.service_scripts.userdata_display import run_all
-    from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-    from sqlalchemy.orm import Load
-    import pandas as pd
-
-    ad = run_all(user_data_check(os.path.join('user_data',
-                                              'az20.tsv')))
-
-    sty = ad['full_sty_sort']
-    styno = ad['parsed_sty_sort']
-
-    # sites_dict, kin_dict = link_ud_to_db(styno)
-
-    # session = create_sqlsession(session_type='pandas_sql')
-    # query = session.query(Substrate, Phosphosite, Kinase)\
-    #         .outerjoin(Phosphosite)\
-    #         .outerjoin(kinases_phosphosites_table)\
-    #         .outerjoin(Kinase)\
-    #         .options(Load(Substrate).load_only("subs_gene"),
-    #                  Load(Phosphosite).load_only("phos_modified_residue"),
-    #                  Load(Kinase).load_only("kin_gene"))
-    # subs_phos_kin_subset_df = pd.read_sql(subs_phos_kin_query.\
-    #                                      statement,\
-    #                                      subs_phos_kin_query.session.bind)
+        styno = pd.read_csv('PhosphoQuest_app/service_scripts/styno.csv')
+        for i in range(5):
+            start_time = datetime.now()
+            d1, d2 = link_ud_to_db(styno)
+            end_time = datetime.now()
+            elapsed_time = end_time - start_time
+            print(elapsed_time)
+        print(d1)
+        print(d2)
