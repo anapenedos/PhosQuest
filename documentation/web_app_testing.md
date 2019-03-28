@@ -1,7 +1,10 @@
 # Web App Testing 
 
-This document displays a number of example searches that constitute our web app testing. 
+This document displays a number of example searches that constitute our web app testing. Web app testing was performed using a number of test inputs under the 'similar matches' and 'exact matches' options. The results of both are listed for each search. As a rule of thumb, if any search is performed under the wrong selection options, or with an input that was not present in the database, the following message would be displayed e.g. searching for a something as an inhibitor when it is not:-
 
+![NoresultsFound](images/web_app_testing/notfound.png)
+
+  **Searching via 'similar matches' and 'exact matches' options**
 
 i) [Searching for kinase accession number e.g. Q9BQI3](web_app_testing.md#test-case-scenario-1--searching-for-kinase-accession-number-eg-q9bqi3)
  
@@ -19,6 +22,8 @@ v) [Test case scenario 5 = Searching for Inhibitors via accession number e.g. 48
 
 ### Test case scenario 1 = Searching for kinase accession number e.g. Q9BQI3
 
+**'Similar Matches' option**
+
 ![Search for Q9BQI3](images/web_app_testing/Case1a.png)
 
 Results for Q9BQI3 and related Phosphosites 
@@ -31,8 +36,13 @@ Selecting one of the Group IDs (e.g. 447635) leads to a detailed display of this
 
 Here we also see a list of kinases which are related to this specific phosphosite (447635). In this list we can observe the original kinase (Q9BQI3) which we had searched for, allowing us to link back to the original search. 
 
+**'Exact Matches' option**
+<br> For the exact matches option, the identical results were observed. 
+
 
 ### Test case scenario 2 = Searching for kinase accession name - HRI
+
+**'Similar Matches' option**
 
 ![Search for HRI](images/web_app_testing/Case2a.png) 
 
@@ -50,7 +60,12 @@ From here, one can link to the specific phosphosites related to this particular 
 
 And from here, one can observe the kinases associated with this phosphosite, and link back to the original EPHB2 search result (Accession number P29323)
 
+**'Exact Matches' option**
+<br> For the exact matches option, unfortunately our code did not give the same result and could not identify the four results that were previously identifed using the 'similar match' method. This is something we did not have time to resolve, but will look into.  
+
 ### Test case scenario 3 = Searching for substrate via accession name e.g. P01236
+
+**'Similar Matches' option**
 
 ![Search for P01236](images/web_app_testing/Case3a.png)
  
@@ -64,7 +79,12 @@ Selecting one of the Group IDs (e.g. 451732) leads to a detailed display of char
 
 Here, we can view detailed information regarding the selected phosphosite group. We also have the "related substrate" qualifer, and this takes us back to the previous page.  
 
+**'Exact Matches' option**
+<br> For the exact matches option, the identical results were observed. 
+
 ### Test case scenario 4 = Searching for kinase accession name - e.g. PRL
+
+**'Similar Matches' option**
 
 ![Search for PRL](images/web_app_testing/Case4a.png) 
 
@@ -84,8 +104,12 @@ From here, one can select the related substrates and go back to the substrates t
 
 ![Results for PRL](images/web_app_testing/Case4e.png)
 
+**'Exact Matches' option**
+<br> For the exact matches option, unfortunately our code did not give the same result and could not identify the four results that were previously identifed using the 'similar match' method. This is something we did not have time to resolve, but will look into.  
 
 ### Test case scenario 5 = Searching for Inhibitors via accession number e.g. 4877
+
+**'Similar Matches' option**
 
 ![Search for 4877](images/web_app_testing/Case5a.png)
 
@@ -97,8 +121,12 @@ Selecting one of the Group IDs (e.g. 4877) leads to a detailed display of charac
 
 ![Results for 4877](images/web_app_testing/Case5c.png)
 
+**'Exact Matches' option**
+<br> For the exact matches option, the search result did not produce the table of the three options but actually directly displayed the resutls for 4877. 
 
  ### Test case scenario 6 = Searching for Inhibitors via name e.g. (5Z)-7-Oxozeaenol
+
+**'Similar Matches' option**
 
 ![Search for (5Z)-7-Oxozeaenol](images/web_app_testing/Case6a.png)
 
@@ -106,6 +134,8 @@ Results for (5Z)-7-Oxozeaenol.
 
 ![Results for (5Z)-7-Oxozeaenol](images/web_app_testing/Case6b.png)
 
+**'Exact Matches' option**
+<br> For the exact matches option, the identical results were observed. 
 
 **Summary** 
 
@@ -116,6 +146,8 @@ In this short web app testing, we have tested the pipeline of searches for the s
 - Substrate with name
 - Inhibitor with accession of ID
 - Inhibitor with name
+
+Currently we have issues for the Kinase and Substrate searches, when names are using, with the 'exact matches' option. We will look to resolve these shortly. We also tried a number of random character inputs and for all occasions, received the "sorry no results found" display.
 
 We have tried to graphically illustrate the results of such searches and demonstrate that all links and searches work as expected. In the future we hope to implement an even more comprehensive web app testing document. 
 
