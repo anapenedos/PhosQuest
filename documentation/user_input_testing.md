@@ -22,7 +22,7 @@ ix) [User input AZ20.tsv, however the fold values column is missing](user_input_
 
 x) [User input AZ20.tsv, however the fold values column has been moved to a different column](user_input_testing.md#test-case-scenario-10--user-input-az20tsv-however-the-fold-values-column-has-been-moved-to-a-different-column)
 
-
+<br></br>
 ### Test case scenario 1 = User input AZ20.tsv 
 
 ![Search for AZ20.tsv](images/user_data_testing/User1a.png)
