@@ -12,14 +12,14 @@ from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
 def distinct_records(query_res):
     """
     Given a list of tuples from the result of a sqlalchemy join query returns
-    unique record info for the substrates, phosphosites and kinases in the query
-    result.
+    unique record info for the substrates, phosphosites and kinases in the
+    query result.
 
     :param query_res: sqlalchemy join query result (list of tuples)
     :return: three sets of unique substrate, phosphosite and kinase records'
-             info (unique_subs, unique_phos, unique_kin sets)
+             info (unique_subs, unique_phos, unique_kin; sets)
     """
-    # collect distinct substrate , phosphosite and kinase record info
+    # collect distinct substrate, phosphosite and kinase record info
     # from all records retrieved in the query
     unique_subs = set()
     unique_phos = set()
@@ -31,12 +31,12 @@ def distinct_records(query_res):
         # found in the DB is len 2, while those resulting from the
         # 3-table join are len 6
         if len(record) > 2:
-            if record[2]:  # only add if not None
+            if record[2]:  # only add phosphosite info if not None
                 # collect distinct phosphosite records from record info
                 # retrieved in join query
                 phos_info = (record[2], record[3])  # (phos_rsd, phos_id)
                 unique_phos.add(phos_info)
-            if record[4]:  # only add if not None
+            if record[4]:  # only add kinase info if not None
                 # collect distinct kinase record info from records
                 # retrieved in join query
                 kin_info = (record[4], record[5])  # (kin_gene, kin_acc)
@@ -45,105 +45,54 @@ def distinct_records(query_res):
     return unique_subs, unique_phos, unique_kin
 
 
-def extract_record_info(instances, info_needed_tuple):
-    """
-    From a list of sqlalchemy class objects (records from a single table), get
-    the instance attributes specified in the info needed tuple.
-
-    :param instances: an iterable containing class instances (inst iter)
-    :param info_needed_tuple: tuple containing the attributes required
-                              (tuple of strs)
-    :return: list of info tuples in the same order as info_needed_tuple sorted
-             by first element of tuple (list of tuples)
-             [(info1, info2), ...]
-    """
-    records_info = []
-    for instance in instances:
-        info = tuple(getattr(instance, attr)
-                     for attr in info_needed_tuple)
-        records_info.append(info)
-    return sorted(records_info)
-
-
 def create_db_strs(txt_tuple_iter):
     """
-    From an iterable containing DB info for records in DB or 'not in DB' when no
+    From an iterable containing DB info for records in DB or 'not in DB' if no
     records were found, return info formatted as string.
 
-    :param txt_tuple_iter: an iterable of strings and tuples where the 0 element
-                           of the tuple is the gene/name and element 1 is the
-                           accession/ID number of the instance
+    :param txt_tuple_iter: an iterable of strings and tuples where the 0
+                           element of the tuple is the gene/residue and element
+                           1 is the DB key of the record
                            (iter of tuples and strs)
     :return: string containing info to each entry (str)
     """
-    # a line can be [('Q8WYB5',)] or 'not in DB' or
-    # [('Q8WYB6',), ('Q8WYB7',)]
+    # a line can be [('Q8WYB5',)] or 'not in DB' or [('Q8WYB6',), ('Q8WYB7',)]
     if txt_tuple_iter != 'not in DB':
         info_joiner = '/'.join
         # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
+        # converts integers into strs, joins info in each tuple with a '/'
         rec_strs = [info_joiner(map(str, record)) for record in txt_tuple_iter]
+        # joins all info with ', ' to produce new line
         new_line = ', '.join(rec_strs)
+    # if there was no info in DB, returns the same: 'not in DB'
     else:
         new_line = txt_tuple_iter
     return new_line
 
 
-def format_db_strs(db_links, headers=False):
+def create_db_links(txt_tuple_iter, link_format):
     """
-    Formats a db_links dictionary to show in web app.
-
-    :param db_links: dictionary listing processed query results matching each
-                     line of a user data frame (dict)
-                     col: [[('Q8WYB5',)],
-                           'not in DB',
-                           [('Q8WYB6',), ('Q8WYB7',)]]
-    :headers: convert dict keys (column headers) to string when column headers
-              are class objects (boolean)
-    :return: dictionary with more readable lines (dict)
-             col: ['Q8WYB5', 'not in DB', 'Q8WYB6 Q8WYB7']
-    """
-    # [('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]
-    tidy_db_links = {}
-    for col in db_links:
-        # a column is of format
-        # [[('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]]
-        # format lines of each column to show as str
-        tidy_db_links[col] = []
-        for line in db_links[col]:
-            # a line can be [('Q8WYB5',)] or 'not in DB' or
-            # [('Q8WYB6',), ('Q8WYB7',)]
-            if type(line) != str:
-                info_joiner = '/'.join
-                # a record can be ('Q8WYB5',) or ('GENE1', 'Q8WYB7') or (12,)
-                rec_strs = [info_joiner(map(str, record)) for record in line]
-                new_line = ', '.join(rec_strs)
-            else:
-                new_line = line
-            tidy_db_links[col].append(new_line)
-
-        if headers:
-            # rename db_links keys to present as str
-            new_name = col.__name__ + ' DB links'
-            tidy_db_links[new_name] = tidy_db_links.pop(col)
-    return tidy_db_links
-
-
-def create_db_links(txt_tuple_iter, detail_page):
-    """
-    From an iterable containing DB info for records in DB or 'not in DB' when no
-    instances were found, returns info formatted as url links to detail pages of
+    From an iterable containing DB info for records in DB or 'not in DB' if no
+    records were found, returns info formatted as url links to detail pages of
     the records.
 
-    :param txt_tuple_iter: an iterable of strings and tuples where the 0 element
-                          of the tuple is the text to display in the link and
-                          element 1 is the key value to build the link
-                          (iter of tuples and strs)
-    :detail_page: the details page relevant to the entries being processed (str)
-    :return: string containing links to each entry (str)
+    :param txt_tuple_iter: an iterable of strings and tuples where the 0
+                           element of the tuple is the gene/residue and element
+                           1 is the DB key of the record
+                           (iter of tuples and strs)
+    :link_format: a tuple where the 0th element is the detail page relevant for
+                  the records passed and element 1 is a tuple of the position
+                  of the txt to display in the txt_tuple_iter and the position
+                  of the DB key in the txt_tuple_iter
+                  ('page', (txt, position, key position)) (len 2 tuple)
+    :return: string containing URL links to each entry (str)
     """
     if txt_tuple_iter != 'not in DB':
+        detail_page = link_format[0]
         line_links = []
-        for txt, key in txt_tuple_iter:
+        for info in txt_tuple_iter:
+            key = info[link_format[1][1]]
+            txt = info[link_format[1][0]]
             line_links.append('<a target="_blank" href="/%s/%s">%s</a>'
                                % (detail_page, key, txt))
         line = ', '.join(line_links)
@@ -152,78 +101,59 @@ def create_db_links(txt_tuple_iter, detail_page):
     return line
 
 
-def format_db_links(db_links):
-    """
-    Formats a db_links dictionary to show in web app as links to detail pages.
-
-    :param db_links: dictionary listing processed query results matching each
-                     line of a user data frame (dict)
-                     col: [[('Q8WYB5',)],
-                           'not in DB',
-                           [('Q8WYB6',), ('Q8WYB7',)]]
-    :return: dictionary with more readable lines (dict)
-             col: ['Q8WYB5', 'not in DB', 'Q8WYB6 Q8WYB7']
-    """
-    # [('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]
-    tidy_db_links = {}
-
-    # detail page route for each column
-    detail_pages = {Kinase: 'kin_detail',
-                    Substrate: 'sub_detail',
-                    Phosphosite: 'phosites_detail'}
-
-    for col in db_links:
-        # a column is of format
-        # [[('Q8WYB5',)], 'not in DB', [('Q8WYB6',), ('Q8WYB7',)]]
-        # format lines of each column to show as str
-        tidy_db_links[col] = [create_db_links(line, detail_pages[col])
-                              for line in db_links[col]]
-
-    return tidy_db_links
-
-
 def link_ud_to_db(user_data_frame):
     """
     Check substrates and phosphosites in the user data against the database and
-    return DB info of substrates, phosphosites and kinases records matching user
-    data.
+    return DB info of substrates, phosphosites and kinases records matching the
+    user data.
 
     :param user_data_frame: a data frame containing the significant hits in the
                             user csv file (pandas df)
-    :return: data frame column containing user sites > db entry / kinases
-             data frame with individual kinases > gene / site
+    :return db_links: dictionary that will be converted into df columns linking
+                      to DB of the same length as user_data_frame. Dict keys
+                      are column headings and dict values are lists that will
+                      become the column values, each element in the list
+                      becoming a line (dict)
+    :return kin_to_ud: dictionary that will be used for the kinase-centric
+                       analyses, where keys are unique kinases associated with
+                       user sites and values are the user substrates/sites
+                       associated with the kinase (dict)
     """
     # open sqlite session
     session = create_sqlsession()
 
     # create dictionary to link user phosphosites to db entries
-    # 'Substrate Entry in DB': [{('gene1', 'ACC1'),...}, 'not in DB', ...]
-    # 'Phosphosite Entry in DB': [{('rsd1', id1),...}, 'not in DB', ...] ids are integers
-    # 'Associated Kinases': [{('gene1', 'ACC1'),...}, 'not in DB', ...]
-    db_links = {'Substrate/Isoform in DB (gene name)': [],
-                'Phosphosite in DB (ID)': [],
-                'Kinase in DB\n(gene name)': []}
+    # substrates col: [{('gene1', 'ACC1'),...}, 'not in DB', ...]
+    # sites col: [{('rsd1', id1),...}, 'not in DB', ...] ids are integers
+    # kinases col: [{('gene1', 'ACC1'),...}, 'not in DB', ...]
+    db_links = {'Substrate/Isoform in DB (accession)': [],
+                'Phosphosite in DB (DB ID)': [],
+                'Kinase in DB\n(gene)': []}
 
     # create dictionary for kinase-centric analysis data frame
-    # 'KIN_ACC': {('SUB_GENE', 'RSD'),...}
+    # 'kin_gene': {('subs_gene', 'residue'),...}
     kin_to_ud = {}
 
     # not found in DB message
     not_in_db = 'not in DB'
 
-    # 3 table query left outer joining on substrate
-    # one substrate can have multiple phosphosites; outer join allows for
-    # return of a substrate if user modified residue has not been included in
-    # DB
+    # 3 table query left joining on substrate
+    # given that we need to filter on phosphosite residue and to reduce number
+    # of entries returned, inner join on phosphosite is used
     # Kinases are associated with phosphosites, there may be no kinases for a
-    # site
-    query = session.query(Substrate.subs_gene, Substrate.subs_accession,
-                          Phosphosite.phos_modified_residue,
-                          Phosphosite.phos_group_id,
-                          Kinase.kin_gene, Kinase.kin_accession)\
-        .outerjoin(Phosphosite)\
+    # site;
+    # one substrate/phosphosite can be associated with multiple kinases: outer
+    # join allows for return of a substrate/site if no kinases are found in DB
+    query = session.query(
+        Substrate.subs_gene, Substrate.subs_accession,
+        Phosphosite.phos_modified_residue, Phosphosite.phos_group_id,
+        Kinase.kin_gene, Kinase.kin_accession)\
+        .join(Phosphosite)\
         .outerjoin(kinases_phosphosites_table)\
-        .outerjoin(Kinase)
+        .outerjoin(Kinase)\
+        .options(Load(Substrate).load_only("subs_gene"),
+                 Load(Phosphosite).load_only("phos_modified_residue"),
+                 Load(Kinase).load_only("kin_gene"))
 
     # iterate through each line of the user data frame
     for index, row in user_data_frame.iterrows():
@@ -233,23 +163,18 @@ def link_ud_to_db(user_data_frame):
         # modified residue in the line
         residue = row['Phospho site ID']
         # filter the query based on substrate gene and modified residue
-        # or_ None allows modified residue not to be present in DB if substrate
-        # is
-        # query_res format is [(substrate instance, phosphosite instance /
-        # None, kinase instance 1 / None), (subs, phos, kin2)]
-        # the kinase instance is the only one that changes in
-        # each substrate/phosphosite/kinase tuple in query_res
+        # query_res format is
+        # [(subs_gene, subs_acc, site_rsd, site_id, kin_gene, kin_acc),...]
+        # or []
         query_res = query.filter(and_(
             Substrate.subs_gene == s_gene,
             Phosphosite.phos_modified_residue == residue)).all()
 
         # query_res can be [], [one], [several, records]
-        # where each record is a tuple
-        # (gene, accession, residue, grp id, kin gene, kin acc)
 
-        # if query_res is [] because the phosphosite is not in DB, we still want
-        # the substrate info available in the DB
-        if len(query_res) == 0:
+        # if query_res is [] because the phosphosite is not in DB, we want to
+        # retrieve any substrate info available in the DB
+        if not query_res:
             subs_only = session.query(
                 Substrate.subs_gene, Substrate.subs_accession)\
                 .filter(Substrate.subs_gene == s_gene).all()
@@ -262,23 +187,24 @@ def link_ud_to_db(user_data_frame):
                 db_links[col].append(not_in_db)
 
         else:
+            # de-duplicate records found
             unique_subs, unique_phos, unique_kin = distinct_records(query_res)
 
             # if kinases were found in the query, map kinase genes to the user
             # gene and residue
             for kin in unique_kin:
                 kinase_gene = kin[0]
-                new_set = kin_to_ud.setdefault(kinase_gene, set())
-                new_set.add((s_gene, residue))
+                kin_set = kin_to_ud.setdefault(kinase_gene, set())
+                kin_set.add((s_gene, residue))
 
             # append the new values to the columns dict db_links
             # if there are no records in any of the sets containing unique
             # records replace the empty set with 'not in DB'
-            db_links['Substrate/Isoform in DB (gene name)'].append(
+            db_links['Substrate/Isoform in DB (accession)'].append(
                 unique_subs if unique_subs else not_in_db)
-            db_links['Phosphosite in DB (ID)'].append(
+            db_links['Phosphosite in DB (DB ID)'].append(
                 unique_phos if unique_phos else not_in_db)
-            db_links['Kinase in DB\n(gene name)'].append(
+            db_links['Kinase in DB\n(gene)'].append(
                 unique_kin if unique_kin else not_in_db)
 
         # remove all objects found in loop from session to reduce memory usage
@@ -291,15 +217,24 @@ def link_ud_to_db(user_data_frame):
 if __name__ == "__main__":
     from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
     import pandas as pd
-    from datetime import datetime, timedelta
+    from datetime import datetime
 
+    styno = pd.read_csv('styno.csv')
     for i in range(5):
         start_time = datetime.now()
-        styno = pd.read_csv('styno.csv')
         d1, d2 = link_ud_to_db(styno)
+        db_ud_df = pd.DataFrame.from_dict(d1, orient='index').transpose()
+
+        # Concatenate full phospho table with DB user data matches.
+        # Note: input dataframe "Filtered_df" index isn't ordered 1, 2, 3...,
+        # due to previous operations.
+        # reset_index() extracts index to column, and uses default i.e. 1, 2, 3...,
+        # as new index. Reseting the index is required, as dataframe
+        # concatenation is by column indices!
+        filtered_df = pd.concat([styno.reset_index(drop=True),
+                                 db_ud_df.reset_index(drop=True)],
+                                axis=1)
         end_time = datetime.now()
         elapsed_time = end_time - start_time
         print(elapsed_time)
-    print(d1)
-    print(d2)
 

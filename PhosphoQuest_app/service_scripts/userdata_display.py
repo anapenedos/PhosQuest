@@ -53,14 +53,18 @@ def plot_all(all_data):
     # activity
     subs_centric_table = all_data['parsed_sty_sort']
     # format DB info as links to display on site
-    # Map column headings to the detail page they should link to
-    detail_pages = {'Kinase in DB\n(gene name)': 'kin_detail',
-                    'Substrate/Isoform in DB (gene name)': 'sub_detail',
-                    'Phosphosite in DB (ID)': 'phosites_detail'}
+    # Map column headings to the detail page they should link to and which info
+    # should be shown (DB key shown for substrates and sites, gene name
+    # displayed for kinases); (pos of txt to display, pos of key)
+    links = {
+        'Substrate/Isoform in DB (accession)': ('sub_detail', (1, 1)),
+        'Phosphosite in DB (DB ID)': ('phosites_detail', (1, 1)),
+        'Kinase in DB\n(gene)': ('kin_detail', (0, 1))
+    }
     # create link columns
-    for col, page in detail_pages.items():
+    for col, link in links.items():
         subs_centric_table[col] = subs_centric_table.apply(
-            lambda row: ud_db_queries.create_db_links(row[col], page),
+            lambda row: ud_db_queries.create_db_links(row[col], link),
             axis=1)
 
     table, kin_act = plotting.style_df(subs_centric_table,
@@ -114,13 +118,19 @@ def create_csv(dataframe):
 
     """
     # format columns containing links to DB info to display as strs
-    cols_to_format = ['Kinase in DB\n(gene name)',
-                      'Substrate/Isoform in DB (gene name)',
-                      'Phosphosite in DB (ID)']
+    cols_to_format = ['Substrate/Isoform in DB (accession)',
+                      'Phosphosite in DB (DB ID)',
+                      'Kinase in DB\n(gene)']
     for col in cols_to_format:
         dataframe[col] = dataframe.apply(
             lambda row: ud_db_queries.create_db_strs(row[col]),
             axis=1)
+    # rename columns to reflect info displayed
+    tidy_df = dataframe.rename(index=str, columns={
+        'Substrate/Isoform in DB (accession)':
+            'Substrate/Isoform in DB (gene/accession)',
+        'Phosphosite in DB (DB ID)': 'Phosphosite in DB (site/DB ID)',
+        'Kinase in DB\n(gene)': 'Kinase in DB\n(gene/accession)'})
 
     # set up for saving
     tempdir = os.path.join('PhosphoQuest_app','static', 'userdata_temp')
@@ -128,7 +138,7 @@ def create_csv(dataframe):
     #run create userfilename function to get used specific filename
     outname = plotting.create_userfilename('analysed', 'csv')
 
-    dataframe.to_csv(os.path.join(tempdir,outname))
+    tidy_df.to_csv(os.path.join(tempdir,outname))
 
     # clean up old files in userdata_temp folder >1 day old
     oldfiles = [name for name in os.listdir(tempdir) if\
