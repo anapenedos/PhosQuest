@@ -1,7 +1,5 @@
 # PhosQuest Application Readme
 
-NB: After building this application we realised that there is a commerical product named PhosQuest, which is a Kinase ELISA. We would therefore need to change the name of this application prior to making this repository freely available and edit this in the code and documentation.
-
 ## Index
 
 ### General information for Repository Users
