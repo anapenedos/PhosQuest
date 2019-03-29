@@ -1,4 +1,4 @@
-# <center><u>*Plotting*</center>
+# <center>_*Plotting*_</center>
 
 ### <u>*Main script*</u>:  `plotting.py`
 
