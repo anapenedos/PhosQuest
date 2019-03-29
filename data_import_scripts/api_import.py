@@ -9,8 +9,8 @@ import urllib
 import time
 
 # project-specific imports
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-from PhosphoQuest_app.data_access.class_functions import get_class_key_attrs
+from PhosQuest_app.data_access.db_sessions import create_sqlsession
+from PhosQuest_app.data_access.class_functions import get_class_key_attrs
 
 # =========================================================================== #
 

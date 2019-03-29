@@ -3,10 +3,10 @@ from sqlalchemy import and_, or_
 from sqlalchemy.orm import Load
 
 # project imports
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
+from PhosQuest_app.data_access.db_sessions import create_sqlsession
+from PhosQuest_app.data_access.sqlalchemy_declarative import Kinase, \
     Substrate, Phosphosite, kinases_phosphosites_table
-from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
+from PhosQuest_app.data_access.class_functions import get_classes_key_attrs
 
 
 def records_from_join_res(list_of_tuples):
@@ -280,7 +280,7 @@ def link_ud_to_db(user_data_frame):
 
 
 if __name__ == "__main__":
-    from PhosphoQuest_app.data_access.db_sessions import create_sqlsession
+    from PhosQuest_app.data_access.db_sessions import create_sqlsession
     import pandas as pd
     from datetime import datetime, timedelta
 

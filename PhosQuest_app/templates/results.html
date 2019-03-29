@@ -1,0 +1,243 @@
+<!--Due to problems rendering the layout template with the jquery the styles were added again on this template-->
+<!--To be fixed for production-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!-- jQuery implementation -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <!-- Bootstrap Required meta tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+          integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <!-- our main custom css in static-->
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles/main.css')}}">
+
+    <!--Set title if entered in to render function or add default-->
+    {% if title %}
+       <title>PhosQuest -{{ title }}</title>
+    {% else %}
+        <title>PhosQuest toolkit</title>
+    {% endif %}
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<!--add header bar with bootstrap classes-->
+    <header class="site-header">
+      <nav class="navbar navbar-expand-md navbar-dark bg-blue fixed-top">
+        <div class="container">
+          <a class="navbar-brand mr-4" href="/">PhosQuest</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse"
+                  data-target="#navbarToggle" aria-controls="navbarToggle"
+                  aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarToggle">
+            <div class="navbar-nav mr-auto">
+              <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
+              <a class="nav-item nav-link" href= "{{ url_for('search.search_db') }}" >Search</a>
+              <a class="nav-item nav-link" href= "{{ url_for('browse.browse_main') }}">Browse</a>
+              <a class="nav-item nav-link" href="{{ url_for('crunch.analysis') }}">User Data Analysis</a>
+              <a class="nav-item nav-link" href="{{ url_for('main.documentation') }}">Documentation</a>
+              <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About Us</a>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+
+    <!-- flash messages bootstrap styles-->
+    <main role="main" div class="container">
+      <div class="row">
+        <div class="col-md-12">
+             <!-- print error messages from form validation-->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+               {% if messages %}
+                  {% for category, message in messages %}
+                     <div class = "alert alert-{{ category }}">
+                         {{ message }}
+                     </div>
+                   {% endfor %}
+               {% endif %}
+            {% endwith %}
+        </div>
+      </div>
+    </main>
+    <div class = 'container'>
+    <H2><center><b><em>Phospho-proteomics Data Analysis Results</center></b></em></H2>
+    <br>
+    <div id="tabs">
+      <ul>
+        <li><a href="#analysis-1"><span>Processed Table</span></a></li>
+        <li><a href="#analysis-2"><span>Volcano Plot</span></a></li>
+        <li><a href="#analysis-3"><span>Kinase & Substrate Frequencies</span></a></li>
+        <li><a href="#analysis-4"><span>Kinase activities</span></a></li>
+        <li><a href="#analysis-5"><span>Summary Charts</span></a></li>
+        <li><a href="#analysis-6"><span>Download data</span></a></li>
+      </ul>
+      <div id="analysis-1">
+
+        <p><b>General overview: </b> This table corresponds to hits, whose corrected
+        p-values meet an error rate threshold of <=0.05 and have a CV of <=25%. 
+        If the original upload table didn't include CV columns, then only the 
+          p-value threshold is applied.</p>
+
+        <p><b>Clickable entries: </b> Try clicking entries in columns:
+        <em>Substrate/Isoform in DB (gene name)</em>, <em>Phosphosite in DB (ID)</em> and
+        <em>Kinase in DB (gene name)</em>. We guarantee a pleasant journey!
+        </p>  
+        <p><b>Intensity columns: </b> Original intensity values were transformed
+        by dividing each substrate/site intensity by the maximum intensity
+        of the row (both conditions). This scaling allows the application of 
+        a heatmap to the cells, for visual clarification of intensity differences.
+        </p>
+       <p><b>Log2 fold changes: </b> Barplots are integrated into the column, that scale
+        with the fold change values. <em>Note</em>: Cells that are fully coloured,
+        denote hits detected in only one condition (see intensity columns). 
+        <p>
+        <b>Sorting: </b> The Log2 fold changes are used, giving a gradated
+          ordering of hits as you scroll through the table.</p>
+        <hr>
+        <div class=table.dataframe>
+            {{ plots['table']|safe }}
+        </div>
+      </div>
+        <div id="analysis-2">
+        </p>
+        <b>General overview: </b> Scatter of Log2 fold changes vs -log10(corrected p-values).
+        </p>
+        <b>Interactivity: </b> Hovering cursor over individual points will
+        display substrate/site and exact X/Y-axis values. Please also note the 
+        extra interaction options on the top right hand corner of the plot.  
+        </p>
+        <b>Thresholds (dashed lines): </b> 
+        </p>
+        <em><u>Vertical line</u></em>: denotes a +/- Log2 fold change of 1 (actual fold change = 2).
+        </p>
+        <em><u>Horizontal line</u></em>: denotes a -log10(corrected p-value) of 1.3 (actual value = 0.05).
+        </p>
+          <hr>
+            {{ plots['volcano'] |safe}}
+        </div>
+      <div id="analysis-3">
+          <p>
+            <b>General overview: </b> We take the full list of phosphorylated 
+            peptides, query the <em>PhosQuest</em> database, and map your
+            substrate/sites to their respective kinases. 
+            <p>
+            <b>Visualisation: </b> This data is visualised as WordClouds, each of 
+            which is paired to a frequency chart. This will help you gauge which
+            kinases target the largest number of unique substrate/sites in your 
+            data. Conversely, we can also determine  which substrate/sites
+            are most targetted by different kinases.
+            </p>
+          <hr>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H6><b>Most active Kinases - Top 30</b></H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_wcloud"])}}> </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H6><b>Most targetted Substrate/Sites - Top 30</b></H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["subs_sites_wcloud"])}}>
+                  </center>
+              </div>
+          </div>
+          <br>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H6><b>Frequency Chart</b></H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_freq"])}} width="500"> </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H6><b>Frequency Chart</b></H6>
+                      <img src={{url_for('static', filename='userdata_temp/'+ plots["kin_target_freq"])}} width="500"> </center>
+              </div>
+          </div>
+          </div>
+      <div id="analysis-4">
+        <p>
+        <b>General overview: </b> <em>PhosQuest's</em> query of the database
+        and cross-referencing to the significantly differentially expressed
+        subset of your data, allows us to collate all kinases that
+        match to particular substrate/site(s). 
+        </p>
+        <b>Kinase activity calculation: </b> Log2 fold changes in 
+        substrate/sites <em>(Treatment/Condition over Control)</em>, serve 
+        as a proxy of kinase activity. We first calculate a mean of the absolute 
+        values, a more robust method than just taking the mean of the actual 
+        log2 fold changes. This means that increased and decreased 
+        phosphorylation of different kinase targets, does not lead to erroneously 
+        small values of relative kinase activities. The overall direction of 
+        relative activity <em>(increase/decrease)</em>, is estimated based on 
+        the total sum of log2 fold changes.
+        </p>
+        <b>Table: </b> We have again utilised the styled table format, with 
+        super-imposed barplots implemented. We also apply sorting to the table 
+        based on the values in the last column.
+        </p>
+        <b>Note: </b> If substrate/sites in your data don't match to kinases in 
+        the database, no table will be displayed.
+        </p>
+        <hr>
+        <div class=table.dataframe>
+            <center>{{ plots['kin_act'] | safe}} </center>
+        </div>
+        </div>
+      <div id="analysis-5">
+      <p>
+      <b>General overview: </b> The piecharts below summarise various metrics
+      and distributions in your data. 
+      </p>
+      <b>Interactivity: </b> Hovering your cursor over the charts will
+      highlight further details. As in the volcano plot, the top right hand
+      side of each chart contain further interaction options.
+      </p>
+        <hr>
+          <div class = "row">
+              <div class="col-md-6">
+                  <center><H5><b>% Enrichment efficiency</b></H5></center>
+                      <center>{{ plots["phos_enrich_pie"] | safe}} </center>
+              </div>
+              <div class="col-md-6">
+                  <center><H5><b>% of multiply-phosphorylated residues</b></H5></center>
+                      <center>{{ plots["multi_phos_res_freq_pie"] | safe }}</center>
+              </div>
+          </div>
+
+          <center><H5><b>% residue phosphorylation</b></H5></center>
+          <center>{{ plots["AA_mod_res_freq_pie"] |safe }}</center>
+
+      </div>
+      <div id="analysis-6">
+          <H4>Download your analysed data:</H4>
+          <p>CSV file containing all phospho-sites data with PhosQuests
+          analysis appended.
+            <p class="lead">
+                <a class="btn btn-warning btn-sml"
+                  href="{{url_for('crunch.download_analysis',
+                             csv=csv)}}" role="button"> {{ csv }}</a>
+            </p>
+      </div>
+    </div>
+    <script>
+    $( "#tabs" ).tabs();
+    </script>
+    </div>
+</body>
+<footer>
+    <hr>
+    <p>PhosQuest ©2019</p>
+</footer>
+</html>
+
+

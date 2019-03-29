@@ -44,20 +44,20 @@ The Python modules' versions employed in this project are specified in the proje
 files.
 
 ## Application structure
-The PhosphoQuest application requires an SQLite3 database (`PhosphoQuest.db`) situated in the folder level outside of the `PhosphoQuest_app` folder. Also in this location, `application.py` is a script which is run to activates the Flask application `PhosphoQuest_app`. `python3 application.py` or a similar command should activate the application (when all requirements are installed).
+The PhosQuest application requires an SQLite3 database (`PhosQuest.db`) situated in the folder level outside of the `PhosQuest_app` folder. Also in this location, `application.py` is a script which is run to activates the Flask application `PhosQuest_app`. `python3 application.py` or a similar command should activate the application (when all requirements are installed).
 
 ### App Folder structure 
 
-The structure of the software consists of a `PhosphoQuest_App` folder.This folder contains the `__init__.py` file that initiates the instance of the PhosphoQuest Flask application. 
+The structure of the software consists of a `PhosQuest_App` folder.This folder contains the `__init__.py` file that initiates the instance of the PhosQuest Flask application. 
 
-The `PhosphoQuest_App` folder contains subfolders corresponding to *Flask Blueprints* for routes `main`, `search`, `browse`, and `crunch`. Blueprints enable developers to simplify large applications and separate the code. For information about Flask Blueprints see [link](http://flask.pocoo.org/docs/0.12/blueprints/). 
+The `PhosQuest_App` folder contains subfolders corresponding to *Flask Blueprints* for routes `main`, `search`, `browse`, and `crunch`. Blueprints enable developers to simplify large applications and separate the code. For information about Flask Blueprints see [link](http://flask.pocoo.org/docs/0.12/blueprints/). 
 
 * `main` - contains `routes` for main pages on the website, *i.e.* the homepage, documentation pages and about us page.
 * `search` - contains `routes` for search page and a `forms` script which initiates a form class object for display on search page
 * `browse` - contains `routes` for browse pages 
 * `crunch` -contains `routes` for userdata analysis pages and a `forms` script which initiates a form class object for display on the upload page
  
-Additional folders within the `PhosphoQuest_App folder are:
+Additional folders within the `PhosQuest_App folder are:
 
  `static` - contains images used on the webpages and the following subfolders: 
 
@@ -73,17 +73,17 @@ Additional folders within the `PhosphoQuest_App folder are:
 `service_scripts`-  containing scripts used in user data analysis
 
 
-`data_access`- containing scripts for querying the PhosphoQuest database.
+`data_access`- containing scripts for querying the PhosQuest database.
 
-### An overview diagram of the PhosphoQuest app structure is shown below.
+### An overview diagram of the PhosQuest app structure is shown below.
 
 
-![App structure](images/PhosphoQuestApp_overview.png)
+![App structure](images/PhosQuestApp_overview.png)
 
 
 ### Script interactions
 
-The interactions between the various scripts and the methods used in the PhosphoQuest_app is shown in the detailed documentation.
+The interactions between the various scripts and the methods used in the PhosQuest_app is shown in the detailed documentation.
 
 * [Browse and Search documentation](search_and_browse.md)
 * [User data analysis documentation](user_data_analysis.md)

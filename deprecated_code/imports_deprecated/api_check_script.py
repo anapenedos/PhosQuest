@@ -1,6 +1,6 @@
 from data_import_scripts.api_import import get_uniprot_api_data, \
     get_pubchem_api_data
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
+from PhosQuest_app.data_access.sqlalchemy_declarative import Kinase, \
     Substrate, Inhibitor
 
 

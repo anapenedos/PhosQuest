@@ -1,8 +1,8 @@
 from flask import Blueprint
 from flask import flash, render_template, url_for, redirect
-from PhosphoQuest_app import bcrypt, db
-#from PhosphoQuest_app.users.forms import RegistrationForm, LoginForm
-#from PhosphoQuest_app.users.model import User
+from PhosQuest_app import bcrypt, db
+#from PhosQuest_app.users.forms import RegistrationForm, LoginForm
+#from PhosQuest_app.users.model import User
 
 users = Blueprint('users', __name__)
 

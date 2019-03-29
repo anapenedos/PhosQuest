@@ -7,7 +7,7 @@ Script to setup SQLite database using
 - SQLalchemy import script to import parsed data frames into SQLite DB
   (data_import_scripts\sqlalchemy_import.py)
 
-Sets up DB PhosphoQuest.db in database directory.
+Sets up DB PhosQuest.db in database directory.
 """
 
 # =========================================================================== #
@@ -18,7 +18,7 @@ from sqlalchemy import create_engine
 # --------------------------------------------------------------------------- #
 # project imports
 # import the base class and classes needed for corrections and API imports
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
+from PhosQuest_app.data_access.sqlalchemy_declarative import Base, Kinase, \
     Substrate, Inhibitor
 
 # import PhosphoSitePlus, MRC Inhibitor and BindingDB file parsers
@@ -41,14 +41,14 @@ from data_import_scripts.df_to_attributes import kin_sub_human_to_class, \
     pubchem_to_class
 
 # import session maker function
-from PhosphoQuest_app.data_access.db_sessions import create_sqlsession, \
+from PhosQuest_app.data_access.db_sessions import create_sqlsession, \
     set_db_path
 
 # =========================================================================== #
 
 # Create database tables/schema if not present
 # Create engine that stores schema in the database directory
-# PhosphoQuest.db file.
+# PhosQuest.db file.
 # The echo flag sets up SQLAlchemy logging
 db_path = set_db_path()
 engine = create_engine('sqlite:///' + db_path)

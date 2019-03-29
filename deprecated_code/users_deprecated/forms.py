@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError
-#from PhosphoQuest_app.users.model import User
+#from PhosQuest_app.users.model import User
 
 """Set up forms classes and required fields
 we need to add email in here if we actually use this code."""

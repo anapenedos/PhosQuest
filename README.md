@@ -1,6 +1,6 @@
-# PhosphoQuest Application Readme
+# PhosQuest Application Readme
 
-NB: After building this application we realised that there is a commerical product named PhosphoQuest, which is a Kinase ELISA. We would therefore need to change the name of this application prior to making this repository freely available and edit this in the code and documentation.
+NB: After building this application we realised that there is a commerical product named PhosQuest, which is a Kinase ELISA. We would therefore need to change the name of this application prior to making this repository freely available and edit this in the code and documentation.
 
 ## Index
 
@@ -15,7 +15,7 @@ NB: After building this application we realised that there is a commerical produ
 ### Information for Developers
 * [Setting up the Database](README.md#setting-up-the-database)
 * [Software Specifications](README.md#software-specifications)
-* [Setting up the PhosphoQuest Application](README.md#setting-up-the-phosphoquest-application)
+* [Setting up the PhosQuest Application](README.md#setting-up-the-phosphoquest-application)
 * [Python Package requirements](README.md#python-package-requirements)
 * [Software architecture](README.md#software-architecture)
 
@@ -27,7 +27,7 @@ NB: After building this application we realised that there is a commerical produ
 ## General information for Repository Users
 
 ### Website functionality - Basic overview
-PhosphoQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite information. 
+PhosQuest is a web application designed to enable users to search and browse a compiled database containing information about Human protein kinases, their substrates and inhibitors with related phosphosite information. 
 
 The application also provides an area for users to upload a tsv or csv file of experimental mass-spectrometry data and receive outputs showing sites for which phosphorylation was significantly up- or down-regulated, and other useful analysis. The analysed data can be viewed on the website and the complete analysis of all phosphosites in the data can be downloaded as a CSV file.
 
@@ -53,24 +53,24 @@ The uploaded file used for data analysis (.tsv, .csv or .txt) should adhere to t
 
 **Column 4**: Fold change calculation: Treatment over the Control. Note: these should not be log2 fold calculations! 
 
-**Column 5**: T-test P-values. Please use uncorrected values, as PhosphoQuest will implement correction for multiple-testing errors. 
+**Column 5**: T-test P-values. Please use uncorrected values, as PhosQuest will implement correction for multiple-testing errors. 
 
-**Column 6-7**: Coefficients of variation (CV's) for the Control and Treatment/Condition columns, respectively. PhosphoQuest can also handle data that doesn't have these column entries. 
+**Column 6-7**: Coefficients of variation (CV's) for the Control and Treatment/Condition columns, respectively. PhosQuest can also handle data that doesn't have these column entries. 
 
 #### General summary
 
-The PhosphoQuest analysis tool is designed with phosphoproteomics data in mind - that is mass spectrometry data generated from enrichment experiments. Uploaded user data that conforms to the earlier specification is processed in a series of steps that fit into 3 broad categories. 
+The PhosQuest analysis tool is designed with phosphoproteomics data in mind - that is mass spectrometry data generated from enrichment experiments. Uploaded user data that conforms to the earlier specification is processed in a series of steps that fit into 3 broad categories. 
 
 **1.** Tool checks for data format conformity and extracts data that has at least 1 quantitation event. The data is then further analysed and filtered to extract information on broad categories. For example substrate/sites reported in 1 or both conditions, with CVs <=25% and entries that are only phospho-sites to name a few.
 
-**2.** User calculated p-values are corrected for multiple testing errors - Benjamini-Hochberg method implemented with a default permissable error rate of 0.05 applied. User data is also queried against the PhosphoQuest database to find kinases and substrates that map to each other. Further analysis extracts "Metrics" of the data.
+**2.** User calculated p-values are corrected for multiple testing errors - Benjamini-Hochberg method implemented with a default permissable error rate of 0.05 applied. User data is also queried against the PhosQuest database to find kinases and substrates that map to each other. Further analysis extracts "Metrics" of the data.
 
 **3.** Kinase and substrate/sites frequency analysis carried out. Relative kinase activity analysis, based on log2 fold change calculations in substrate/site(s), is also implemented.
 
 These steps effectively build a user table with original upload information and the extra analysis appended.
 
 #### Output visuals 
-PhosphoQuest generates a number of visuals, that we hope will help you interpret and understand your data. These take the following form:
+PhosQuest generates a number of visuals, that we hope will help you interpret and understand your data. These take the following form:
 
 **Styled tables**: Your analysed, filtered and sorted data is uploaded in the form of a styled table. We have implemented visual cues such as super-imposed heatmaps and barplots to clarify the groupings in your data. Both the standard data and kinase activity analysis take this form.
 
@@ -87,7 +87,7 @@ PhosphoQuest generates a number of visuals, that we hope will help you interpret
 To set up the database, download data from [PhosphoSitePlus](https://www.phosphosite.org), [MRC Kinase Profiling Inhibitor Database](http://www.kinase-screen.mrc.ac.uk) and [BindingDB](https://www.bindingdb.org), introduce the new file locations in the `table_parsing.py` script found in the `data_import_scripts` directory and then run `db_setup.py`. More details about how the DB is structured and populated can be found in the [database documentation](documentation/database.md).
 
 ### Software Specifications
-PhosphoQuest is developed in Python 3.6+ using Flask 1.0.2 for web functionality and runs on Windows, Linux and Mac OS. The DB is setup in SQLite3. The web interface can be viewed in any modern browser; however, we recommend the latest versions of Chrome, Firefox and Edge to ensure correct page rendering (minor differences are seen between browsers due to different handling of css).
+PhosQuest is developed in Python 3.6+ using Flask 1.0.2 for web functionality and runs on Windows, Linux and Mac OS. The DB is setup in SQLite3. The web interface can be viewed in any modern browser; however, we recommend the latest versions of Chrome, Firefox and Edge to ensure correct page rendering (minor differences are seen between browsers due to different handling of css).
 
 Webpage styles are based on html5 with Bootstrap CSS 4.2.1 with local tweaks, jquery is used for tabs on results page.
 
@@ -119,24 +119,24 @@ Data analysis uses numpy, pandas and statsmodels. Output plots are rendered usin
 - WTForms  2.2.1
 - xlrd  1.2.0
 
-### Setting up the PhosphoQuest Application
+### Setting up the PhosQuest Application
 
-All the PhosphoQuest web application packages are contained in the PhosphoQuest_app folder. 
+All the PhosQuest web application packages are contained in the PhosQuest_app folder. 
 
-Ensure that the DB location for the accompanying PhosphoQuest.db is `/database/PhosphoQuest.db` in the folder location outside of the `PhosphoQuest_app` folder. If a different database location is required, then it will be necessary to edit the path in the `db_sessions.py` script in the `data_access` folder within the `PhosphoQuest_app`.
+Ensure that the DB location for the accompanying PhosQuest.db is `/database/PhosQuest.db` in the folder location outside of the `PhosQuest_app` folder. If a different database location is required, then it will be necessary to edit the path in the `db_sessions.py` script in the `data_access` folder within the `PhosQuest_app`.
 
 After installation of all the requirements and set-up of the database run the `application.py` script (eg. `python3 application.py`) from the outer folder level. This will initiate the Flask application and server. Navigate to the IP address indicated in your terminal (e.g., `127.0.0.1:5000/`) in your browser to view the web application (run on local computer).
 
 ### Software architecture
-The structure of the software in the Giardello repository consists of a `PhosphoQuest_app` folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing python scripts used for user data analysis and `data_access` scripts containing functions for querying the PhosphoQuest DB.
+The structure of the software in the Giardello repository consists of a `PhosQuest_app` folder containing subfolders corresponding to Flask Blueprints for routes `main`, `search`, `browse`, and `crunch`. The `static` folder contains images, the `main.css` local css file within a subfolder called `styles`, and a `userdata_temp` folder for temporary storage of user data and output files. the `templates` folder contains all the website html template files. The python scripts are broken into `service-scripts` containing python scripts used for user data analysis and `data_access` scripts containing functions for querying the PhosQuest DB.
 
-Outside of the app folder `data_import_scripts` folder contains scripts used in the set up of the database. `application.py` is the python script used to initiate the PhosphoQuest application. 
+Outside of the app folder `data_import_scripts` folder contains scripts used in the set up of the database. `application.py` is the python script used to initiate the PhosQuest application. 
 
-The PhosphoQuest.db file should be located in a folder `database`, in the level outside `PhosphoQuest_app`.
+The PhosQuest.db file should be located in a folder `database`, in the level outside `PhosQuest_app`.
 
 Further information regarding the script functions is available in the following markdown documents and in comments in the scripts themselves:
 
-* [Overview of PhosphoQuest Software structure](documentation/flask_application.md)
+* [Overview of PhosQuest Software structure](documentation/flask_application.md)
 * [Detail on analysis script functions](documentation/user_data_analysis.md)
 * [Detail on plotting script functions](documentation/plotting.md)
 * [Detail on search and browse script functions](documentation/search_and_browse.md)

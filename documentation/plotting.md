@@ -2,7 +2,7 @@
 
 ### <u>*Main script*</u>:  `plotting.py`
 
-### <u>*Webapp folder location*</u>:  `PhosphoQuest\service_scripts`
+### <u>*Webapp folder location*</u>:  `PhosQuest\service_scripts`
 
 ### <u>*Technologies and tools*</u>:  `Python, Pandas, Plotly, Matplotlib, WordCloud, Flask`
 

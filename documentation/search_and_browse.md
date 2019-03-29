@@ -7,7 +7,7 @@ An overview of how the search scripts interact in the application is shown below
 ![Search script interaction](images/search_script_scheme.png)
 
 ## Search script information
-`routes.py` and `forms.py` within the `search` folder of the `PhosphoQuest_app` contain the Flask routes and Flask form class set up for display of the search page on the web-app.
+`routes.py` and `forms.py` within the `search` folder of the `PhosQuest_app` contain the Flask routes and Flask form class set up for display of the search page on the web-app.
 
 `Forms.py` sets up the search form with options for the database table to search, this is currently limited to *Kinases*, *Substrates* and *Inhibitors*, which information to search (*accession/ID* and *name*) and which type of search to perform (*like* or *exact*).
 
@@ -32,11 +32,11 @@ An overview of how the search scripts interact in the application is shown below
 
 ![Browse script interaction](images/browse_script_scheme.png)
 
-`routes.py` within the `browse` folder of the `PhosphoQuest_app` contain the Flask routes for display of the various browse pages on the web-app.
+`routes.py` within the `browse` folder of the `PhosQuest_app` contain the Flask routes for display of the various browse pages on the web-app.
 
 The routes `browse_main` and `browse_cat`, render pages of browse category buttons. For some categories there is only one level of browse buttons to click (eg. inhibitors where the only browse option at present is to browse all inhibitors), for others there are several levels of buttons to click, eg *Kinases*, where they can be browsed by categories eg. *Kinase Family*, and then sub-categories eg. *Alpha-type protein kinase*.
 
-The categories *Kinase family* and *Kinase cellular location* are called from a fixed set of entries curated from a one off search of the PhosphoQuest.db field for the respective type and contained within a dictionary, the curation was necessary to avoid very high numbers of categories. However, the subcategory *Substrate-Chromosome location* is obtained from a live database query for all chromosome locations which is then parsed using a regular expression to show only distinct chromosome number (or X/Y) and p or q arms, eg (12p) to reduce the number of categories for adding to the browse buttons.
+The categories *Kinase family* and *Kinase cellular location* are called from a fixed set of entries curated from a one off search of the PhosQuest.db field for the respective type and contained within a dictionary, the curation was necessary to avoid very high numbers of categories. However, the subcategory *Substrate-Chromosome location* is obtained from a live database query for all chromosome locations which is then parsed using a regular expression to show only distinct chromosome number (or X/Y) and p or q arms, eg (12p) to reduce the number of categories for adding to the browse buttons.
 
 Clicking any of the final level category or subcategory buttons triggers a "like" query run from the function `searchlike()` in `data_access/query_db`
 

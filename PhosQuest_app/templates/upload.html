@@ -1,0 +1,68 @@
+<!-- inherit template from layout.html-->
+<!-- format form for upload of data.-->
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-1">
+        <img src="{{url_for('static', filename='fighter.png')}}"
+                            alt="fighter image"/>
+        </div>
+        <div class="col-md-10">
+        <H2>Online analysis for your phospho-proteomics data</H2>
+        </div>
+    </div>
+    <br>
+    <p>All analysis on this website is done <em> on the fly</em>, therefore please
+        do not click back or other links (in same tab) unless
+        you have finished looking through your results.
+
+        <p>A csv file of the analysed
+        data is provided for download when the analysis is finished and individual
+        data charts can be saved from the site.</p>
+    <a>Please see <a href="{{url_for('main.documentation')}}"> the documentation</a>
+    for information about how to format your datafile correctly and for further
+    information about the analysis output results.</p>
+    <p>We hope you enjoy your <i>PhosQuest</i>.</p>
+
+    <form method='POST' action="" enctype="multipart/form-data">
+
+      {{ form.hidden_tag() }}
+
+        <fieldset class="form-group">
+
+          <div class="form-group">
+            {{ form.data_file.label() }}
+            {{ form.data_file(class='form-control-file') }}
+            {% if form.data_file.errors %}
+                {% for error in form.data_file.errors %}
+                    <span class="text-danger">{{ error }}</span>
+
+              {% endfor %}
+            {% endif %}
+
+          </div>
+
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-info btn-lg", onclick="func()") }}
+        </div>
+
+    </form>
+
+        <p id="click">
+        </p>
+
+
+
+        <script>
+            function func() {
+
+                document.getElementById("click").innerHTML =
+                "<H3>Your data is being analysed - Please wait</H3>Your PhosQuest is in progress, data demons are being defeated and you will soon emerge victorious.";
+
+            }
+        </script>
+</div>
+
+{% endblock content %}

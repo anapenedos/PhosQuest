@@ -2,19 +2,19 @@
 ## Tools
 The database (DB) was setup in SQLite (version 3). SQLite is suitable to low- to medium-traffic websites and the one file approach of this type of DBs makes them reliable and portable. Its limitations in terms of user management and performance optimisation are unlikely to be felt in this project.
 
-The python library SQLalchemy was employed to create and populate the DB. This makes the PhosphoQuest DB and WebApp more portable and allows for performance improvements in the python-SQLite interactions. With SQLalchemy, the DB can be transferred to other DB systems, with minimal changes to the `sqlalchemy_declarative.py` (table definitions; `PhosphoQuest_app/data_access` directory) and `db_sessions.py` (DB path and connections; `data_import_scripts` directory) scripts.
+The python library SQLalchemy was employed to create and populate the DB. This makes the PhosQuest DB and WebApp more portable and allows for performance improvements in the python-SQLite interactions. With SQLalchemy, the DB can be transferred to other DB systems, with minimal changes to the `sqlalchemy_declarative.py` (table definitions; `PhosQuest_app/data_access` directory) and `db_sessions.py` (DB path and connections; `data_import_scripts` directory) scripts.
 
 The python library `pandas` was used to parse datasets and facilitate data import. This library allows for the easy handling of large amounts of data in a time- and resource-efficient manner. 
 
 The Python libraries' versions employed in this project are specified in the project's [README file](../README.md#python-package-requirements). They can easily be installed using `pip install -r requirements.txt`.
 
 ## Database structure
-The PhosphoQuest database contains nine tables, two of which join tables, as outlined in the schema below:
+The PhosQuest database contains nine tables, two of which join tables, as outlined in the schema below:
 
-![PhosphoQuest schema](images/PhosphoQuest-2019-03-27_21_26.png)
+![PhosQuest schema](images/PhosQuest-2019-03-27_21_26.png)
 
 The term 'substrate' is used to refer to a protein that is a putative kinase target. 'Phosphosites' are peptides within the substrate where phosphorylation occurs, hence a substrate may have many phosphosites, which may be targetted by different kinases.
-The schema is defined through a [SQLalchemy declarative script](../PhosphoQuest_app/data_access/sqlalchemy_declarative.py).  Some fields were indexed to speed up DB queries:
+The schema is defined through a [SQLalchemy declarative script](../PhosQuest_app/data_access/sqlalchemy_declarative.py).  Some fields were indexed to speed up DB queries:
 
 |       Table           |         Field          |
 | --------------------- | ---------------------- |

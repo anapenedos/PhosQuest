@@ -1,0 +1,119 @@
+<!-- inherit template from layout.html-->
+{% extends "layout_no_sidebar.html" %}
+{% block content %}
+<div class="container">
+    <p style="float:right">
+    <img src="{{url_for('static', filename='fighter.png')}}"
+                     alt="fighter image"/>
+    <img src="{{url_for('static', filename='shapeshifter.png')}}"
+                alt="shapeshifter image"/>
+     <img src="{{url_for('static', filename='mage.png')}}"
+                     alt="fighter image"/>
+    <img src="{{url_for('static', filename='alchemist.png')}}"
+                alt="shapeshifter image"/>
+    <H1>Thankyou for using PhosQuest!</H1> </p>
+    <br><hr>
+  <div class ="col-md-10">
+    <p> We are <i>Team Giardello</i> a group of part-time Bioinformatics Masters students
+    based at Queen Mary University of London, School of Biological and Chemical
+    Sciences.</p>
+    <p>This website is the result of our group project work, we hope you enjoy using it
+    and find it useful. We chose to give the site a Quest line theme as, well, we're
+    all total geeks!</p></div>
+    <br>
+    <H4><i>Who Are WE? </i></H4>
+    <hr>
+        <div class="row">
+            <div class="col-md-2">
+              <center><H5> Name</H5></center>
+            </div>
+            <div class="col-md-2">
+              <H5> Class </H5>
+            </div>
+            <div class="col-md-3">
+              <H5> Special skills</H5>
+            </div>
+            <div class="col-md-5">
+              <H5> Notes </H5>
+            </div>
+        </div>
+    <hr>
+        <div class="row">
+            <div class="col-md-2">
+                <center><H6>Alex</H6>
+                <img src="{{url_for('static', filename='fighter.png')}}"
+                     alt="fighter image"/></center>
+            </div>
+            <div class="col-md-2">
+              <H6> Kung-fu Master </H6>
+            </div>
+            <div class="col-md-3">
+              <H6> Data-combat </H6>
+            </div>
+            <div class="col-md-5">
+              <H6> He often moves so fast when fighting enemy data-foes he appears to
+                  grow extra arms and legs.</H6>
+            </div>
+        </div>
+    <hr>
+        <div class="row">
+            <div class="col-md-2">
+               <center><H6>Ana</H6>
+                <img src="{{url_for('static', filename='alchemist.png')}}"
+                alt="alchemist image"/></center>
+            </div>
+            <div class="col-md-2">
+              <H6> Alchemist </H6>
+            </div>
+            <div class="col-md-3">
+              <H6> SQL-wizardry </H6>
+            </div>
+            <div class="col-md-5">
+              <H6> Once fought the biggest join-table-monster in
+              history, she not only survived but the monster's offspring joined her army.</H6>
+            </div>
+        </div>
+    <hr>
+        <div class="row">
+            <div class="col-md-2">
+                <center><H6>Carmen</H6>
+                    <img src="{{url_for('static', filename='shapeshifter.png')}}"
+                alt="shapeshifter image"/></center>
+                </center>
+            </div>
+            <div class="col-md-2">
+              <H6> Shapeshifter </H6>
+            </div>
+            <div class="col-md-3">
+              <H6> Web-weaving </H6>
+            </div>
+            <div class="col-md-5">
+              <H6> So adept at showing others what they need to see that she
+              once forgot who she was. </H6>
+            </div>
+        </div>
+    <hr>
+
+                <div class="row">
+            <div class="col-md-2">
+                <center><H6>Ozan</H6>
+                <img src="{{url_for('static', filename='mage.png')}}"
+                alt="mage image"/></center>
+            </div>
+            <div class="col-md-2">
+              <H6> Multilingual Mage </H6>
+            </div>
+            <div class="col-md-3">
+              <H6> API-mastery </H6>
+            </div>
+            <div class="col-md-5">
+              <H6>Legend has it that he can speak the language of a million websites
+              and acquires lost knowledge from the deepest of dark forests.</H6>
+            </div>
+        </div>
+    <hr>
+</div>
+<br>
+
+
+{% endblock content %}

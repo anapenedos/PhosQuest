@@ -13,10 +13,10 @@ from bokeh.plotting import figure
 
 ### Import the dataframes from Alex's script
 # Call the specific file
-file = phos_sites_path = os.path.join('PhosphoQuest_app', 'user_data', 'AZ20.tsv')
+file = phos_sites_path = os.path.join('PhosQuest_app', 'user_data', 'AZ20.tsv')
 
 # Call the specifc script from Userdata_display
-from PhosphoQuest_app.service_scripts import userdata_display
+from PhosQuest_app.service_scripts import userdata_display
 
 # Create the dataframe
 df = userdata_display.run_all(file)

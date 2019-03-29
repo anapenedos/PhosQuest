@@ -1,5 +1,5 @@
 # run app from package in debug mode
-from PhosphoQuest_app import app
+from PhosQuest_app import app
 import pandas as pd
 
 

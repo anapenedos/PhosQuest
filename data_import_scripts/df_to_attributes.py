@@ -1,5 +1,5 @@
 # import classes
-from PhosphoQuest_app.data_access.sqlalchemy_declarative import Kinase, \
+from PhosQuest_app.data_access.sqlalchemy_declarative import Kinase, \
     Substrate, Phosphosite, Disease, DiseaseAlteration, Inhibitor, \
     CellularLocation
 

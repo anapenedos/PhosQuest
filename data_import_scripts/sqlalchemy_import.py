@@ -4,8 +4,8 @@ from datetime import datetime, timedelta
 from pandas import isnull
 
 # project imports
-from PhosphoQuest_app.data_access.db_sessions import import_session_maker
-from PhosphoQuest_app.data_access.class_functions import get_classes_key_attrs
+from PhosQuest_app.data_access.db_sessions import import_session_maker
+from PhosQuest_app.data_access.class_functions import get_classes_key_attrs
 
 # define null-type of values that are treated differently
 NULL_VALS = [None, '', ' ', '-', 'nan', 'NaN']
