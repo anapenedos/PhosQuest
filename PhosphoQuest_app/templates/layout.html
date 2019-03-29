@@ -64,22 +64,22 @@
     </div>
     <div class="col-md-3">
         <div class="content-section">
-            <h3>Browse Database</h3>
+            <center><h4>Browse Database</h4></center>
             <br>
 
             <ul class="list-group">
-                <li class="list-group-item list-group-item">
+                <li class="list-group-item list-group-item-quest">
                     <a class="navside-item navside-link"
-                       href = {{url_for('browse.browse_cat', category="Kinase")}}>Kinases</a></li>
-                <li class="list-group-item list-group-item">
+                       href = {{url_for('browse.browse_cat', category="Kinase")}}><h5>Kinases</h5></a></li>
+                <li class="list-group-item list-group-item-quest">
                     <a class="navside-item navside-link"
-                       href = {{url_for('browse.browse_cat', category="Substrate")}}>Substrates</a></li>
-                <li class="list-group-item list-group-item">
+                       href = {{url_for('browse.browse_cat', category="Substrate")}}><h5>Substrates</h5></a></li>
+                <li class="list-group-item list-group-item-quest">
                     <a class="navside-item navside-link"
-                       href = {{url_for('browse.browse_table', subcategory='Inhibitor')}}>Inhibitors</a></li>
-                <li class="list-group-item list-group-item">
+                       href = {{url_for('browse.browse_table', subcategory='Inhibitor')}}><h5>All Inhibitors</h5></a></li>
+                <li class="list-group-item list-group-item-quest">
                     <a class="navside-item navside-link"
-                       href = {{url_for('main.documentation')}}>Documentation</a></li>
+                       href = {{url_for('main.documentation')}}><H5>Documentation<H5></H5></a></li>
             </ul>
         </div>
         <br>

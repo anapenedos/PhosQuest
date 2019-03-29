@@ -1,6 +1,6 @@
 # Flask Application Structure
 ## Introduction
-This website is built using the Flask 1.0.2. Flask is a Python web microframework
+This website is built using the Flask 1.0.2. Flask is a Python web microframework which
 makes it relatively easy to build basic websites, but also offers extended 
 features that enable development of more sophisticated sites. The documentation for the Flask python package 
 library can be found at the [Flask website](http://flask.pocoo.org/).
@@ -92,6 +92,7 @@ The interactions between the various scripts and the methods used in the Phospho
 
 ### Application limitations and potential issues
 * Search function is basic and does not recognise logical functions or wild-cards in the text field.
+* Text to say that your analysis is running displays on click of the button when no file has been chosen. An error message also appears, but this could be confusing.
 * Data analysis is all done at once on successful upload of a file, and can take a minute or more to complete depending on input file and resources available. 
 * Due to the large amount of data and images rendered on the user-data results page it can take a few seconds after the page initially appears for the styles to render fully (eg. for the jquery tabs to show correctly).
 * Once the results page has appeared, users cannot return to the result data if they navigate away from the page as all the variables are lost. 

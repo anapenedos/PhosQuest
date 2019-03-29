@@ -22,6 +22,8 @@ substrates      | subs_gene
 phosphosites | phos_modified_residue
 phosphosites | phos_in_substrate
 kinases          | kin_cellular_location
+kinases_phosphosites | phos_group_id
+kinases_inhibitors | inhib_pubchem_cid
 
  
 ## Data Sources

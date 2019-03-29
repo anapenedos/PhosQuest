@@ -62,21 +62,23 @@
         {% endwith %}
         {% block content %}{% endblock %}
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="content-section">
+             <center><h4>Browse documentation</h4></center>
+            <br>
             <ul class="list-group">
-                <li class="list-group-item list-group-item-info">
-                    <a class="navside-item navside-link-dark"
-                       href = {{url_for('main.documentation')}}>Documentation home</a></li>
-                <li class="list-group-item list-group-item-info">
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
-                       href = {{url_for('main.documentation_category', doc='database')}}>Database content</a></li>
-                <li class="list-group-item list-group-item-info">
+                       href = {{url_for('main.documentation')}}><h5>Documentation home</h5></a></li>
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
-                       href = {{url_for('main.documentation_category', doc='browse')}}>Browse and Search</a></li>
-                <li class="list-group-item list-group-item-info">
+                       href = {{url_for('main.documentation_category', doc='database')}}><h5>Database content</h5></a></li>
+                <li class="list-group-item list-group-item">
                     <a class="navside-item navside-link"
-                       href = {{url_for('main.documentation_category', doc='analysis')}}>Data Analysis</a></li>
+                       href = {{url_for('main.documentation_category', doc='browse')}}><h5>Browse and Search</h5></a></li>
+                <li class="list-group-item list-group-item">
+                    <a class="navside-item navside-link"
+                       href = {{url_for('main.documentation_category', doc='analysis')}}><H5>Data Analysis</H5></a></li>
             </ul>
         </div>
         <br>
