@@ -1,1 +1,2 @@
 Placeholder file just for committing the directory to git.
+this file is necessary to keep the structure
