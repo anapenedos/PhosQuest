@@ -1,5 +1,7 @@
 # User Input Testing 
 
+Disclaimer - Please note all User Input testing was performed under an initial name, which has since been modified to PhosQuest.
+
 This document displays a number of example searches that constitute user input data in different formats. 
 
 i) [User input AZ20.tsv](user_input_testing.md#test-case-scenario-1--user-input-az20tsv)

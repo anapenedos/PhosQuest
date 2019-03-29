@@ -1,5 +1,7 @@
 # Web App Testing 
 
+Disclaimer - Please note all User Input testing was performed under an initial name, which has since been modified to PhosQuest.
+
 This document displays a number of example searches that constitute our web app testing. Web app testing was performed using a number of test inputs under the 'similar matches' and 'exact matches' options. The results of both are listed for each search. As a rule of thumb, if any search is performed under the wrong selection options, or with an input that was not present in the database, the following message would be displayed e.g. searching for a something as an inhibitor when it is not:-
 
 ![NoresultsFound](images/web_app_testing/notfound.png)
