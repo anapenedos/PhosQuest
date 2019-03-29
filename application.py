@@ -4,7 +4,7 @@ import pandas as pd
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
 
 # setting up for Amazon Elastic Beanstalk to be able to find the application
 application = app
