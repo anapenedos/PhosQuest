@@ -16,15 +16,14 @@ The PhosphoQuest database contains nine tables, two of which join tables, as out
 The term 'substrate' is used to refer to a protein that is a putative kinase target. 'Phosphosites' are peptides within the substrate where phosphorylation occurs, hence a substrate may have many phosphosites, which may be targetted by different kinases.
 The schema is defined through a [SQLalchemy declarative script](../PhosphoQuest_app/data_access/sqlalchemy_declarative.py).  Some fields were indexed to speed up DB queries:
 
-       Table           |         Field
-:--------------------- | ---------------------:
-                       |
-`substrates`           | `subs_gene`
-`phosphosites`         | `phos_modified_residue`
-`phosphosites`         | `phos_in_substrate`
-`kinases`              | `kin_cellular_location`
-`kinases_phosphosites` | `phos_group_id`
-`kinases_inhibitors`   | `inhib_pubchem_cid`
+|       Table           |         Field          |
+| --------------------- | ---------------------- |
+|`substrates`           | `subs_gene`            |
+|`phosphosites`         | `phos_modified_residue`|
+|`phosphosites`         | `phos_in_substrate`    |
+|`kinases`              | `kin_cellular_location`|
+|`kinases_phosphosites` | `phos_group_id`        |
+|`kinases_inhibitors`   | `inhib_pubchem_cid`    |
 
  
 ## Data Sources
