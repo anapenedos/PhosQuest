@@ -17,7 +17,8 @@ The term 'substrate' is used to refer to a protein that is a putative kinase tar
 The schema is defined through a [SQLalchemy declarative script](../PhosphoQuest_app/data_access/sqlalchemy_declarative.py).  Some fields were indexed to speed up DB queries:
 
        Table           |         Field
----------------------- | ---------------------
+:--------------------- | ---------------------:
+                       |
 `substrates`           | `subs_gene`
 `phosphosites`         | `phos_modified_residue`
 `phosphosites`         | `phos_in_substrate`
