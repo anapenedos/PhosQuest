@@ -1,9 +1,0 @@
-SUB_ACC_ID	substrate_name	substrate_encoding_gene	substrate_organism	substrate_gene_id	substrate_modified_residue	CST_CAT#
-P49005	POLD2	POLD2	human	5425	T33	
-Q8WUI4	HDAC7	HDAC7	human	51564	S155	3443
-Q8N122	Raptor	RPTOR	human	57521	S859	
-Q13541	4E-BP1	EIF4EBP1	human	1978	S65	9451; 9456; 13443
-P19634	NHE1	SLC9A1	human	6548	S648	
-Q06187	Btk	BTK	human	695	T495	
-P36871	PGM1	PGM1	human	5236	T467	
-P51114	FXR1	FXR1	human	8087	S420	

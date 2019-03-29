@@ -1,5 +1,0 @@
-KIN_ACC_ID	Kinase_name	kinase_encoding_gene	kinase_organism
-O43318	TAK1	MAP3K7	human
-P42345	mTOR	MTOR	human
-P31749	Akt1	AKT1	human
-Q13153	PAK1	PAK1	human
