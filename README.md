@@ -1,5 +1,4 @@
 # PhosQuest Application Readme
-deployed to AWS EB: [http://phosquest.eu-west-1.elasticbeanstalk.com/](http://phosquest.eu-west-1.elasticbeanstalk.com/)
 
 ## Index
 
